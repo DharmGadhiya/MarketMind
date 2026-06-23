@@ -1,10 +1,10 @@
 const { Router } = require("express");
 const NEWS = require("../models/news");
-const corn = require("node-cron");
+const cron = require("node-cron");
 
 const router = Router();
 const express = require("express");
-const NEWS = require("../models/NEWS");
+
 
 cron.schedule("*/20 * * * *", async () => {
   try {
