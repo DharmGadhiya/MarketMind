@@ -7,6 +7,10 @@ const checkForAuthenticationCookie = require("./middlewares/auth");
 const app = express();
 const PORT = 8000 || process.env.PORT;
 
+const newsRouter = require("./routes/news");
+
+
+
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
@@ -23,8 +27,11 @@ app.use(
   }),
 );
 
+app.use(express.json());
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("Token"));
+
+app.use("/api", newsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
