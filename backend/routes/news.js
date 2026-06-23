@@ -25,7 +25,7 @@ cron.schedule("*/20 * * * *", async () => {
     const data = await response.json();
 
     if (!data.data || data.data.length === 0) {
-      res.status(204);
+      
       console.log("No new news found.");
       return;
     }
@@ -55,24 +55,72 @@ cron.schedule("*/20 * * * *", async () => {
     console.log(
       `Fetched: ${data.data.length} | Stored: ${newsToInsert.length}`,
     );
-    res.status(200);
+   
   } catch (err) {
-    res.status(500);
+    
     console.error("NEWS fetch error:", err.message);
   }
 });
 
+
+// GET ALL NEWS WITH PAGINATION
 router.get("/allnews", async (req, res) => {
   try {
-    const news = (await NEWS.find({})).sort({published_at : -1});
-     res.status(200).json({
+    // Current page (default = 1)
+    const page = parseInt(req.query.page) || 1;
+
+    // Number of news per request
+    const limit = 20;
+
+    // Calculate how many documents to skip
+    const skip = (page - 1) * limit;
+
+    // Fetch news from MongoDB
+    const news = await NEWS.find({})
+      .sort({ published_at: -1 }) // Latest first
+      .skip(skip)
+      .limit(limit);
+
+    // Total news count
+    const totalNews = await NEWS.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      page,
+      limit,
+      totalNews,
+      totalPages: Math.ceil(totalNews / limit),
+      hasMore: page * limit < totalNews,
+      news,
+    });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch news",
+      error: err.message,
+    });
+  }
+});
+
+router.get("/news/:id", async (req, res) => {
+  try {
+    const news = await NEWS.findById(req.params.id);
+
+    if (!news) {
+      return res.status(404).json({
+        message: "News not found",
+      });
+    }
+
+    res.status(200).json({
       news,
     });
   } catch (err) {
     res.status(500).json({
-        message : "Failed to fetch news",
-        error : err.message
-    })
+      error: err.message,
+    });
   }
 });
 
