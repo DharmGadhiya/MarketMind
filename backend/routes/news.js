@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const NEWS = require("../models/news");
 const cron = require("node-cron");
-
+//commit from dharm
 const router = Router();
 const express = require("express");
 
