@@ -1,13 +1,19 @@
-const express = require("express");
-require("dotenv").config({ override: true });
-const CORS = require("cors");
-const { default: mongoose } = require("mongoose");
-const cookieParser = require("cookie-parser");
-const checkForAuthenticationCookie = require("./middlewares/auth");
-const app = express();
-const PORT = 8000 || process.env.PORT;
+import express from "express";
+import dotenv from "dotenv";
+import CORS from "cors";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 
-const newsRouter = require("./routes/news");
+import checkForAuthenticationCookie from "./middlewares/auth.js";
+import newsRouter from "./routes/news.js";
+import stockRouter from "./routes/stockRoutes.js";
+
+
+
+const app = express();
+
+
+const PORT = 8000 || process.env.PORT;
 
 
 
@@ -32,6 +38,7 @@ app.use(cookieParser());
 app.use(checkForAuthenticationCookie("Token"));
 
 app.use("/api", newsRouter);
+app.use("/stocks", stockRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
