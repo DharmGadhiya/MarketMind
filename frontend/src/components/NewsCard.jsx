@@ -1,55 +1,73 @@
-// src/components/NewsCard.jsx
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Clock } from "lucide-react";
+import { timeAgo, cleanSource } from "../Utilities/utils/format";
 
-import { useNavigate } from "react-router-dom";
+const FALLBACK =
+  "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&auto=format&fit=crop&q=70";
 
-const NewsCard = ({ news }) => {
-  const navigate = useNavigate();
-
+const NewsCard = ({ news, index = 0 }) => {
   return (
-    <div
-      onClick={() => navigate(`/news/${news._id}`)}
-      className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    <Link
+      to={`/news/${news._id}`}
+      className="group card-lift shimmer relative overflow-hidden rounded-xl border border-black/8 bg-white rise-up"
+      style={{
+        animationDelay: `${Math.min(index * 60, 480)}ms`,
+      }}
     >
-      <img
-        src={
-          news.image_url ||
-          "https://via.placeholder.com/400x250?text=No+Image"
-        }
-        alt={news.title}
-        className="w-full h-52 object-cover"
-      />
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#f3efe7]">
 
-      <div className="p-4">
-        <h2 className="text-lg font-bold line-clamp-2">
-          {news.title}
-        </h2>
+        <img
+          src={news.image_url || FALLBACK}
+          alt={news.title}
+          className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.06]"
+        />
 
-        <p className="text-gray-600 mt-2 line-clamp-3">
-          {news.description}
-        </p>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
-        <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-          <span>{news.source}</span>
+        <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-black/55 text-white opacity-0 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100">
+          <ArrowUpRight size={15} />
+        </span>
+
+      </div>
+
+      <div className="flex flex-col gap-3 p-5">
+
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">
+
+          <span className="text-[#0a8c5b]">
+            {cleanSource(news.source)}
+          </span>
+
+          <span>/</span>
+
+          <Clock size={10} />
 
           <span>
-            {new Date(news.published_at).toLocaleDateString()}
+            {timeAgo(news.published_at)}
           </span>
+
         </div>
 
-        {news.entities?.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {news.entities.slice(0, 3).map((entity, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-medium"
-              >
-                {entity.symbol}
-              </span>
-            ))}
-          </div>
+        <h3 className="clamp-3 font-serif text-[22px] leading-[1.15] text-[#0a0e14] transition-colors duration-300 group-hover:text-[#0a8c5b]">
+          {news.title}
+        </h3>
+
+        {news.description && (
+          <p className="clamp-2 text-[13.5px] leading-relaxed text-[#6b7280]">
+            {news.description}
+          </p>
         )}
+
+        <div className="mt-1 flex items-center justify-between border-t border-black/8 pt-3">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-[#9ca3af]">
+            Read story
+          </span>
+
+          <span className="h-px w-10 bg-[#d4cfc4] transition-all duration-500 group-hover:w-20 group-hover:bg-[#0a8c5b]" />
+        </div>
+
       </div>
-    </div>
+    </Link>
   );
 };
 

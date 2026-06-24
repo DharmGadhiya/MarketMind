@@ -1,16 +1,21 @@
-// src/pages/Home.jsx
-
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Loader2 } from "lucide-react";
+
 import { getNews } from "../services/newsApi";
+
+import Header from "../components/Header";
+import TickerTape from "../components/TickerTape";
+import FeaturedHero from "../components/FeaturedHero";
 import NewsCard from "../components/NewsCard";
+import MarketPulse from "../components/MarketPulse";
 
 const Home = () => {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // 🔹 Initial load
   useEffect(() => {
     const loadInitialNews = async () => {
       try {
@@ -20,14 +25,15 @@ const Home = () => {
         setHasMore(data.hasMore);
         setPage(1);
       } catch (err) {
-        console.error("Error fetching initial news:", err);
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadInitialNews();
   }, []);
 
-  // 🔹 Load more news (pagination)
   const fetchMoreNews = async () => {
     try {
       const nextPage = page + 1;
@@ -35,42 +41,222 @@ const Home = () => {
       const data = await getNews(nextPage);
 
       setNews((prev) => [...prev, ...(data.news || [])]);
-      setPage((prev) => prev + 1);
+      setPage(nextPage);
       setHasMore(data.hasMore);
     } catch (err) {
-      console.error("Error fetching more news:", err);
+      console.error(err);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto p-6">
-        <h1 className="text-4xl font-bold text-center mb-8">
-          MarketMind News
-        </h1>
+  const heroItems = news.slice(0, 3);
+  const restItems = news.slice(3);
 
-        <InfiniteScroll
-          dataLength={news.length}
-          next={fetchMoreNews}
-          hasMore={hasMore}
-          loader={
-            <h3 className="text-center py-6">Loading more news...</h3>
-          }
-          endMessage={
-            <p className="text-center py-6 text-gray-500">
-              No more news available
-            </p>
-          }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {news.map((item) => (
-              <NewsCard key={item._id} news={item} />
-            ))}
+  return (
+    <div className="min-h-screen bg-[#faf7f2] text-[#0a0e14]">
+      <Header />
+
+      <TickerTape />
+
+      {/* HERO BANNER */}
+      <section className="relative border-b border-black/8 grid-bg">
+        <div className="mx-auto max-w-[1400px] px-6 py-12 lg:px-10 lg:py-16">
+
+          <div className="flex items-end justify-between gap-6">
+
+            <div className="max-w-3xl rise-up">
+
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 backdrop-blur shadow-sm">
+
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0a8c5b] pulse-dot" />
+
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#2a2f38]">
+                  Markets Open · Live Coverage
+                </span>
+
+              </div>
+
+              <h1 className="font-serif text-5xl headline-tight text-[#0a0e14] sm:text-6xl lg:text-[88px]">
+
+                The market,
+                <br />
+
+                <span className="italic text-[#0a8c5b]">
+                  decoded.
+                </span>
+
+              </h1>
+
+              <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[#6b7280]">
+                Curated stock-market intelligence from India and around the
+                world — earnings, IPOs, macroeconomics, business and finance —
+                all in one place.
+              </p>
+
+            </div>
+
+            <div className="hidden lg:block rise-up">
+
+              <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-black/10 bg-black/8 shadow-sm">
+
+                <div className="bg-white p-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                    Stories
+                  </div>
+
+                  <div className="mt-2 font-serif text-3xl">
+                    {news.length}
+                  </div>
+                </div>
+
+                <div className="bg-white p-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                    Sources
+                  </div>
+
+                  <div className="mt-2 font-serif text-3xl">
+                    24+
+                  </div>
+                </div>
+
+                <div className="bg-white p-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                    Coverage
+                  </div>
+
+                  <div className="mt-2 font-serif text-3xl">
+                    Global
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
-        </InfiniteScroll>
-      </div>
+
+        </div>
+      </section>
+
+      <main className="mx-auto max-w-[1400px] px-6 py-10 lg:px-10 lg:py-14">
+
+        {heroItems.length > 0 && (
+          <div className="mb-12">
+
+            <div className="mb-6">
+
+              <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a8c5b]">
+                ◆ Editor's Pick
+              </div>
+
+              <h2 className="mt-1 font-serif text-3xl text-[#0a0e14] lg:text-4xl">
+                Today's Headlines
+              </h2>
+
+            </div>
+
+            <FeaturedHero items={heroItems} />
+
+          </div>
+        )}
+
+        <div className="mb-8">
+
+          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a8c5b]">
+            ◆ The Wire
+          </div>
+
+          <h2 className="mt-1 font-serif text-3xl text-[#0a0e14] lg:text-4xl">
+            Latest Market News
+          </h2>
+
+        </div>
+
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
+
+          <div>
+
+            {loading ? (
+              <SkeletonGrid />
+            ) : (
+              <InfiniteScroll
+                dataLength={restItems.length}
+                next={fetchMoreNews}
+                hasMore={hasMore}
+                loader={
+                  <div className="flex items-center justify-center py-10 text-[#6b7280]">
+                    <Loader2
+                      size={16}
+                      className="mr-2 animate-spin"
+                    />
+                    Loading More Stories...
+                  </div>
+                }
+              >
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+
+                  {restItems.map((item, i) => (
+                    <NewsCard
+                      key={item._id}
+                      news={item}
+                      index={i}
+                    />
+                  ))}
+
+                </div>
+              </InfiniteScroll>
+            )}
+
+          </div>
+
+          <MarketPulse />
+
+        </div>
+
+      </main>
+
+      {/* FOOTER */}
+
+      <footer className="border-t border-black/8 bg-[#f3efe7]">
+
+        <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 px-6 py-8 lg:flex-row lg:items-center lg:px-10">
+
+          <div className="flex items-center gap-3">
+
+            <span className="font-serif text-lg">
+              MarketMind
+            </span>
+
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+              © {new Date().getFullYear()}
+            </span>
+
+          </div>
+
+        </div>
+
+      </footer>
+
     </div>
   );
 };
+
+const SkeletonGrid = () => (
+  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="overflow-hidden rounded-xl border border-black/8 bg-white"
+      >
+        <div className="aspect-[16/10] animate-pulse bg-black/[0.05]" />
+
+        <div className="space-y-2 p-5">
+          <div className="h-3 w-24 animate-pulse rounded bg-black/[0.08]" />
+          <div className="h-5 w-full animate-pulse rounded bg-black/[0.1]" />
+          <div className="h-5 w-3/4 animate-pulse rounded bg-black/[0.1]" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
 export default Home;

@@ -5,11 +5,17 @@ const API = axios.create({
 });
 
 export const getNews = async (page = 1) => {
-  const response = await API.get(`/api/allnews?page=${page}`);
+  const response = await API.get(
+    `/api/allnews?page=${page}`
+  );
+
   return response.data;
 };
 
 export const getNewsById = async (id) => {
-  const response = await API.get(`/api/news/${id}`);
+  const response = await API.get(
+    `/api/news/${id}`
+  );
+
   return response.data;
 };
