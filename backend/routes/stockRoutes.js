@@ -1,6 +1,7 @@
 import express from "express";
 import Stock from "../models/stock.js";
 import { updateStocks } from "../services/stockService.js";
+import cron from "node-cron";
 
 const router = express.Router();
 
@@ -39,6 +40,16 @@ router.get("/", async (req, res) => {
       success: false,
       error: error.message,
     });
+  }
+});
+
+// Automatically update stock prices in the background every 2 minutes
+cron.schedule("*/45 * * * * *", async () => {
+  try {
+    console.log("[Scheduled Stock Update] Starting background update...");
+    await updateStocks();
+  } catch (error) {
+    console.error("[Scheduled Stock Update Error] Failed:", error.message);
   }
 });
 

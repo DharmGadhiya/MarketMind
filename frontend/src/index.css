@@ -99,7 +99,7 @@ body {
 }
 .marquee-track {
     display: inline-flex;
-    animation: marquee 60s linear infinite;
+    animation: marquee 160s linear infinite;
     white-space: nowrap;
 }
 .marquee-track:hover {

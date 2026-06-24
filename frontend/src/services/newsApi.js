@@ -19,3 +19,8 @@ export const getNewsById = async (id) => {
 
   return response.data;
 };
+
+export const getStocks = async () => {
+  const response = await API.get("/stocks");
+  return response.data;
+};
