@@ -5,8 +5,7 @@ const cron = require("node-cron");
 const router = Router();
 const express = require("express");
 
-
-cron.schedule("*/20 * * * *", async () => {
+cron.schedule("*/30 * * * *", async () => {
   try {
     console.log("Fetching latest news...");
 
@@ -15,53 +14,70 @@ cron.schedule("*/20 * * * *", async () => {
     });
 
     const publishedAfter = latestNews
-      ? new Date(latestNews.published_at).toISOString()
-      : new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      ? new Date(latestNews.published_at).toISOString().slice(0, 19)
+      : new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19);
 
     const response = await fetch(
-      `https://api.marketaux.com/v1/news/all?countries=in&filter_entities=true&limit=10&published_after=${publishedAfter}&api_token=${process.env.NEWS_API}`,
+      `https://api.marketaux.com/v1/news/all?countries=in&filter_entities=true&limit=3&published_after=${publishedAfter}&api_token=${process.env.NEWS_API}`,
     );
 
     const data = await response.json();
 
     if (!data.data || data.data.length === 0) {
-      
       console.log("No new news found.");
       return;
     }
-
+    console.log(data);
     const newsToInsert = data.data.map((article) => ({
       uuid: article.uuid,
-      title: article.title,
-      description: article.description,
-      url: article.url,
-      image_url: article.image_url,
-      source: article.source,
-      published_at: article.published_at,
-      keywords: article.keywords || [],
-      entities: article.entities || [],
+      title: article.title || "",
+      description: article.description || "",
+      url: article.url || "",
+      image_url: article.image_url || "",
+      source: article.source || "",
+
+      // Convert to Date explicitly
+      published_at: article.published_at
+        ? new Date(article.published_at)
+        : null,
+
+      // Your schema has keywords as String
+      keywords: Array.isArray(article.keywords)
+        ? article.keywords
+        : article.keywords
+          ? [article.keywords]
+          : [],
+
+      entities: (article.entities || []).map((entity) => ({
+        symbol: entity.symbol || "",
+        name: entity.name || "",
+        industry: entity.industry || "",
+        sentiment_score:
+          typeof entity.sentiment_score === "number"
+            ? entity.sentiment_score
+            : null,
+      })),
     }));
 
+    console.log("newsToInsert length:", newsToInsert.length);
+    console.dir(newsToInsert, { depth: null });
+
     try {
-      await NEWS.insertMany(newsToInsert, {
+      const inserted = await NEWS.insertMany(newsToInsert, {
         ordered: false,
       });
-    } catch (err) {
-      if (err.code !== 11000) {
-        throw err;
-      }
-    }
 
-    console.log(
-      `Fetched: ${data.data.length} | Stored: ${newsToInsert.length}`,
-    );
-   
+      console.log(
+        `Fetched: ${data.data.length} | Inserted: ${inserted.length}`,
+      );
+    } catch (err) {
+      console.log("FULL ERROR:");
+      console.dir(err, { depth: null });
+    }
   } catch (err) {
-    
     console.error("NEWS fetch error:", err.message);
   }
 });
-
 
 // GET ALL NEWS WITH PAGINATION
 router.get("/allnews", async (req, res) => {

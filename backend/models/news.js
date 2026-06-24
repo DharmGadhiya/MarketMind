@@ -1,58 +1,51 @@
 const mongoose = require("mongoose");
 
-const NewsSchema = new mongoose.Schema({
+const NewsSchema = new mongoose.Schema(
+  {
     uuid: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
+
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    description: {
-        type: String
-    },
-    url: {
-        type: String
-    },
-    image_url: {
-        type: String
-    },
-    source: {
-        type: String
-    },
+
+    description: String,
+
+    url: String,
+
+    image_url: String,
+
+    source: String,
+
     published_at: {
-        type: Date
+      type: Date,
+      required: true,
     },
+
     keywords: {
-        type: String
+      type: [String],
+      default: [],
     },
 
     entities: [
-        {
-            symbol: {
-                type: String
-            },
-            name: {
-                type: String
-            },
-            industry: {
-                type: String
-            },
-            sentiment_score: {
-                type: Number
-            }
-        }
-    ],
-    
-}, {
-    timestamps: true
-});
+      {
+        symbol: String,
+        name: String,
 
-NewsSchema.index(
-  { createdAt: 1 },
-  { expireAfterSeconds: 3 * 24 * 60 * 60 }
+        industry: String,
+        sentiment_score: Number,
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
 );
+
+NewsSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3 * 24 * 60 * 60 });
 
 module.exports = mongoose.model("News", NewsSchema);
