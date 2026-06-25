@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const { createHmac, randomBytes } = require("crypto");
-const { createTokenForUser } = require("../services/Authentication");
+import mongoose from "mongoose";
+import { createHmac, randomBytes } from "crypto";
+import { createTokenForUser } from "../services/Authentication.js";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -52,4 +52,4 @@ UserSchema.statics.matchPasswordAndGenToken = async function (email, password) {
   return token;
 };
 
-module.exports = mongoose.model("User", UserSchema);
+export default mongoose.model("User", UserSchema);

@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import checkForAuthenticationCookie from "./middlewares/auth.js";
 import newsRouter from "./routes/news.js";
 import stockRouter from "./routes/stockRoutes.js";
+import userRouter from "./routes/user.js";
 
 
 
@@ -38,6 +39,7 @@ app.use(cookieParser());
 app.use(checkForAuthenticationCookie("Token"));
 
 app.use("/api", newsRouter);
+app.use("/api/user", userRouter);
 app.use("/stocks", stockRouter);
 
 app.listen(PORT, () => {

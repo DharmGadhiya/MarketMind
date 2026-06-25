@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const NewsSchema = new mongoose.Schema(
   {
@@ -48,4 +48,4 @@ const NewsSchema = new mongoose.Schema(
 
 NewsSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3 * 24 * 60 * 60 });
 
-module.exports = mongoose.model("News", NewsSchema);
+export default mongoose.model("News", NewsSchema);

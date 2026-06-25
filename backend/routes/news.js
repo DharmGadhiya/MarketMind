@@ -1,9 +1,10 @@
-const { Router } = require("express");
-const NEWS = require("../models/news");
-const cron = require("node-cron");
+import { Router } from "express";
+import NEWS from "../models/news.js";
+import cron from "node-cron";
+import express from "express";
+
 //commit from dharm
 const router = Router();
-const express = require("express");
 
 cron.schedule("*/30 * * * *", async () => {
   try {
@@ -140,4 +141,4 @@ router.get("/news/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

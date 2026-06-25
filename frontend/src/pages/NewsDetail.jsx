@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ArrowUpRight, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Clock, Loader2, Lock } from "lucide-react";
+import { useUser } from "../services/UserContext";
 
 import { getNewsById } from "../services/newsApi";
 import { timeAgo, cleanSource } from "../Utilities/utils/format";
@@ -17,6 +18,8 @@ const NewsDetail = () => {
   const [newsItem, setNewsItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -188,6 +191,37 @@ const NewsDetail = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* AI ANALYSIS SECTION */}
+            {user ? (
+              <div className="mt-10 rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 font-serif text-2xl text-[#0a0e14]">
+                  AI Analysis
+                </h3>
+
+                {/* AI analysis will come here */}
+              </div>
+            ) : (
+              <div className="mt-10 rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
+                <div className="mb-5 flex items-center gap-2">
+                  <Lock size={20} className="text-[#b45309]" />
+
+                  <h3 className="font-serif text-2xl text-[#0a0e14]">
+                    AI Analysis
+                  </h3>
+                </div>
+
+                <div className="rounded-xl bg-[#faf7f2] p-5 blur-[3px] select-none pointer-events-none">
+                  <p className="leading-7">First Login</p>
+                  <p className="leading-7">You cannot see it to view Login first</p>
+                  <p className="leading-7">HA HA HA What you think you can change it from Colsol HA HA HA</p>
+                </div>
+
+                <p className="mt-5 text-center text-sm text-[#6b7280]">
+                  🔒 Login to unlock AI-powered market analysis.
+                </p>
               </div>
             )}
 

@@ -1,6 +1,7 @@
-require("dotenv").config({ override: true });
-const jwt = require("jsonwebtoken")
-require("dotenv").config();
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config({ override: true });
+
 const secret = process.env.SECRET;
 
 function createTokenForUser(user)
@@ -22,7 +23,7 @@ function validateToken(token)
     return payload
 }
 
-module.exports = {
+export {
     createTokenForUser,
     validateToken
-}
+};
