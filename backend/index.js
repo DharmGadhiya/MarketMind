@@ -13,7 +13,7 @@ import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 const app = express();
 
 
-const PORT = 8000 || process.env.PORT;
+const PORT = process.env.PORT || 8000;
 
 
 
@@ -29,7 +29,7 @@ mongoose
 
 app.use(
   CORS({
-    origin: "http://localhost:5173",
+    origin: "https://marketmind-zjuo.onrender.com",
     credentials: true,
   }),
 );
