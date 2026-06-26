@@ -4,8 +4,8 @@ import { logger } from "../utils/helpers.js";
 
 let isRunning = false;
 
-// Default to running every 30 minutes. Can be overridden via process.env.CRON_SCHEDULE
-const schedule = process.env.CRON_SCHEDULE || "*/10 * * * *";
+// Default to running every 1 minute. Can be overridden via process.env.CRON_SCHEDULE
+const schedule = process.env.CRON_SCHEDULE || "* * * * *";
 
 /**
  * Initializes the scheduled cron job for processing AI News Analysis.
