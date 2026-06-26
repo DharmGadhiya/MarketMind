@@ -59,7 +59,7 @@ const NewsDetail = () => {
       );
     } else {
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-black/5 px-2.5 py-0.5 text-xs font-semibold text-[#6b7280]">
+        <span className="inline-flex items-center gap-1 rounded-full bg-black/5 dark:bg-white/5 px-2.5 py-0.5 text-xs font-semibold text-text-2">
           ■ Neutral (0.00)
         </span>
       );
@@ -68,12 +68,12 @@ const NewsDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#faf7f2] text-[#0a0e14]">
+      <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300">
         <Header />
         <TickerTape />
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
-          <Loader2 className="animate-spin text-[#0a8c5b]" size={36} />
-          <p className="font-mono text-sm text-[#6b7280] tracking-wider">Retrieving Market Analysis...</p>
+          <Loader2 className="animate-spin text-bull" size={36} />
+          <p className="font-mono text-sm text-text-2 tracking-wider">Retrieving Market Analysis...</p>
         </div>
       </div>
     );
@@ -81,15 +81,15 @@ const NewsDetail = () => {
 
   if (error || !newsItem) {
     return (
-      <div className="min-h-screen bg-[#faf7f2] text-[#0a0e14]">
+      <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300">
         <Header />
         <TickerTape />
         <div className="mx-auto max-w-xl px-6 py-20 text-center">
           <h2 className="font-serif text-3xl mb-4">Market Insight Unavailable</h2>
-          <p className="text-sm text-[#6b7280] mb-8">{error || "The requested article could not be found."}</p>
+          <p className="text-sm text-text-2 mb-8">{error || "The requested article could not be found."}</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white hover:bg-black/[0.02] px-5 py-3 transition-colors text-sm font-medium shadow-sm cursor-news"
+            className="inline-flex items-center gap-2 rounded-xl border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-5 py-3 transition-colors text-sm font-medium shadow-sm cursor-news"
           >
             <ArrowLeft size={16} />
             Return to Terminal
@@ -100,7 +100,7 @@ const NewsDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#0a0e14]">
+    <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300">
       <Header />
       <TickerTape />
 
@@ -108,7 +108,7 @@ const NewsDetail = () => {
         <div className="mb-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-[#6b7280] hover:text-[#0a8c5b] transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-text-2 hover:text-bull transition-colors"
           >
             <ArrowLeft size={12} />
             Back to Terminal
@@ -117,8 +117,8 @@ const NewsDetail = () => {
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
           <article className="rise-up flex flex-col gap-6">
-            <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#6b7280]">
-              <span className="text-[#0a8c5b] font-semibold">
+            <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-text-2 transition-colors">
+              <span className="text-bull font-semibold">
                 {cleanSource(newsItem.source)}
               </span>
               <span>/</span>
@@ -128,11 +128,11 @@ const NewsDetail = () => {
               </span>
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl headline-tight text-[#0a0e14]">
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl headline-tight text-text-0 transition-colors">
               {newsItem.title}
             </h1>
 
-            <div className="relative w-full overflow-hidden rounded-2xl border border-black/10 bg-[#f3efe7] shadow-sm max-h-[500px]">
+            <div className="relative w-full overflow-hidden rounded-2xl border border-border-strong bg-bg-2 shadow-sm max-h-[500px] transition-colors">
               <img
                 src={newsItem.image_url || FALLBACK}
                 alt={newsItem.title}
@@ -141,7 +141,7 @@ const NewsDetail = () => {
             </div>
 
             {newsItem.description && (
-              <p className="text-[16px] sm:text-[18px] leading-relaxed text-[#2a2f38] font-sans mt-2 whitespace-pre-line">
+              <p className="text-[16px] sm:text-[18px] leading-relaxed text-text-1 font-sans mt-2 whitespace-pre-line transition-colors">
                 {newsItem.description}
               </p>
             )}
@@ -152,7 +152,7 @@ const NewsDetail = () => {
                 {newsItem.keywords.map((kw, idx) => (
                   <span
                     key={idx}
-                    className="rounded-full bg-black/5 px-3 py-1 text-[11px] font-mono text-[#6b7280]"
+                    className="rounded-full bg-black/5 dark:bg-white/5 px-3 py-1 text-[11px] font-mono text-text-2 transition-colors"
                   >
                     #{kw}
                   </span>
@@ -162,28 +162,28 @@ const NewsDetail = () => {
 
             {/* ENTITY SENTIMENT ANALYSIS */}
             {newsItem.entities && newsItem.entities.length > 0 && (
-              <div className="mt-8 border-t border-black/8 pt-8">
-                <h3 className="font-serif text-2xl text-[#0a0e14] mb-4">
+              <div className="mt-8 border-t border-border-custom pt-8 transition-colors">
+                <h3 className="font-serif text-2xl text-text-0 mb-4 transition-colors">
                   Market Sentiment Analysis
                 </h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {newsItem.entities.map((entity, idx) => (
                     <div
                       key={idx}
-                      className="flex flex-col justify-between rounded-xl border border-black/8 bg-white p-4 shadow-sm"
+                      className="flex flex-col justify-between rounded-xl border border-border-custom bg-bg-1 p-4 shadow-sm transition-colors"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#0a0e14] bg-black/5 px-2 py-0.5 rounded">
+                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-text-0 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded transition-colors">
                             {entity.symbol || "N/A"}
                           </span>
                           {getSentimentBadge(entity.sentiment_score)}
                         </div>
-                        <h4 className="mt-2 font-sans font-semibold text-sm text-[#0a0e14]">
+                        <h4 className="mt-2 font-sans font-semibold text-sm text-text-0 transition-colors">
                           {entity.name || "Unknown Company"}
                         </h4>
                         {entity.industry && (
-                          <p className="text-xs text-[#6b7280] mt-0.5">
+                          <p className="text-xs text-text-2 mt-0.5 transition-colors">
                             {entity.industry}
                           </p>
                         )}
@@ -196,45 +196,45 @@ const NewsDetail = () => {
 
             {/* AI ANALYSIS SECTION */}
             {user ? (
-              <div className="mt-10 rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 font-serif text-2xl text-[#0a0e14]">
+              <div className="mt-10 rounded-2xl border border-border-custom bg-bg-1 p-6 shadow-sm transition-colors">
+                <h3 className="mb-4 font-serif text-2xl text-text-0 transition-colors">
                   AI Analysis
                 </h3>
 
                 {/* AI analysis will come here */}
               </div>
             ) : (
-              <div className="mt-10 rounded-2xl border border-black/8 bg-white p-6 shadow-sm">
+              <div className="mt-10 rounded-2xl border border-border-custom bg-bg-1 p-6 shadow-sm transition-colors">
                 <div className="mb-5 flex items-center gap-2">
-                  <Lock size={20} className="text-[#b45309]" />
+                  <Lock size={20} className="text-amber" />
 
-                  <h3 className="font-serif text-2xl text-[#0a0e14]">
+                  <h3 className="font-serif text-2xl text-text-0 transition-colors">
                     AI Analysis
                   </h3>
                 </div>
 
-                <div className="rounded-xl bg-[#faf7f2] p-5 blur-[3px] select-none pointer-events-none">
+                <div className="rounded-xl bg-bg-0 p-5 blur-[3px] select-none pointer-events-none transition-colors">
                   <p className="leading-7">First Login</p>
                   <p className="leading-7">You cannot see it to view Login first</p>
                   <p className="leading-7">HA HA HA What you think you can change it from Colsol HA HA HA</p>
                 </div>
 
-                <p className="mt-5 text-center text-sm text-[#6b7280]">
+                <p className="mt-5 text-center text-sm text-text-2 transition-colors">
                   🔒 Login to unlock AI-powered market analysis.
                 </p>
               </div>
             )}
 
             {/* ORIGINAL STORY LINK */}
-            <div className="mt-10 border-t border-black/8 pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="text-xs text-[#6b7280] leading-normal max-w-md">
+            <div className="mt-10 border-t border-border-custom pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-colors">
+              <div className="text-xs text-text-2 leading-normal max-w-md transition-colors">
                 You are reading a curated summary on MarketMind. For complete details and official reports, access the original publication.
               </div>
               <a
                 href={newsItem.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0a8c5b] hover:bg-[#064a30] text-white px-5 py-3 transition-colors text-sm font-medium shadow-sm hover:shadow-md cursor-news"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-bull hover:bg-bull/90 text-white px-5 py-3 transition-colors text-sm font-medium shadow-sm hover:shadow-md cursor-news"
               >
                 Read Original Article
                 <ArrowUpRight size={16} />

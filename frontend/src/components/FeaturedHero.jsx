@@ -16,7 +16,7 @@ const FeaturedHero = ({ items }) => {
 
       <Link
         to={`/news/${main._id}`}
-        className="group relative col-span-1 overflow-hidden rounded-2xl border border-black/10 bg-white lg:col-span-2"
+        className="group relative col-span-1 overflow-hidden rounded-2xl border border-border-strong bg-bg-1 lg:col-span-2 transition-colors duration-300"
       >
         <div className="relative h-[440px] lg:h-[540px] overflow-hidden">
           <img
@@ -71,7 +71,7 @@ const FeaturedHero = ({ items }) => {
           <Link
             key={n._id}
             to={`/news/${n._id}`}
-            className="group relative flex h-[258px] overflow-hidden rounded-2xl border border-black/8 bg-white card-lift"
+            className="group relative flex h-[258px] overflow-hidden rounded-2xl border border-border-custom bg-bg-1 card-lift transition-colors duration-300"
           >
 
             <div className="relative w-[45%] overflow-hidden">
@@ -86,9 +86,9 @@ const FeaturedHero = ({ items }) => {
 
               <div>
 
-                <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">
+                <div className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-text-2 transition-colors">
 
-                  <span className="text-[#0a8c5b]">
+                  <span className="text-bull transition-colors">
                     {cleanSource(n.source)}
                   </span>
 
@@ -100,13 +100,13 @@ const FeaturedHero = ({ items }) => {
 
                 </div>
 
-                <h3 className="clamp-3 font-serif text-[19px] leading-[1.15] text-[#0a0e14]">
+                <h3 className="clamp-3 font-serif text-[19px] leading-[1.15] text-text-0 transition-colors">
                   {n.title}
                 </h3>
 
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-[#6b7280]">
+              <div className="flex items-center gap-2 text-xs text-text-2 transition-colors">
                 Read
                 <ArrowUpRight size={12} />
               </div>

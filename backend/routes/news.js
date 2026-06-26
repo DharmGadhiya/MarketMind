@@ -6,7 +6,7 @@ import express from "express";
 //commit from dharm
 const router = Router();
 
-cron.schedule("*/30 * * * *", async () => {
+cron.schedule("*/25 * * * *", async () => {
   try {
     console.log("Fetching latest news...");
 

@@ -52,41 +52,41 @@ const Home = () => {
   const restItems = news.slice(3);
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#0a0e14]">
+    <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300">
       <Header />
 
       <TickerTape />
 
       {/* HERO BANNER */}
-      <section className="relative border-b border-black/8 grid-bg">
+      <section className="relative border-b border-border-custom grid-bg">
         <div className="mx-auto max-w-[1400px] px-6 py-12 lg:px-10 lg:py-16">
 
           <div className="flex items-end justify-between gap-6">
 
             <div className="max-w-3xl rise-up">
 
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 backdrop-blur shadow-sm">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border-strong bg-bg-1 px-3 py-1 backdrop-blur shadow-sm transition-colors">
 
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0a8c5b] pulse-dot" />
+                <span className="h-1.5 w-1.5 rounded-full bg-bull pulse-dot" />
 
-                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#2a2f38]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-text-1 transition-colors">
                   Markets Open · Live Coverage
                 </span>
 
               </div>
 
-              <h1 className="font-serif text-5xl headline-tight text-[#0a0e14] sm:text-6xl lg:text-[88px]">
+              <h1 className="font-serif text-5xl headline-tight text-text-0 sm:text-6xl lg:text-[88px] transition-colors">
 
                 The market,
                 <br />
 
-                <span className="italic text-[#0a8c5b]">
+                <span className="italic text-bull">
                   decoded.
                 </span>
 
               </h1>
 
-              <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[#6b7280]">
+              <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-text-2 transition-colors">
                 Curated stock-market intelligence from India and around the
                 world — earnings, IPOs, macroeconomics, business and finance —
                 all in one place.
@@ -96,10 +96,10 @@ const Home = () => {
 
             <div className="hidden lg:block rise-up">
 
-              <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-black/10 bg-black/8 shadow-sm">
+              <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-border-strong bg-border-strong shadow-sm transition-colors">
 
-                <div className="bg-white p-5">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                <div className="bg-bg-1 p-5 transition-colors">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-3 transition-colors">
                     Stories
                   </div>
 
@@ -108,8 +108,8 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="bg-white p-5">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                <div className="bg-bg-1 p-5 transition-colors">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-3 transition-colors">
                     Sources
                   </div>
 
@@ -118,8 +118,8 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="bg-white p-5">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+                <div className="bg-bg-1 p-5 transition-colors">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-3 transition-colors">
                     Coverage
                   </div>
 
@@ -144,11 +144,11 @@ const Home = () => {
 
             <div className="mb-6">
 
-              <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a8c5b]">
+              <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-bull transition-colors">
                 ◆ Editor's Pick
               </div>
 
-              <h2 className="mt-1 font-serif text-3xl text-[#0a0e14] lg:text-4xl">
+              <h2 className="mt-1 font-serif text-3xl text-text-0 lg:text-4xl transition-colors">
                 Today's Headlines
               </h2>
 
@@ -161,11 +161,11 @@ const Home = () => {
 
         <div className="mb-8">
 
-          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#0a8c5b]">
+          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-bull transition-colors">
             ◆ The Wire
           </div>
 
-          <h2 className="mt-1 font-serif text-3xl text-[#0a0e14] lg:text-4xl">
+          <h2 className="mt-1 font-serif text-3xl text-text-0 lg:text-4xl transition-colors">
             Latest Market News
           </h2>
 
@@ -216,7 +216,7 @@ const Home = () => {
 
       {/* FOOTER */}
 
-      <footer className="border-t border-black/8 bg-[#f3efe7]">
+      <footer className="border-t border-border-custom bg-bg-2 transition-colors duration-300">
 
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 px-6 py-8 lg:flex-row lg:items-center lg:px-10">
 
@@ -226,7 +226,7 @@ const Home = () => {
               MarketMind
             </span>
 
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-3 transition-colors">
               © {new Date().getFullYear()}
             </span>
 
@@ -245,14 +245,14 @@ const SkeletonGrid = () => (
     {Array.from({ length: 6 }).map((_, i) => (
       <div
         key={i}
-        className="overflow-hidden rounded-xl border border-black/8 bg-white"
+        className="overflow-hidden rounded-xl border border-border-custom bg-bg-1 transition-colors"
       >
-        <div className="aspect-[16/10] animate-pulse bg-black/[0.05]" />
+        <div className="aspect-[16/10] animate-pulse bg-black/[0.05] dark:bg-white/[0.05]" />
 
         <div className="space-y-2 p-5">
-          <div className="h-3 w-24 animate-pulse rounded bg-black/[0.08]" />
-          <div className="h-5 w-full animate-pulse rounded bg-black/[0.1]" />
-          <div className="h-5 w-3/4 animate-pulse rounded bg-black/[0.1]" />
+          <div className="h-3 w-24 animate-pulse rounded bg-black/[0.08] dark:bg-white/[0.08]" />
+          <div className="h-5 w-full animate-pulse rounded bg-black/[0.1] dark:bg-white/[0.1]" />
+          <div className="h-5 w-3/4 animate-pulse rounded bg-black/[0.1] dark:bg-white/[0.1]" />
         </div>
       </div>
     ))}

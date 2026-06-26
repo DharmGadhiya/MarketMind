@@ -8,8 +8,7 @@ import checkForAuthenticationCookie from "./middlewares/auth.js";
 import newsRouter from "./routes/news.js";
 import stockRouter from "./routes/stockRoutes.js";
 import userRouter from "./routes/user.js";
-
-
+import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 
 const app = express();
 
@@ -22,6 +21,7 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("DB connected");
+    initAIAnalysisCron(); // Initialize the background AI analysis scheduler
   })
   .catch((err) => {
     console.log("DB connection failed");

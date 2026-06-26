@@ -63,34 +63,34 @@ const MarketPulse = () => {
   const displayList = getFilteredStocks();
 
   return (
-    <aside className="sticky top-24 rounded-2xl border border-black/8 bg-white p-5 shadow-sm flex flex-col gap-4 max-h-[580px]">
+    <aside className="sticky top-24 rounded-2xl border border-border-custom bg-bg-1 p-5 shadow-sm flex flex-col gap-4 max-h-[580px] transition-colors duration-300">
       
       {/* HEADER */}
-      <div className="flex items-center gap-2 border-b border-black/8 pb-3">
-        <Activity size={14} className="text-[#0a8c5b]" />
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#2a2f38] font-bold">
+      <div className="flex items-center gap-2 border-b border-border-custom pb-3 transition-colors">
+        <Activity size={14} className="text-bull transition-colors" />
+        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-1 font-bold transition-colors">
           Market Pulse
         </span>
       </div>
 
       {/* SEARCH BOX */}
       <div className="relative flex items-center">
-        <Search className="absolute left-3 text-[#9ca3af]" size={14} />
+        <Search className="absolute left-3 text-text-3 transition-colors" size={14} />
         <input
           type="text"
           placeholder="Search stocks..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-xl border border-black/8 bg-[#faf7f2] pl-9 pr-4 py-2 text-xs font-sans outline-none transition-all focus:border-[#0a8c5b] focus:bg-white"
+          className="w-full rounded-xl border border-border-custom bg-bg-0 pl-9 pr-4 py-2 text-xs font-sans outline-none transition-all focus:border-bull focus:bg-bg-1 text-text-0 placeholder-text-3"
         />
       </div>
 
       {/* TABS */}
-      <div className="grid grid-cols-3 gap-1 bg-[#faf7f2] p-1 rounded-xl text-[11px] font-mono font-semibold text-[#6b7280]">
+      <div className="grid grid-cols-3 gap-1 bg-bg-0 p-1 rounded-xl text-[11px] font-mono font-semibold text-text-2 transition-colors">
         <button
           onClick={() => setActiveTab("all")}
           className={`py-1.5 rounded-lg transition-colors cursor-pointer text-center ${
-            activeTab === "all" ? "bg-white text-[#0a0e14] shadow-sm" : "hover:text-[#0a0e14]"
+            activeTab === "all" ? "bg-bg-1 text-text-0 shadow-sm" : "hover:text-text-0"
           }`}
         >
           All
@@ -98,7 +98,7 @@ const MarketPulse = () => {
         <button
           onClick={() => setActiveTab("gainers")}
           className={`py-1.5 rounded-lg transition-colors cursor-pointer text-center ${
-            activeTab === "gainers" ? "bg-[#0a8c5b]/10 text-[#0a8c5b] shadow-sm" : "hover:text-[#0a8c5b]"
+            activeTab === "gainers" ? "bg-bull/10 text-bull shadow-sm" : "hover:text-bull"
           }`}
         >
           Gainers
@@ -106,7 +106,7 @@ const MarketPulse = () => {
         <button
           onClick={() => setActiveTab("losers")}
           className={`py-1.5 rounded-lg transition-colors cursor-pointer text-center ${
-            activeTab === "losers" ? "bg-[#e11d48]/10 text-[#e11d48] shadow-sm" : "hover:text-[#e11d48]"
+            activeTab === "losers" ? "bg-bear/10 text-bear shadow-sm" : "hover:text-bear"
           }`}
         >
           Losers
@@ -118,7 +118,7 @@ const MarketPulse = () => {
         {loading ? (
           <div className="flex flex-col gap-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-14 w-full animate-pulse rounded-xl bg-black/[0.03]" />
+              <div key={i} className="h-14 w-full animate-pulse rounded-xl bg-black/[0.03] dark:bg-white/[0.03]" />
             ))}
           </div>
         ) : displayList.length > 0 ? (
@@ -128,26 +128,26 @@ const MarketPulse = () => {
             return (
               <div
                 key={stock.symbol}
-                className="flex items-center justify-between rounded-xl border border-black/4 hover:border-[#0a8c5b]/30 bg-white p-3 shadow-sm transition-all duration-300 hover:scale-[1.01]"
+                className="flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01]"
               >
                 <div className="flex flex-col min-w-0">
-                  <span className="font-mono text-xs font-bold text-[#0a0e14]">
+                  <span className="font-mono text-xs font-bold text-text-0 transition-colors">
                     {cleanSymbol}
                   </span>
-                  <span className="clamp-1 text-[10px] text-[#6b7280] font-sans mt-0.5">
+                  <span className="clamp-1 text-[10px] text-text-2 font-sans mt-0.5 transition-colors">
                     {stock.name}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs font-semibold text-[#2a2f38]">
+                  <span className="font-mono text-xs font-semibold text-text-1 transition-colors">
                     ₹{formatNum(stock.cmp)}
                   </span>
                   <span
                     className={`inline-flex min-w-[60px] items-center justify-center rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
                       isPositive
-                        ? "bg-[#0a8c5b]/10 text-[#0a8c5b]"
-                        : "bg-[#e11d48]/10 text-[#e11d48]"
+                        ? "bg-bull/10 text-bull"
+                        : "bg-bear/10 text-bear"
                     }`}
                   >
                     {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
@@ -157,7 +157,7 @@ const MarketPulse = () => {
             );
           })
         ) : (
-          <div className="flex h-40 flex-col items-center justify-center text-center text-[#6b7280]">
+          <div className="flex h-40 flex-col items-center justify-center text-center text-text-2 transition-colors">
             <p className="font-serif text-sm">No stocks found</p>
             <p className="text-[10px] mt-1">Try adjusting your filter or search</p>
           </div>

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, Sun, Moon } from "lucide-react";
 import { useUser } from "../services/UserContext";
+import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP } from "../services/newsApi";
 
 const Header = () => {
   const { user, setUser } = useUser();
+  const { theme, toggleTheme } = useTheme();
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,22 +107,22 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 glass border-b border-black/8">
+      <header className="sticky top-0 z-40 glass border-b border-border-custom transition-all duration-300">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 lg:px-10">
 
           {/* LOGO */}
           <Link to="/" className="group flex items-center gap-3">
-            <div className="relative h-9 w-9 overflow-hidden rounded-md border border-black/10 bg-gradient-to-br from-[#0a8c5b] to-[#064a30]">
+            <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border-strong bg-gradient-to-br from-[#0a8c5b] to-[#064a30]">
               <div className="absolute inset-0 flex items-center justify-center font-serif text-2xl text-white">
                 M
               </div>
-              <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-[#0a8c5b] pulse-dot" />
+              <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-bull pulse-dot" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-serif text-xl text-[#0a0e14]">
+              <span className="font-serif text-xl text-text-0 transition-colors">
                 MarketMind
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#6b7280]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-2 transition-colors">
                 news terminal
               </span>
             </div>
@@ -128,29 +130,38 @@ const Header = () => {
 
           {/* LIVE MARKET COVERAGE DATE */}
           <div className="hidden md:flex flex-col items-center text-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9ca3af]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-3 transition-colors">
               Live Market Coverage
             </span>
-            <span className="font-serif italic text-[15px] text-[#2a2f38]">
+            <span className="font-serif italic text-[15px] text-text-1 transition-colors">
               {today}
             </span>
           </div>
 
           {/* AUTH ACTIONS */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-strong bg-bg-1 text-text-1 hover:bg-border-custom/50 hover:text-text-0 transition-colors shadow-sm cursor-news"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex flex-col items-end leading-none">
-                  <span className="font-sans text-xs font-semibold text-[#0a0e14]">
+                  <span className="font-sans text-xs font-semibold text-text-0 transition-colors">
                     {user.userName || "Investor"}
                   </span>
-                  <span className="font-mono text-[9px] text-[#6b7280] mt-0.5">
+                  <span className="font-mono text-[9px] text-text-2 transition-colors mt-0.5">
                     {user.email}
                   </span>
                 </div>
                 <button
                   onClick={handleLogoutClick}
-                  className="rounded-lg border border-black/10 bg-white hover:bg-black/[0.02] px-3.5 py-1.5 text-xs font-medium text-[#e11d48] transition-colors shadow-sm cursor-news animate-fade-in"
+                  className="rounded-lg border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-3.5 py-1.5 text-xs font-medium text-bear transition-colors shadow-sm cursor-news animate-fade-in"
                 >
                   Logout
                 </button>
@@ -159,13 +170,13 @@ const Header = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => openModal("login")}
-                  className="rounded-lg border border-black/10 bg-white hover:bg-black/[0.02] px-3.5 py-1.5 text-xs font-medium text-[#2a2f38] transition-colors shadow-sm cursor-news"
+                  className="rounded-lg border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-3.5 py-1.5 text-xs font-medium text-text-1 transition-colors shadow-sm cursor-news"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => openModal("signup")}
-                  className="rounded-lg bg-[#0a8c5b] hover:bg-[#064a30] px-3.5 py-1.5 text-xs font-medium text-white transition-colors shadow-sm cursor-news"
+                  className="rounded-lg bg-bull hover:bg-bull/90 px-3.5 py-1.5 text-xs font-medium text-white transition-colors shadow-sm cursor-news"
                 >
                   Sign Up
                 </button>
@@ -179,23 +190,23 @@ const Header = () => {
       {/* AUTHENTICATION MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-md rounded-2xl border border-black/15 bg-white p-6 shadow-2xl transition-all duration-300">
+          <div className="relative w-full max-w-md rounded-2xl border border-border-strong bg-bg-1 p-6 shadow-2xl transition-all duration-300">
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute right-4 top-4 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors cursor-news"
+              className="absolute right-4 top-4 rounded-full p-1 text-text-2 hover:bg-bg-2 hover:text-text-0 transition-colors cursor-news"
             >
               <X size={18} />
             </button>
 
             {/* Modal Title */}
             <div className="mb-6">
-              <h3 className="font-serif text-2xl text-[#0a0e14] font-bold">
+              <h3 className="font-serif text-2xl text-text-0 font-bold">
                 {mode === "login" && "Welcome Back"}
                 {mode === "signup" && "Create Account"}
                 {mode === "otp" && "Verify OTP"}
               </h3>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-text-2 mt-1">
                 {mode === "login" && "Access your premium market intelligence terminal."}
                 {mode === "signup" && "Register to unlock professional news coverage."}
                 {mode === "otp" && `Enter the code sent to ${formData.email}`}
@@ -204,12 +215,12 @@ const Header = () => {
 
             {/* Error & Success Messages */}
             {error && (
-              <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-xs font-medium text-[#e11d48] border border-red-100">
+              <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-950/20 px-4 py-3 text-xs font-medium text-bear border border-red-100 dark:border-red-900/30">
                 {error}
               </div>
             )}
             {success && (
-              <div className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-xs font-medium text-[#0a8c5b] border border-emerald-100">
+              <div className="mb-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 px-4 py-3 text-xs font-medium text-bull border border-emerald-100 dark:border-emerald-900/30">
                 {success}
               </div>
             )}
@@ -218,7 +229,7 @@ const Header = () => {
             {mode === "login" && (
               <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Email Address
                   </label>
                   <input
@@ -228,11 +239,11 @@ const Header = () => {
                     placeholder="name@company.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-sm text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Password
                   </label>
                   <input
@@ -242,17 +253,17 @@ const Header = () => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-sm text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-[#0a8c5b] py-2.5 text-sm font-medium text-white hover:bg-[#064a30] transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
+                  className="w-full rounded-xl bg-bull py-2.5 text-sm font-medium text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
                 >
                   {loading ? "Logging in..." : "Login to Terminal"}
                 </button>
-                <p className="text-center text-xs text-gray-600 mt-2">
+                <p className="text-center text-xs text-text-2 mt-2">
                   Don't have an account?{" "}
                   <span
                     onClick={() => {
@@ -260,7 +271,7 @@ const Header = () => {
                       setError(null);
                       setSuccess(null);
                     }}
-                    className="text-[#0a8c5b] font-semibold hover:underline cursor-pointer"
+                    className="text-bull font-semibold hover:underline cursor-pointer"
                   >
                     Sign Up
                   </span>
@@ -271,7 +282,7 @@ const Header = () => {
             {mode === "signup" && (
               <form onSubmit={handleSignUpSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Full Name
                   </label>
                   <input
@@ -281,11 +292,11 @@ const Header = () => {
                     placeholder="Alexander Hamilton"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-sm text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Email Address
                   </label>
                   <input
@@ -295,11 +306,11 @@ const Header = () => {
                     placeholder="alex@hamilton.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-sm text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Password
                   </label>
                   <input
@@ -309,17 +320,17 @@ const Header = () => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-sm text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-[#0a8c5b] py-2.5 text-sm font-medium text-white hover:bg-[#064a30] transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
+                  className="w-full rounded-xl bg-bull py-2.5 text-sm font-medium text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
                 >
                   {loading ? "Sending OTP..." : "Get OTP Code"}
                 </button>
-                <p className="text-center text-xs text-gray-600 mt-2">
+                <p className="text-center text-xs text-text-2 mt-2">
                   Already have an account?{" "}
                   <span
                     onClick={() => {
@@ -327,7 +338,7 @@ const Header = () => {
                       setError(null);
                       setSuccess(null);
                     }}
-                    className="text-[#0a8c5b] font-semibold hover:underline cursor-pointer"
+                    className="text-bull font-semibold hover:underline cursor-pointer"
                   >
                     Login
                   </span>
@@ -338,7 +349,7 @@ const Header = () => {
             {mode === "otp" && (
               <form onSubmit={handleOTPSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-gray-600 font-semibold">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                     Verification OTP
                   </label>
                   <input
@@ -349,21 +360,21 @@ const Header = () => {
                     maxLength={5}
                     value={formData.otp}
                     onChange={handleInputChange}
-                    className="w-full tracking-[0.5em] text-center rounded-xl border border-black/15 bg-[#faf7f2] px-4 py-2.5 text-lg font-bold text-[#0a0e14] placeholder-gray-400 focus:border-[#0a8c5b] focus:outline-none transition-colors"
+                    className="w-full tracking-[0.5em] text-center rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-lg font-bold text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-[#0a8c5b] py-2.5 text-sm font-medium text-white hover:bg-[#064a30] transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
+                  className="w-full rounded-xl bg-bull py-2.5 text-sm font-medium text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
                 >
                   {loading ? "Verifying..." : "Verify & Create Account"}
                 </button>
-                <p className="text-center text-xs text-gray-600 mt-2">
+                <p className="text-center text-xs text-text-2 mt-2">
                   Didn't receive it?{" "}
                   <span
                     onClick={handleSignUpSubmit}
-                    className="text-[#0a8c5b] font-semibold hover:underline cursor-pointer"
+                    className="text-bull font-semibold hover:underline cursor-pointer"
                   >
                     Resend Code
                   </span>
