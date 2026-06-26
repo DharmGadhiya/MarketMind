@@ -347,12 +347,118 @@ export const callGemini = async (prompt) => {
  * fetches Yahoo Finance metrics, executes Gemini analysis with a single retry upon parsing failure,
  * and saves results to the database.
  */
+/**
+ * Analyzes a single news article: fetches stock metrics, queries Gemini,
+ * normalizes the output, saves the analysis to MongoDB, and returns it.
+ * 
+ * @param {object} article - The News mongoose document.
+ * @returns {Promise<object|null>} The saved AIAnalysis document, or null if it failed.
+ */
+export const analyzeArticle = async (article) => {
+  // Check if analysis already exists to prevent duplicate calls
+  const existing = await AIAnalysis.findOne({ uuid: article.uuid });
+  if (existing) {
+    return existing;
+  }
+
+  // Step 4: Retrieve company fundamentals for entities
+  const companyList = [];
+  if (article.entities && article.entities.length > 0) {
+    for (const entity of article.entities) {
+      if (entity.symbol) {
+        logger.info(`Fetching fundamentals for ${entity.symbol}...`);
+        const metrics = await fetchFundamentals(entity.symbol);
+        companyList.push({
+          symbol: entity.symbol,
+          name: entity.name || entity.symbol,
+          ...metrics,
+        });
+      }
+    }
+  }
+
+  // Step 5: Build final prompt
+  const prompt = buildPrompt(article, companyList);
+
+  // Step 6 & 7: Call Gemini & validate/parse response (Single attempt)
+  let analysisJSON = null;
+  const modelName = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite";
+
+  try {
+    logger.info("Calling Gemini API...");
+    const rawResponse = await callGemini(prompt);
+    analysisJSON = cleanAndParseJSON(rawResponse);
+
+    // Post-process fundamentalAnalysis fields for clean "Data Not Available" handling
+    if (analysisJSON && analysisJSON.fundamentalAnalysis) {
+      const keys = ["valuation", "profitability", "growth", "financialHealth", "overallInterpretation"];
+      if (!companyList || companyList.length === 0) {
+        // If no companies are provided, everything under fundamentalAnalysis must be "Data Not Available"
+        keys.forEach(key => {
+          analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
+        });
+      } else {
+        // Normalize any "not available" or similar phrases to exactly "Data Not Available"
+        keys.forEach(key => {
+          const val = analysisJSON.fundamentalAnalysis[key];
+          if (typeof val === "string") {
+            const lowerVal = val.trim().toLowerCase();
+            if (
+              lowerVal.includes("data not available") ||
+              lowerVal.includes("not available") ||
+              lowerVal.includes("no data available") ||
+              lowerVal.includes("not provided") ||
+              lowerVal.includes("cannot be conducted") ||
+              lowerVal.includes("cannot be assessed") ||
+              lowerVal.includes("cannot be evaluated") ||
+              lowerVal === ""
+            ) {
+              analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
+            }
+          } else if (val === undefined || val === null) {
+            analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
+          }
+        });
+      }
+    }
+  } catch (err) {
+    logger.error(`Failed to parse or fetch Gemini response for article [${article.uuid}]: ${err.message}. Skipping.`);
+    throw err;
+  }
+
+  // Step 8: Save AI Analysis (Only if successfully generated & parsed)
+  if (analysisJSON) {
+    const newAnalysis = new AIAnalysis({
+      uuid: article.uuid,
+      newsId: article._id,
+      analysis: analysisJSON,
+      aiModel: modelName,
+      generatedAt: new Date(),
+    });
+
+    const saved = await newAnalysis.save();
+    logger.info(`Saved AI Analysis for article [${article.uuid}] in MongoDB.`);
+    return saved;
+  }
+
+  return null;
+};
+
+/**
+ * Main orchestrator of the AI news analysis pipeline.
+ * Iterates through all news articles sequentially, skips already processed articles,
+ * fetches Yahoo Finance metrics, executes Gemini analysis with a single retry upon parsing failure,
+ * and saves results to the database.
+ */
 export const runAIAnalysisPipeline = async () => {
   logger.info("Starting AI News Analysis Pipeline...");
   
   try {
     const articles = await News.find({});
     logger.info(`Found ${articles.length} news articles in database.`);
+
+    const maxArticles = parseInt(process.env.MAX_ARTICLES_PER_RUN || "1", 10);
+    let processedCount = 0;
 
     for (const article of articles) {
       try {
@@ -363,95 +469,17 @@ export const runAIAnalysisPipeline = async () => {
           continue;
         }
 
+        // Check if we have reached the batch limit for this run
+        if (processedCount >= maxArticles) {
+          logger.info(`Reached batch limit of ${maxArticles} article(s) for this run. Stopping pipeline.`);
+          break;
+        }
+
+        // Increment processedCount as we are now attempting to analyze this article
+        processedCount++;
+
         logger.info(`Processing article [${article.uuid}] - Title: "${article.title}"`);
-
-        // Step 4: Retrieve company fundamentals for entities
-        const companyList = [];
-        if (article.entities && article.entities.length > 0) {
-          for (const entity of article.entities) {
-            if (entity.symbol) {
-              logger.info(`Fetching fundamentals for ${entity.symbol}...`);
-              const metrics = await fetchFundamentals(entity.symbol);
-              companyList.push({
-                symbol: entity.symbol,
-                name: entity.name || entity.symbol,
-                ...metrics,
-              });
-            }
-          }
-        }
-
-        // Step 5: Build final prompt
-        const prompt = buildPrompt(article, companyList);
-
-        // Step 6 & 7: Call Gemini & validate/parse response with exactly one retry
-        let analysisJSON = null;
-        let attempts = 0;
-        const maxAttempts = 2;
-        const modelName = process.env.GEMINI_MODEL || "gemini-3-flash-preview";
-
-        while (attempts < maxAttempts && !analysisJSON) {
-          attempts++;
-          try {
-            logger.info(`Calling Gemini API (Attempt ${attempts}/${maxAttempts})...`);
-            const rawResponse = await callGemini(prompt);
-            analysisJSON = cleanAndParseJSON(rawResponse);
-
-            // Post-process fundamentalAnalysis fields for clean "Data Not Available" handling
-            if (analysisJSON && analysisJSON.fundamentalAnalysis) {
-              const keys = ["valuation", "profitability", "growth", "financialHealth", "overallInterpretation"];
-              if (!companyList || companyList.length === 0) {
-                // If no companies are provided, everything under fundamentalAnalysis must be "Data Not Available"
-                keys.forEach(key => {
-                  analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
-                });
-              } else {
-                // Normalize any "not available" or similar phrases to exactly "Data Not Available"
-                keys.forEach(key => {
-                  const val = analysisJSON.fundamentalAnalysis[key];
-                  if (typeof val === "string") {
-                    const lowerVal = val.trim().toLowerCase();
-                    if (
-                      lowerVal.includes("data not available") ||
-                      lowerVal.includes("not available") ||
-                      lowerVal.includes("no data available") ||
-                      lowerVal.includes("not provided") ||
-                      lowerVal.includes("cannot be conducted") ||
-                      lowerVal.includes("cannot be assessed") ||
-                      lowerVal.includes("cannot be evaluated") ||
-                      lowerVal === ""
-                    ) {
-                      analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
-                    }
-                  } else if (val === undefined || val === null) {
-                    analysisJSON.fundamentalAnalysis[key] = "Data Not Available";
-                  }
-                });
-              }
-            }
-          } catch (err) {
-            logger.warn(`Attempt ${attempts} failed for article [${article.uuid}]: ${err.message}`);
-            if (attempts >= maxAttempts) {
-              logger.error(`Failed to parse or fetch Gemini response after ${maxAttempts} attempts. Skipping.`);
-              break;
-            }
-            logger.info(`Retrying Gemini request for article [${article.uuid}]...`);
-          }
-        }
-
-        // Step 8: Save AI Analysis (Only if successfully generated & parsed)
-        if (analysisJSON) {
-          const newAnalysis = new AIAnalysis({
-            uuid: article.uuid,
-            newsId: article._id,
-            analysis: analysisJSON,
-            aiModel: modelName,
-            generatedAt: new Date(),
-          });
-
-          await newAnalysis.save();
-          logger.info(`Saved AI Analysis for article [${article.uuid}] in MongoDB.`);
-        }
+        await analyzeArticle(article);
       } catch (articleErr) {
         // Fail-safe at individual article level to ensure the pipeline continues
         logger.error(`Error processing article [${article.uuid}]: ${articleErr.message}`);

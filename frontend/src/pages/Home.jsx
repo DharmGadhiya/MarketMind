@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Loader2 } from "lucide-react";
 
-import { getNews } from "../services/newsApi";
+import { getNews, getStocks } from "../services/newsApi";
 
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
@@ -15,6 +15,22 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  
+  const [stocks, setStocks] = useState([]);
+
+  useEffect(() => {
+    const fetchStocksData = async () => {
+      try {
+        const res = await getStocks();
+        if (res && res.success && res.data) {
+          setStocks(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch stocks for Home:", err);
+      }
+    };
+    fetchStocksData();
+  }, []);
 
   useEffect(() => {
     const loadInitialNews = async () => {
@@ -65,14 +81,12 @@ const Home = () => {
 
             <div className="max-w-3xl rise-up">
 
+              {/* DYNAMIC MARKET STATUS BADGE */}
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border-strong bg-bg-1 px-3 py-1 backdrop-blur shadow-sm transition-colors">
-
-                <span className="h-1.5 w-1.5 rounded-full bg-bull pulse-dot" />
-
+                <span className={`h-1.5 w-1.5 rounded-full transition-colors ${stocks.some(s => s.marketState === "REGULAR") ? "bg-[#0a8c5b] animate-pulse" : "bg-text-3"}`} />
                 <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-text-1 transition-colors">
-                  Markets Open · Live Coverage
+                  {stocks.some(s => s.marketState === "REGULAR") ? "Markets Open · Live Coverage" : "Markets Closed"}
                 </span>
-
               </div>
 
               <h1 className="font-serif text-5xl headline-tight text-text-0 sm:text-6xl lg:text-[88px] transition-colors">

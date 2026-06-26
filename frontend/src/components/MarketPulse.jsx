@@ -60,17 +60,28 @@ const MarketPulse = () => {
     return list;
   };
 
+  const isMarketOpen = stocks.some((s) => s.marketState === "REGULAR");
   const displayList = getFilteredStocks();
 
   return (
     <aside className="sticky top-24 rounded-2xl border border-border-custom bg-bg-1 p-5 shadow-sm flex flex-col gap-4 max-h-[580px] transition-colors duration-300">
       
       {/* HEADER */}
-      <div className="flex items-center gap-2 border-b border-border-custom pb-3 transition-colors">
-        <Activity size={14} className="text-bull transition-colors" />
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-1 font-bold transition-colors">
-          Market Pulse
-        </span>
+      <div className="flex items-center justify-between border-b border-border-custom pb-3 transition-colors">
+        <div className="flex items-center gap-2">
+          <Activity size={14} className="text-bull transition-colors" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-1 font-bold transition-colors">
+            Market Pulse
+          </span>
+        </div>
+        
+        {/* LIVE STATUS BADGE */}
+        <div className="flex items-center gap-1.5">
+          <span className={`h-1.5 w-1.5 rounded-full ${isMarketOpen ? "bg-[#0a8c5b] animate-pulse" : "bg-text-3"}`} />
+          <span className="font-mono text-[9px] uppercase tracking-wider text-text-2">
+            {isMarketOpen ? "Live" : "Closed"}
+          </span>
+        </div>
       </div>
 
       {/* SEARCH BOX */}

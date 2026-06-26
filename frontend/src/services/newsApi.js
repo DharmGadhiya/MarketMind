@@ -21,6 +21,11 @@ const API = axios.create({
    return response.data;
  };
 
+ export const getAIAnalysisByNewsId = async (id) => {
+   const response = await API.get(`/api/news/${id}/analysis`);
+   return response.data;
+ };
+
  export const getStocks = async () => {
    const response = await API.get("/stocks");
    return response.data;

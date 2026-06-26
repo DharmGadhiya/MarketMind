@@ -2,6 +2,8 @@ import { Router } from "express";
 import NEWS from "../models/news.js";
 import cron from "node-cron";
 import express from "express";
+import AIAnalysis from "../models/AIAnalysis.js";
+import { analyzeArticle } from "../services/analysis.service.js";
 
 //commit from dharm
 const router = Router();
@@ -136,6 +138,71 @@ router.get("/news/:id", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+// GET AI ANALYSIS FOR A SPECIFIC ARTICLE (With on-demand generation fallback)
+router.get("/news/:id/analysis", async (req, res) => {
+  try {
+    const newsItem = await NEWS.findById(req.params.id);
+    if (!newsItem) {
+      return res.status(404).json({
+        success: false,
+        message: "News article not found",
+      });
+    }
+
+    // Look up existing analysis using a bulletproof match by newsId OR uuid
+    let analysisRecord = await AIAnalysis.findOne({
+      $or: [
+        { newsId: newsItem._id },
+        { uuid: newsItem.uuid }
+      ]
+    });
+
+    // If it doesn't exist, generate it on-the-fly!
+    if (!analysisRecord) {
+      try {
+        console.log(`AI Analysis not found for article [${newsItem._id}]. Generating on-demand...`);
+        analysisRecord = await analyzeArticle(newsItem);
+      } catch (genErr) {
+        console.error(`On-demand AI generation failed: ${genErr.message}`);
+        // If the error is a 429 quota error, return a specific helpful message
+        if (genErr.message.includes("429") || genErr.message.includes("quota")) {
+          return res.status(429).json({
+            success: false,
+            message: "AI service is temporarily unavailable due to daily usage limits. Please try again later.",
+            error: genErr.message,
+          });
+        }
+        return res.status(502).json({
+          success: false,
+          message: "Failed to generate AI analysis on-demand.",
+          error: genErr.message,
+        });
+      }
+    }
+
+    if (!analysisRecord) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to retrieve or generate AI analysis.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      analysis: analysisRecord.analysis,
+      aiModel: analysisRecord.aiModel,
+      generatedAt: analysisRecord.generatedAt,
+    });
+  } catch (err) {
+    console.error(`Error in /news/:id/analysis route:`, err);
+    res.status(500).json({
+      success: false,
+      message: "Server error retrieving AI analysis",
       error: err.message,
     });
   }

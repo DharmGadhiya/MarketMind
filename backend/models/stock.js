@@ -23,6 +23,11 @@ const stockSchema = new mongoose.Schema(
       default: 0,
     },
 
+    marketState: {
+      type: String,
+      default: "CLOSED",
+    },
+
     updatedAt: {
       type: Date,
       default: Date.now,

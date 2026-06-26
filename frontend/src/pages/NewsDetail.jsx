@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Clock, Loader2, Lock } from "lucide-react";
 import { useUser } from "../services/UserContext";
 
-import { getNewsById } from "../services/newsApi";
+import { getNewsById, getAIAnalysisByNewsId } from "../services/newsApi";
 import { timeAgo, cleanSource } from "../Utilities/utils/format";
 
 import Header from "../components/Header";
@@ -20,6 +20,35 @@ const NewsDetail = () => {
   const [error, setError] = useState(null);
   
   const { user } = useUser();
+
+  const [analysis, setAnalysis] = useState(null);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [analysisError, setAnalysisError] = useState(null);
+
+  useEffect(() => {
+    if (!id || !user) return;
+
+    const fetchAnalysis = async () => {
+      try {
+        setLoadingAnalysis(true);
+        setAnalysisError(null);
+        const data = await getAIAnalysisByNewsId(id);
+        if (data && data.success) {
+          setAnalysis(data.analysis);
+        } else {
+          setAnalysisError(data.message || "Failed to load AI Analysis");
+        }
+      } catch (err) {
+        console.error(err);
+        const errMsg = err.response?.data?.message || "AI Analysis is currently unavailable. Please try again later.";
+        setAnalysisError(errMsg);
+      } finally {
+        setLoadingAnalysis(false);
+      }
+    };
+
+    fetchAnalysis();
+  }, [id, user]);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -197,11 +226,158 @@ const NewsDetail = () => {
             {/* AI ANALYSIS SECTION */}
             {user ? (
               <div className="mt-10 rounded-2xl border border-border-custom bg-bg-1 p-6 shadow-sm transition-colors">
-                <h3 className="mb-4 font-serif text-2xl text-text-0 transition-colors">
-                  AI Analysis
-                </h3>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-border-custom pb-4 mb-6 gap-2">
+                  <h3 className="font-serif text-2xl text-text-0 transition-colors font-semibold">
+                    Generative AI Analysis
+                  </h3>
+                  {analysis && (
+                    <span className="text-[10px] font-mono text-text-2 tracking-wider uppercase bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded">
+                      Model: {newsItem.aiModel || "gemini-3.1-flash-lite"}
+                    </span>
+                  )}
+                </div>
 
-                {/* AI analysis will come here */}
+                {loadingAnalysis && (
+                  <div className="flex flex-col items-center justify-center py-10 gap-3">
+                    <Loader2 className="animate-spin text-bull" size={28} />
+                    <p className="font-mono text-xs text-text-2 tracking-wider">Running Deep Financial Analysis...</p>
+                  </div>
+                )}
+
+                {analysisError && (
+                  <div className="rounded-xl border border-amber/20 bg-amber/5 p-4 text-sm text-text-1">
+                    <p className="font-semibold text-amber mb-1">AI Service Notice</p>
+                    <p className="text-xs text-text-2 leading-relaxed">{analysisError}</p>
+                  </div>
+                )}
+
+                {!loadingAnalysis && !analysisError && !analysis && (
+                  <div className="rounded-xl border border-border-custom bg-bg-0/50 p-6 text-center">
+                    <p className="text-sm text-text-2">No analysis generated yet for this article.</p>
+                  </div>
+                )}
+
+                {analysis && (
+                  <div className="flex flex-col gap-8 text-sm leading-relaxed text-text-1">
+                    
+                    {/* Summary & Outlook Dashboard */}
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 bg-bg-0 p-4 rounded-xl border border-border-custom transition-colors">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-mono text-text-2 uppercase tracking-wider">Outlook</span>
+                        <span className={`font-semibold ${
+                          analysis.outlook?.toLowerCase().includes("positive") ? "text-[#0a8c5b]" :
+                          analysis.outlook?.toLowerCase().includes("negative") ? "text-[#e11d48]" : "text-text-0"
+                        }`}>
+                          {analysis.outlook}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1 border-t sm:border-t-0 sm:border-x border-border-custom pt-3 sm:pt-0 sm:px-4">
+                        <span className="text-[10px] font-mono text-text-2 uppercase tracking-wider">Sentiment</span>
+                        <span className="font-semibold text-text-0">{analysis.sentiment}</span>
+                      </div>
+                      <div className="flex flex-col gap-1 border-t sm:border-t-0 pt-3 sm:pt-0 sm:pl-4">
+                        <span className="text-[10px] font-mono text-text-2 uppercase tracking-wider">Confidence Score</span>
+                        <span className="font-semibold text-text-0">{analysis.confidenceScore}%</span>
+                      </div>
+                    </div>
+
+                    {/* Explanation */}
+                    <div>
+                      <h4 className="font-sans font-bold text-[13px] uppercase tracking-wider text-text-0 mb-2">
+                        Event Explanation
+                      </h4>
+                      <p className="text-text-1 whitespace-pre-line leading-relaxed">{analysis.newsExplanation}</p>
+                    </div>
+
+                    {/* Market Impact */}
+                    <div>
+                      <h4 className="font-sans font-bold text-[13px] uppercase tracking-wider text-text-0 mb-2">
+                        Market & Sector Impact
+                      </h4>
+                      <p className="text-text-1 whitespace-pre-line leading-relaxed">{analysis.marketImpact}</p>
+                    </div>
+
+                    {/* Fundamental Analysis Grid */}
+                    {Object.values(analysis.fundamentalAnalysis || {}).some(val => val !== "Data Not Available") ? (
+                      <div>
+                        <h4 className="font-sans font-bold text-[13px] uppercase tracking-wider text-text-0 mb-3">
+                          Fundamental Analysis
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {analysis.fundamentalAnalysis.valuation !== "Data Not Available" && (
+                            <div className="p-3 bg-bg-0 rounded-lg border border-border-custom">
+                              <h5 className="font-bold text-xs text-text-0 mb-1">Valuation</h5>
+                              <p className="text-xs text-text-2 leading-relaxed">{analysis.fundamentalAnalysis.valuation}</p>
+                            </div>
+                          )}
+                          {analysis.fundamentalAnalysis.profitability !== "Data Not Available" && (
+                            <div className="p-3 bg-bg-0 rounded-lg border border-border-custom">
+                              <h5 className="font-bold text-xs text-text-0 mb-1">Profitability</h5>
+                              <p className="text-xs text-text-2 leading-relaxed">{analysis.fundamentalAnalysis.profitability}</p>
+                            </div>
+                          )}
+                          {analysis.fundamentalAnalysis.growth !== "Data Not Available" && (
+                            <div className="p-3 bg-bg-0 rounded-lg border border-border-custom">
+                              <h5 className="font-bold text-xs text-text-0 mb-1">Growth</h5>
+                              <p className="text-xs text-text-2 leading-relaxed">{analysis.fundamentalAnalysis.growth}</p>
+                            </div>
+                          )}
+                          {analysis.fundamentalAnalysis.financialHealth !== "Data Not Available" && (
+                            <div className="p-3 bg-bg-0 rounded-lg border border-border-custom">
+                              <h5 className="font-bold text-xs text-text-0 mb-1">Financial Health</h5>
+                              <p className="text-xs text-text-2 leading-relaxed">{analysis.fundamentalAnalysis.financialHealth}</p>
+                            </div>
+                          )}
+                        </div>
+                        {analysis.fundamentalAnalysis.overallInterpretation !== "Data Not Available" && (
+                          <div className="mt-3 p-3 bg-bg-0 rounded-lg border border-border-custom">
+                            <h5 className="font-bold text-xs text-text-0 mb-1">Overall Fundamental Outlook</h5>
+                            <p className="text-xs text-text-2 leading-relaxed">{analysis.fundamentalAnalysis.overallInterpretation}</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-bg-0 rounded-xl border border-border-custom text-center">
+                        <span className="text-xs font-mono text-text-2">Fundamental analysis is not available for this article's entities.</span>
+                      </div>
+                    )}
+
+                    {/* Investor Insight */}
+                    <div>
+                      <h4 className="font-sans font-bold text-[13px] uppercase tracking-wider text-text-0 mb-3">
+                        Investor Insights
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="p-4 bg-bg-0/30 rounded-xl border border-border-custom">
+                          <h5 className="font-bold text-xs text-[#0a8c5b] mb-1">For Existing Investors</h5>
+                          <p className="text-xs text-text-1 leading-relaxed">{analysis.investorInsight?.existingInvestors}</p>
+                        </div>
+                        <div className="p-4 bg-bg-0/30 rounded-xl border border-border-custom">
+                          <h5 className="font-bold text-xs text-bull mb-1">For Prospective Buyers</h5>
+                          <p className="text-xs text-text-1 leading-relaxed">{analysis.investorInsight?.newInvestors}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Risks Checklist */}
+                    {analysis.risks && analysis.risks.length > 0 && (
+                      <div>
+                        <h4 className="font-sans font-bold text-[13px] uppercase tracking-wider text-text-0 mb-2">
+                          Key Risk Analysis
+                        </h4>
+                        <ul className="flex flex-col gap-2">
+                          {analysis.risks.map((risk, idx) => (
+                            <li key={idx} className="flex items-start gap-2 text-xs text-text-1">
+                              <span className="text-[#e11d48] font-bold mt-0.5">⚠️</span>
+                              <span className="leading-relaxed">{risk}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                  </div>
+                )}
               </div>
             ) : (
               <div className="mt-10 rounded-2xl border border-border-custom bg-bg-1 p-6 shadow-sm transition-colors">
@@ -248,13 +424,13 @@ const NewsDetail = () => {
         </div>
       </main>
 
-      <footer className="border-t border-black/8 bg-[#f3efe7]">
+      <footer className="border-t border-border-custom bg-bg-2 transition-colors duration-300">
         <div className="mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 px-6 py-8 lg:flex-row lg:items-center lg:px-10">
           <div className="flex items-center gap-3">
             <span className="font-serif text-lg">
               MarketMind
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#9ca3af]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-3 transition-colors">
               © {new Date().getFullYear()}
             </span>
           </div>

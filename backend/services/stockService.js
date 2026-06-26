@@ -21,6 +21,7 @@ const fetchSingleStock = async (symbol, retries = 2) => {
       name: quote.shortName || quote.longName || symbol.replace(".NS", ""),
       cmp: quote.regularMarketPrice || 0,
       changePercent: quote.regularMarketChangePercent || 0,
+      marketState: quote.marketState || "CLOSED",
       updatedAt: new Date(),
     };
   } catch (error) {
