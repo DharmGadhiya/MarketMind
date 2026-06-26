@@ -15,6 +15,7 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [totalNews, setTotalNews] = useState(0);
   
   const [stocks, setStocks] = useState([]);
 
@@ -39,6 +40,7 @@ const Home = () => {
 
         setNews(data.news || []);
         setHasMore(data.hasMore);
+        setTotalNews(data.totalNews || 0);
         setPage(1);
       } catch (err) {
         console.error(err);
@@ -59,6 +61,7 @@ const Home = () => {
       setNews((prev) => [...prev, ...(data.news || [])]);
       setPage(nextPage);
       setHasMore(data.hasMore);
+      setTotalNews(data.totalNews || 0);
     } catch (err) {
       console.error(err);
     }
@@ -118,7 +121,7 @@ const Home = () => {
                   </div>
 
                   <div className="mt-2 font-serif text-3xl">
-                    {news.length}
+                    {totalNews}
                   </div>
                 </div>
 

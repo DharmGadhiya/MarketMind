@@ -6,6 +6,7 @@ import {
 
 import Home from "./pages/Home";
 import NewsDetail from "./pages/NewsDetail";
+import AIAnalysisPage from "./pages/AIAnalysisPage";
 
 function App() {
   return (
@@ -21,6 +22,11 @@ function App() {
         <Route
           path="/news/:id"
           element={<NewsDetail />}
+        />
+
+        <Route
+          path="/news/:id/ai-analysis"
+          element={<AIAnalysisPage />}
         />
 
       </Routes>

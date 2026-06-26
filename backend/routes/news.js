@@ -8,7 +8,7 @@ import { analyzeArticle } from "../services/analysis.service.js";
 //commit from dharm
 const router = Router();
 
-cron.schedule("*/25 * * * *", async () => {
+cron.schedule("*/18 * * * *", async () => {
   try {
     console.log("Fetching latest news...");
 
