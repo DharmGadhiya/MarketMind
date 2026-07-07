@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import { getStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
-const TickerTape = () => {
-  const [stocks, setStocks] = useState([]);
+const TickerTape = ({ initialStocks }) => {
+  const [stocks, setStocks] = useState(initialStocks || []);
+
+  useEffect(() => {
+    if (initialStocks && initialStocks.length > 0) {
+      setStocks(initialStocks);
+    }
+  }, [initialStocks]);
 
   useEffect(() => {
     const fetchStocksData = async () => {
@@ -17,7 +23,9 @@ const TickerTape = () => {
       }
     };
 
-    fetchStocksData();
+    if (!initialStocks || initialStocks.length === 0) {
+      fetchStocksData();
+    }
     // Poll every 45 seconds for fresh prices
     const interval = setInterval(fetchStocksData, 45000);
     return () => clearInterval(interval);

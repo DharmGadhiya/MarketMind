@@ -18,7 +18,10 @@ const PORT = process.env.PORT || 8000;
 
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_URL, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+  })
   .then(() => {
     console.log("DB connected");
     initAIAnalysisCron(); // Initialize the background AI analysis scheduler
@@ -37,6 +40,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("Token"));
+
+app.get("/", (req, res) => {
+  res.status(200).send("MarketMind Server Active");
+});
 
 app.use("/api", newsRouter);
 app.use("/api/user", userRouter);

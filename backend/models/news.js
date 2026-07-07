@@ -47,5 +47,7 @@ const NewsSchema = new mongoose.Schema(
 );
 
 NewsSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3 * 24 * 60 * 60 });
+NewsSchema.index({ published_at: -1 });
 
 export default mongoose.model("News", NewsSchema);
+

@@ -5,7 +5,9 @@ import Redis from "ioredis";
 
 const redisOTP = new Redis(process.env.REDIS_URL, {
   maxRetriesPerRequest: 3,
+  lazyConnect: true,
 });
+redisOTP.connect().catch(() => {});
 
 async function sendOTP(email, otp) {
   const response = await fetch("https://api.brevo.com/v3/smtp/email", {
@@ -196,7 +198,7 @@ const otpStore = {
 router.post("/createaccount", async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const user = await USER.findOne({ email });
+    const user = await USER.findOne({ email }).select({ _id: 1 }).lean();
     if (user) {
       return res.status(400).send({
         msg: "Email already exists",
@@ -269,7 +271,7 @@ router.post("/verify-otp", async (req, res) => {
       });
     }
 
-    const user = await USER.findOne({ email });
+    const user = await USER.findOne({ email }).select({ _id: 1 }).lean();
 
     if (user) {
       return res.status(400).send({
@@ -311,7 +313,7 @@ router.post("/login", async (req, res) => {
 
   try {
     const token = await USER.matchPasswordAndGenToken(email, password);
-    const user = await USER.findOne({ email });
+    const user = await USER.findOne({ email }).select({ _id: 1, userName: 1, email: 1 }).lean();
 
     res.cookie("Token", token, cookieOptions);
 

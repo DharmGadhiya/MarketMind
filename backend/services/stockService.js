@@ -42,15 +42,20 @@ const fetchSingleStock = async (symbol, retries = 2) => {
  */
 const fetchAllStocks = async () => {
   try {
+    const quotes = await yahooFinance.quote(STOCKS);
     const results = [];
 
-    for (const symbol of STOCKS) {
-      const stock = await fetchSingleStock(symbol);
-
-      if (stock) results.push(stock);
-
-      // IMPORTANT: prevents Yahoo blocking
-      await new Promise((r) => setTimeout(r, 700));
+    for (const quote of quotes) {
+      if (quote) {
+        results.push({
+          symbol: quote.symbol,
+          name: quote.shortName || quote.longName || quote.symbol.replace(".NS", ""),
+          cmp: quote.regularMarketPrice || 0,
+          changePercent: quote.regularMarketChangePercent || 0,
+          marketState: quote.marketState || "CLOSED",
+          updatedAt: new Date(),
+        });
+      }
     }
 
     return results;

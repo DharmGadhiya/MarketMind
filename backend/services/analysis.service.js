@@ -1,9 +1,7 @@
-import YahooFinance from "yahoo-finance2";
+import * as cheerio from "cheerio";
 import News from "../models/news.js";
 import AIAnalysis from "../models/AIAnalysis.js";
 import { cleanAndParseJSON, logger } from "../utils/helpers.js";
-
-const yahooFinance = new YahooFinance();
 
 // Exact prompt template provided by the user
 const PROMPT_TEMPLATE = `You are a senior equity research analyst and financial market educator.
@@ -173,74 +171,150 @@ Return ONLY valid JSON:
  * @param {string} symbol - The stock ticker (e.g., "INFY.NS").
  * @returns {Promise<object>} The extracted fundamentals object.
  */
-export const fetchFundamentals = async (symbol) => {
+const cleanSymbol = (sym) => {
+  return sym.replace(/\.(NS|BO)$/i, '').replace(/-BL$/i, '').trim();
+};
+
+export const fetchFundamentals = async (rawSymbol) => {
+  const symbol = cleanSymbol(rawSymbol);
+  const urls = [
+    `https://www.screener.in/company/${symbol}/standalone/`,
+    `https://www.screener.in/company/${symbol}/`
+  ];
+
+  let html = null;
+  let lastError = null;
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+      });
+      if (res.ok) {
+        html = await res.text();
+        break;
+      } else {
+        lastError = new Error(`HTTP ${res.status} for ${url}`);
+      }
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  const getVal = (val) => {
+    if (val === undefined || val === null || val === "" || val === "N/A" || val === "Error") {
+      return "Data Not Available";
+    }
+    return val;
+  };
+
+  const formatPct = (val) => {
+    if (!val || val === "N/A" || val === "Error") return "Data Not Available";
+    if (val.includes("%")) return val;
+    return `${val}%`;
+  };
+
+  if (!html) {
+    logger.error(`Screener fetch failed for ${rawSymbol}: ${lastError ? lastError.message : "unknown error"}`);
+    return {
+      trailingPE: "Data Not Available",
+      forwardPE: "Data Not Available",
+      roe: "Data Not Available",
+      eps: "Data Not Available",
+      marketCap: "Data Not Available",
+      debtToEquity: "Data Not Available",
+      revenueGrowth: "Data Not Available",
+      profitMargins: "Data Not Available",
+      dividendYield: "Data Not Available",
+      bookValue: "Data Not Available",
+    };
+  }
+
   try {
-    // Attempt to query quoteSummary with summaryDetail, financialData, and key statistics
-    const summary = await yahooFinance.quoteSummary(symbol, {
-      modules: ["summaryDetail", "financialData", "defaultKeyStatistics"],
+    const $ = cheerio.load(html);
+
+    // Parse Top Ratios
+    const ratios = {};
+    $("#top-ratios li").each((i, el) => {
+      const rawName = $(el).find(".name").text().trim();
+      const name = rawName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+      const value = $(el).find(".number").text().trim();
+      if (name) {
+        ratios[name] = value;
+      }
     });
 
-    const summaryDetail = summary.summaryDetail || {};
-    const financialData = summary.financialData || {};
-    const keyStats = summary.defaultKeyStatistics || {};
-
-    const getVal = (val, formatFn) => {
-      if (val === undefined || val === null) return "Data Not Available";
-      return formatFn ? formatFn(val) : val;
+    const getFloatVal = (str) => {
+      if (!str) return null;
+      return parseFloat(str.replace(/,/g, ''));
     };
 
-    const formatPct = (v) => `${(v * 100).toFixed(2)}%`;
-    const formatNum = (v) => v.toLocaleString();
+    const price = getFloatVal(ratios["current price"]);
+    const pe = getFloatVal(ratios["stock pe"]);
+
+    let eps = null;
+    if (price && pe) {
+      eps = (price / pe).toFixed(2);
+    }
+
+    // Parse Balance Sheet for Debt-to-Equity
+    const balanceSheet = {};
+    $("#balance-sheet table tr").each((i, el) => {
+      const rawName = $(el).find("td.text").text().trim();
+      const name = rawName.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+      if (name) {
+        const values = [];
+        $(el).find("td").each((j, tdEl) => {
+          if (j > 0) values.push($(tdEl).text().trim());
+        });
+        balanceSheet[name] = values;
+      }
+    });
+
+    const getRowValue = (rowTextArr) => {
+      if (!rowTextArr || rowTextArr.length === 0) return null;
+      const lastVal = rowTextArr[rowTextArr.length - 1];
+      return getFloatVal(lastVal);
+    };
+
+    const equityCapital = getRowValue(balanceSheet["equity capital"]) || getRowValue(balanceSheet["share capital"]) || 0;
+    const reserves = getRowValue(balanceSheet["reserves"]) || 0;
+    const borrowings = getRowValue(balanceSheet["borrowings"]) || 0;
+
+    let debtToEquity = null;
+    const totalEquity = equityCapital + reserves;
+    if (totalEquity > 0) {
+      debtToEquity = (borrowings / totalEquity).toFixed(2);
+    }
 
     return {
-      trailingPE: getVal(summaryDetail.trailingPE),
-      forwardPE: getVal(summaryDetail.forwardPE),
-      roe: getVal(financialData.returnOnEquity, formatPct),
-      eps: getVal(keyStats.trailingEps),
-      marketCap: getVal(summaryDetail.marketCap, formatNum),
-      debtToEquity: getVal(financialData.debtToEquity),
-      revenueGrowth: getVal(financialData.revenueGrowth, formatPct),
-      profitMargins: getVal(financialData.profitMargins, formatPct),
-      dividendYield: getVal(summaryDetail.dividendYield, formatPct),
-      bookValue: getVal(keyStats.bookValue),
+      trailingPE: getVal(ratios["stock pe"]),
+      forwardPE: "Data Not Available",
+      roe: formatPct(ratios["roe"]),
+      eps: getVal(eps),
+      marketCap: ratios["market cap"] ? `${ratios["market cap"]} Cr` : "Data Not Available",
+      debtToEquity: getVal(debtToEquity),
+      revenueGrowth: "Data Not Available",
+      profitMargins: "Data Not Available",
+      dividendYield: formatPct(ratios["dividend yield"]),
+      bookValue: getVal(ratios["book value"]),
     };
-  } catch (err) {
-    logger.warn(`QuoteSummary failed for ${symbol}: ${err.message}. Trying basic quote fallback...`);
-    try {
-      // Basic quote fallback
-      const quote = await yahooFinance.quote(symbol);
-      if (!quote) {
-        throw new Error(`Basic quote returned no data for symbol: ${symbol}`);
-      }
-      const getVal = (val) => (val === undefined || val === null ? "Data Not Available" : val);
-
-      return {
-        trailingPE: getVal(quote.trailingPE),
-        forwardPE: getVal(quote.forwardPE),
-        roe: "Data Not Available",
-        eps: getVal(quote.epsTrailing12Months || quote.epsForward),
-        marketCap: getVal(quote.marketCap ? quote.marketCap.toLocaleString() : null),
-        debtToEquity: "Data Not Available",
-        revenueGrowth: "Data Not Available",
-        profitMargins: "Data Not Available",
-        dividendYield: getVal(quote.dividendYield ? `${quote.dividendYield}%` : null),
-        bookValue: getVal(quote.bookValue),
-      };
-    } catch (fallbackErr) {
-      logger.error(`Yahoo Finance fallback failed for ${symbol}: ${fallbackErr.message}`);
-      return {
-        trailingPE: "Data Not Available",
-        forwardPE: "Data Not Available",
-        roe: "Data Not Available",
-        eps: "Data Not Available",
-        marketCap: "Data Not Available",
-        debtToEquity: "Data Not Available",
-        revenueGrowth: "Data Not Available",
-        profitMargins: "Data Not Available",
-        dividendYield: "Data Not Available",
-        bookValue: "Data Not Available",
-      };
-    }
+  } catch (parseErr) {
+    logger.error(`Screener parsing failed for ${rawSymbol}: ${parseErr.message}`);
+    return {
+      trailingPE: "Data Not Available",
+      forwardPE: "Data Not Available",
+      roe: "Data Not Available",
+      eps: "Data Not Available",
+      marketCap: "Data Not Available",
+      debtToEquity: "Data Not Available",
+      revenueGrowth: "Data Not Available",
+      profitMargins: "Data Not Available",
+      dividendYield: "Data Not Available",
+      bookValue: "Data Not Available",
+    };
   }
 };
 
@@ -356,7 +430,7 @@ export const callGemini = async (prompt) => {
  */
 export const analyzeArticle = async (article) => {
   // Check if analysis already exists to prevent duplicate calls
-  const existing = await AIAnalysis.findOne({ uuid: article.uuid });
+  const existing = await AIAnalysis.findOne({ uuid: article.uuid }).lean();
   if (existing) {
     return existing;
   }
@@ -454,30 +528,19 @@ export const runAIAnalysisPipeline = async () => {
   logger.info("Starting AI News Analysis Pipeline...");
   
   try {
-    const articles = await News.find({});
-    logger.info(`Found ${articles.length} news articles in database.`);
+    const totalNews = await News.countDocuments();
+    logger.info(`Found ${totalNews} news articles in database.`);
+
+    const existingAnalyses = await AIAnalysis.find({}, { uuid: 1 }).lean();
+    const existingUuids = existingAnalyses.map((a) => a.uuid);
 
     const maxArticles = parseInt(process.env.MAX_ARTICLES_PER_RUN || "1", 10);
-    let processedCount = 0;
+    const articles = await News.find({ uuid: { $nin: existingUuids } })
+      .limit(maxArticles)
+      .lean();
 
     for (const article of articles) {
       try {
-        // Step 2: Check if AIAnalysis document already exists using news uuid
-        const analysisExists = await AIAnalysis.findOne({ uuid: article.uuid });
-        if (analysisExists) {
-          logger.info(`Article [${article.uuid}] already analyzed. Skipping.`);
-          continue;
-        }
-
-        // Check if we have reached the batch limit for this run
-        if (processedCount >= maxArticles) {
-          logger.info(`Reached batch limit of ${maxArticles} article(s) for this run. Stopping pipeline.`);
-          break;
-        }
-
-        // Increment processedCount as we are now attempting to analyze this article
-        processedCount++;
-
         logger.info(`Processing article [${article.uuid}] - Title: "${article.title}"`);
         await analyzeArticle(article);
       } catch (articleErr) {

@@ -3,11 +3,18 @@ import { Activity, Search } from "lucide-react";
 import { getStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
-const MarketPulse = () => {
-  const [stocks, setStocks] = useState([]);
+const MarketPulse = ({ initialStocks }) => {
+  const [stocks, setStocks] = useState(initialStocks || []);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all"); // "all", "gainers", "losers"
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialStocks || initialStocks.length === 0);
+
+  useEffect(() => {
+    if (initialStocks && initialStocks.length > 0) {
+      setStocks(initialStocks);
+      setLoading(false);
+    }
+  }, [initialStocks]);
 
   useEffect(() => {
     const fetchStocksData = async () => {
@@ -23,7 +30,9 @@ const MarketPulse = () => {
       }
     };
 
-    fetchStocksData();
+    if (!initialStocks || initialStocks.length === 0) {
+      fetchStocksData();
+    }
     // Poll every 30 seconds for live stock updates
     const interval = setInterval(fetchStocksData, 30000);
     return () => clearInterval(interval);

@@ -12,6 +12,7 @@ const AIAnalysisSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "News",
       required: true,
+      index: true,
     },
     analysis: {
       type: mongoose.Schema.Types.Mixed,

@@ -8,13 +8,14 @@ import { analyzeArticle } from "../services/analysis.service.js";
 //commit from dharm
 const router = Router();
 
-cron.schedule("*/18 * * * *", async () => {
+cron.schedule("*/15 * * * *", async () => {
   try {
     console.log("Fetching latest news...");
 
-    const latestNews = await NEWS.findOne().sort({
-      published_at: -1,
-    });
+    const latestNews = await NEWS.findOne()
+      .sort({ published_at: -1 })
+      .select({ published_at: 1 })
+      .lean();
 
     const publishedAfter = latestNews
       ? new Date(latestNews.published_at).toISOString().slice(0, 19)
@@ -98,7 +99,8 @@ router.get("/allnews", async (req, res) => {
     const news = await NEWS.find({})
       .sort({ published_at: -1 }) // Latest first
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     // Total news count
     const totalNews = await NEWS.countDocuments();
@@ -125,7 +127,7 @@ router.get("/allnews", async (req, res) => {
 
 router.get("/news/:id", async (req, res) => {
   try {
-    const news = await NEWS.findById(req.params.id);
+    const news = await NEWS.findById(req.params.id).lean();
 
     if (!news) {
       return res.status(404).json({
@@ -146,7 +148,7 @@ router.get("/news/:id", async (req, res) => {
 // GET AI ANALYSIS FOR A SPECIFIC ARTICLE (With on-demand generation fallback)
 router.get("/news/:id/analysis", async (req, res) => {
   try {
-    const newsItem = await NEWS.findById(req.params.id);
+    const newsItem = await NEWS.findById(req.params.id).lean();
     if (!newsItem) {
       return res.status(404).json({
         success: false,
@@ -160,7 +162,7 @@ router.get("/news/:id/analysis", async (req, res) => {
         { newsId: newsItem._id },
         { uuid: newsItem.uuid }
       ]
-    });
+    }).lean();
 
     // If it doesn't exist, generate it on-the-fly!
     if (!analysisRecord) {

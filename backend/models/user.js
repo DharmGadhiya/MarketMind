@@ -40,7 +40,7 @@ UserSchema.pre("save", async function () {
 });
 
 UserSchema.statics.matchPasswordAndGenToken = async function (email, password) {
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ email }).lean();
 
   if (!user) throw new Error("User not found");
   const UserPass = createHmac("sha256", user.salt)

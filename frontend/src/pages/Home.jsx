@@ -74,7 +74,7 @@ const Home = () => {
     <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300">
       <Header />
 
-      <TickerTape />
+      <TickerTape initialStocks={stocks} />
 
       {/* HERO BANNER */}
       <section className="relative border-b border-border-custom grid-bg">
@@ -225,7 +225,7 @@ const Home = () => {
 
           </div>
 
-          <MarketPulse />
+          <MarketPulse initialStocks={stocks} />
 
         </div>
 
