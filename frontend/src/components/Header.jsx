@@ -17,6 +17,7 @@ const Header = () => {
         { name: "Home Terminal", path: "/", icon: Home },
         { name: "IPO Center", path: "/ipo", icon: LineChart },
         { name: "NIFTY 50", path: "/nifty50", icon: TrendingUp },
+        { name: "Market Indices", path: "/indices", icon: LineChart },
       ]
     },
     {

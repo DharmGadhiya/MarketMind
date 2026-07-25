@@ -146,3 +146,8 @@ export const searchStocks = async (query) => {
   const response = await API.get(`/api/stocks/search?query=${encodeURIComponent(query)}`);
   return response.data;
 };
+
+export const getIndices = async () => {
+  const response = await API.get("/api/indices");
+  return response.data;
+};

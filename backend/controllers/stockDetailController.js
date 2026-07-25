@@ -11,8 +11,8 @@ const yahooFinance = new YahooFinance({ suppressNotices: ["yahooSurvey", "ripHis
 const formatSymbol = (symbol) => {
   if (!symbol) return "";
   const upperSymbol = symbol.toUpperCase();
-  // If there's no dot (e.g. RELIANCE, TCS), append .NS for Indian markets
-  if (!upperSymbol.includes(".")) {
+  // If there's no dot (e.g. RELIANCE, TCS) and doesn't start with ^, append .NS for Indian markets
+  if (!upperSymbol.includes(".") && !upperSymbol.startsWith("^")) {
     return `${upperSymbol}.NS`;
   }
   return upperSymbol;

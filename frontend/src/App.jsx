@@ -20,6 +20,7 @@ import Nifty50 from "./pages/Nifty50";
 import WatchlistPage from "./pages/WatchlistPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 import PortfolioPage from "./pages/PortfolioPage";
+import IndicesPage from "./pages/IndicesPage";
 
 function ProtectedRoute({ children }) {
   const { user } = useUser();
@@ -36,6 +37,9 @@ function ProtectedRoute({ children }) {
     } else if (path.startsWith("/nifty50")) {
       title = "NIFTY 50 Terminal Locked";
       description = "Track NIFTY 50 live quotes, weightage distribution, and key index market statistics.";
+    } else if (path.startsWith("/indices")) {
+      title = "Indices Terminal Locked";
+      description = "Monitor major Indian stock market indices and track their performance with real-time charts.";
     } else if (path.startsWith("/stock")) {
       title = "Stock Intelligence Locked";
       description = "Analyze deep fundamentals, financial stats, interactive charts, and live quote indicators.";
@@ -146,6 +150,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AnnouncementsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/indices"
+          element={
+            <ProtectedRoute>
+              <IndicesPage />
             </ProtectedRoute>
           }
         />
