@@ -3,6 +3,8 @@ const router = Router();
 import USER from "../models/user.js";
 import Redis from "ioredis";
 import { sendEmail } from "../utils/emailService.js";
+import { randomBytes } from "crypto";
+import { createTokenForUser } from "../services/Authentication.js";
 
 const otpRetryStrategy = (times) => {
   if (times <= 3) return times * 1000;
@@ -356,6 +358,64 @@ router.get("/current-user", (req, res) => {
   return res.send({
     user: req.user || null,
   });
+});
+
+// POST endpoint for Google Sign-In verification and login
+router.post("/google-login", async (req, res) => {
+  const { credential } = req.body;
+  if (!credential) {
+    return res.status(400).send({ msg: "Google credential token is required" });
+  }
+
+  try {
+    // 1. Verify token with Google API
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+    if (!response.ok) {
+      const errText = await response.text();
+      return res.status(400).send({ msg: "Invalid Google token", error: errText });
+    }
+
+    const payload = await response.json();
+    
+    // Optional check: verify that client ID aud matches ours
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (clientId && payload.aud !== clientId) {
+      return res.status(400).send({ msg: "Token was not generated for this application" });
+    }
+
+    const { email, name } = payload;
+    if (!email) {
+      return res.status(400).send({ msg: "Google account does not provide an email" });
+    }
+
+    // 2. Find or create user
+    let user = await USER.findOne({ email });
+    if (!user) {
+      // Create new user with random password (schema requires password)
+      const randPassword = randomBytes(16).toString("hex");
+      user = await USER.create({
+        userName: name || email.split("@")[0],
+        email,
+        password: randPassword,
+      });
+    }
+
+    // 3. Generate token and set cookie
+    const token = createTokenForUser(user);
+    res.cookie("Token", token, cookieOptions);
+
+    return res.send({
+      msg: "Logged In with Google",
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error("Google Login Error:", err);
+    return res.status(500).send({ msg: "Google login service failed. Please try again." });
+  }
 });
 
 export default router;

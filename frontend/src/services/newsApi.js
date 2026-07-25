@@ -26,6 +26,12 @@ export const chatWithAI = async (id, message, history) => {
   return response.data;
 };
 
+export const googleLogin = async (credential) => {
+  const response = await API.post("/api/user/google-login", { credential });
+  return response.data;
+};
+
+
 // STOCK API METHODS
 export const getStocks = async () => {
   const response = await API.get("/stocks");

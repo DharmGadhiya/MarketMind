@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { X, Sun, Moon, Search, Menu, Bell } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
-import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification } from "../services/newsApi";
+import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin } from "../services/newsApi";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -163,6 +163,53 @@ const Header = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const handleGoogleLoginSuccess = async (response) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await googleLogin(response.credential);
+      if (data && data.user) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        closeModal();
+      } else {
+        setError(data.msg || "Google Sign-In failed");
+      }
+    } catch (err) {
+      console.error("Google Login callback error:", err);
+      setError(err.response?.data?.msg || "Failed to log in with Google");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    /* global google */
+    if (isModalOpen && (mode === "login" || mode === "signup") && window.google) {
+      try {
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "your-google-client-id.apps.googleusercontent.com",
+          callback: handleGoogleLoginSuccess,
+        });
+        
+        setTimeout(() => {
+          const container = document.getElementById("google-signin-button");
+          if (container) {
+            google.accounts.id.renderButton(container, {
+              theme: theme === "dark" ? "filled_blue" : "outline",
+              size: "large",
+              width: container.offsetWidth || 280,
+              text: "continue_with",
+              shape: "pill",
+            });
+          }
+        }, 100);
+      } catch (err) {
+        console.error("Google Sign-In initialization failed:", err);
+      }
+    }
+  }, [isModalOpen, mode, theme]);
 
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
@@ -545,6 +592,16 @@ const Header = () => {
                 >
                   {loading ? "Logging in..." : "Login to Terminal"}
                 </button>
+
+                <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-border-custom"></div>
+                  <span className="flex-shrink mx-3 text-[9px] uppercase font-mono text-text-3">Or continue with</span>
+                  <div className="flex-grow border-t border-border-custom"></div>
+                </div>
+
+                <div className="flex justify-center w-full my-1.5">
+                  <div id="google-signin-button"></div>
+                </div>
                 <p className="text-center text-xs text-text-2 mt-2">
                   Don't have an account?{" "}
                   <span
@@ -612,6 +669,16 @@ const Header = () => {
                 >
                   {loading ? "Sending OTP..." : "Get OTP Code"}
                 </button>
+
+                <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-border-custom"></div>
+                  <span className="flex-shrink mx-3 text-[9px] uppercase font-mono text-text-3">Or continue with</span>
+                  <div className="flex-grow border-t border-border-custom"></div>
+                </div>
+
+                <div className="flex justify-center w-full my-1.5">
+                  <div id="google-signin-button"></div>
+                </div>
                 <p className="text-center text-xs text-text-2 mt-2">
                   Already have an account?{" "}
                   <span
