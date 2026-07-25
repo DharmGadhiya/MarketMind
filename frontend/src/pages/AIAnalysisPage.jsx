@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, Sparkles, Copy, Check, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Play, Sparkles, Copy, Check, Loader2, RefreshCw, Send } from "lucide-react";
 import { useUser } from "../services/UserContext";
-import { getNewsById, getAIAnalysisByNewsId } from "../services/newsApi";
+import { getNewsById, getAIAnalysisByNewsId, chatWithAI } from "../services/newsApi";
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
 
@@ -22,7 +22,12 @@ const AIAnalysisPage = () => {
 
   // Chat/Typing States
   const [chatStage, setChatStage] = useState("idle"); // "idle", "sending", "analyzing", "typing", "complete"
+  const [messages, setMessages] = useState([
+    { sender: "ai", text: "Welcome to the AI Research Terminal. I have compiled the fundamental financial metrics and parsed the news narrative.\n\nInitiate the analysis below, and I will stream the deep research breakdown, valuation models, sentiment analysis, and risk evaluation for you." }
+  ]);
   const [displayedText, setDisplayedText] = useState("");
+  const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   
   const typingTimerRef = useRef(null);
@@ -119,6 +124,7 @@ ${analysis.marketImpact || "Analysis not available."}
   const handleInitiateAnalysis = async () => {
     setChatStage("sending");
     setAnalysisError(null);
+    setMessages(prev => [...prev, { sender: "user", text: "Initiate deep financial analysis and risk evaluation report." }]);
 
     // Simulate sending message delay
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -134,7 +140,11 @@ ${analysis.marketImpact || "Analysis not available."}
         
         // Transition to typing
         setChatStage("typing");
-        startTypingSimulation(markdown);
+        startTypingSimulation(markdown, () => {
+          setMessages(prev => [...prev, { sender: "ai", text: markdown }]);
+          setDisplayedText("");
+          setChatStage("complete");
+        });
       } else {
         throw new Error(data.message || "Failed to generate analysis");
       }
@@ -147,7 +157,7 @@ ${analysis.marketImpact || "Analysis not available."}
   };
 
   // Simulate typing effect (typewriter style)
-  const startTypingSimulation = (fullText) => {
+  const startTypingSimulation = (fullText, onComplete) => {
     if (!fullText) return;
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
     
@@ -160,7 +170,7 @@ ${analysis.marketImpact || "Analysis not available."}
     typingTimerRef.current = setInterval(() => {
       if (currentIndex >= chars.length) {
         clearInterval(typingTimerRef.current);
-        setChatStage("complete");
+        if (onComplete) onComplete();
         return;
       }
       
@@ -171,9 +181,49 @@ ${analysis.marketImpact || "Analysis not available."}
       
       if (currentIndex >= chars.length) {
         clearInterval(typingTimerRef.current);
-        setChatStage("complete");
+        if (onComplete) onComplete();
       }
     }, typingSpeed);
+  };
+
+  // Send a user chat message for 2-way real-time conversation
+  const handleSendChatMessage = async (e) => {
+    if (e) e.preventDefault();
+    if (!chatInput.trim() || isChatLoading || chatStage === "typing") return;
+
+    const userMessageText = chatInput.trim();
+    setChatInput("");
+    setAnalysisError(null);
+
+    const updatedMessages = [...messages, { sender: "user", text: userMessageText }];
+    setMessages(updatedMessages);
+    setIsChatLoading(true);
+
+    if (chatContainerRef.current) {
+      setTimeout(() => {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }, 50);
+    }
+
+    try {
+      const data = await chatWithAI(id, userMessageText, updatedMessages);
+      if (data && data.success && data.reply) {
+        setChatStage("typing");
+        startTypingSimulation(data.reply, () => {
+          setMessages(prev => [...prev, { sender: "ai", text: data.reply }]);
+          setDisplayedText("");
+          setChatStage("complete");
+        });
+      } else {
+        throw new Error(data.message || "Failed to generate AI reply");
+      }
+    } catch (err) {
+      console.error(err);
+      const errMsg = err.response?.data?.message || "Failed to get AI response. Please try again.";
+      setAnalysisError(errMsg);
+    } finally {
+      setIsChatLoading(false);
+    }
   };
 
   // Copy markdown report to clipboard
@@ -369,41 +419,54 @@ ${analysis.marketImpact || "Analysis not available."}
             className="flex-1 p-5 overflow-y-auto font-sans flex flex-col gap-6 max-h-[480px] min-h-[420px]"
           >
             
-            {/* MESSAGE 1: AI GREETING (STAYS ACTIVE) */}
-            <div className="flex items-start gap-3 max-w-[85%]">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-mono text-sm font-bold shadow-sm">
-                AI
-              </div>
-              <div className="flex flex-col gap-1 rounded-2xl bg-bg-2 border border-border-custom px-4 py-3 text-xs sm:text-sm text-text-1 shadow-sm leading-relaxed transition-colors">
-                <p>
-                  Welcome to the AI Research Terminal. I have compiled the fundamental financial metrics and parsed the news narrative. 
-                </p>
-                <p className="mt-2">
-                  Initiate the analysis below, and I will stream the deep research breakdown, valuation models, sentiment analysis, and risk evaluation for you.
-                </p>
-              </div>
-            </div>
+            {/* Dynamic message history list */}
+            {messages.map((msg, index) => {
+              if (msg.sender === "ai") {
+                return (
+                  <div key={index} className="flex items-start gap-3 w-full animate-fade-in">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-mono text-sm font-bold shadow-sm">
+                      AI
+                    </div>
+                    <div className="flex-1 rounded-2xl bg-bg-2 border border-border-custom px-5 py-4 text-text-1 shadow-sm transition-colors relative min-h-[50px]">
+                      <div className="prose dark:prose-invert max-w-none">
+                        {renderFormattedAIResponse(msg.text)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index} className="flex items-start gap-3 max-w-[85%] self-end flex-row-reverse animate-fade-in">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-text-1 border border-border-custom font-mono text-sm font-bold shadow-sm">
+                      U
+                    </div>
+                    <div className="flex flex-col gap-1 rounded-2xl bg-bg-0 border border-border-custom px-4 py-3 text-xs sm:text-sm text-text-1 shadow-sm leading-relaxed transition-colors">
+                      {msg.text}
+                    </div>
+                  </div>
+                );
+              }
+            })}
 
-            {/* MESSAGE 2: USER REQUEST (TRIGGERS WHEN INITIATED) */}
-            {(chatStage !== "idle") && (
+            {/* MESSAGE CURRENT USER INITIATION (when starting analysis) */}
+            {chatStage === "sending" && (
               <div className="flex items-start gap-3 max-w-[85%] self-end flex-row-reverse">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-text-1 border border-border-custom font-mono text-sm font-bold shadow-sm">
                   U
                 </div>
-                <div className="flex flex-col gap-1 rounded-2xl bg-bg-0 border border-border-custom px-4 py-3 text-xs sm:text-sm text-text-1 shadow-sm leading-relaxed transition-colors">
-                  Initiate deep financial analysis and risk evaluation report.
+                <div className="flex flex-col gap-1 rounded-2xl bg-bg-0 border border-border-custom px-4 py-3 text-xs sm:text-sm text-text-1 shadow-sm leading-relaxed transition-colors animate-pulse">
+                  Initiate deep financial analysis and risk evaluation report...
                 </div>
               </div>
             )}
 
-            {/* MESSAGE 3: AI STREAMING RESPONSE */}
-            {(chatStage === "analyzing" || chatStage === "typing" || chatStage === "complete") && (
+            {/* AI CURRENT STREAMING RESPONSE */}
+            {(chatStage === "analyzing" || (chatStage === "typing" && displayedText)) && (
               <div className="flex items-start gap-3 w-full">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-mono text-sm font-bold shadow-sm">
                   AI
                 </div>
-                <div className="flex-1 rounded-2xl bg-bg-2 border border-border-custom px-5 py-4 text-text-1 shadow-sm transition-colors relative min-h-[100px]">
-                  
+                <div className="flex-1 rounded-2xl bg-bg-2 border border-border-custom px-5 py-4 text-text-1 shadow-sm transition-colors relative min-h-[80px]">
                   {/* Server loading state */}
                   {chatStage === "analyzing" && (
                     <div className="flex items-center gap-2.5 text-xs sm:text-sm text-text-2 font-mono py-2">
@@ -413,16 +476,25 @@ ${analysis.marketImpact || "Analysis not available."}
                   )}
 
                   {/* Typewriter Output */}
-                  {(chatStage === "typing" || chatStage === "complete") && (
+                  {chatStage === "typing" && displayedText && (
                     <div className="prose dark:prose-invert max-w-none">
                       {renderFormattedAIResponse(displayedText)}
-                      
-                      {/* Blinking terminal cursor */}
-                      {chatStage === "typing" && (
-                        <span className="inline-block h-4 w-2 bg-bull ml-0.5 animate-pulse rounded-sm align-middle" />
-                      )}
+                      <span className="inline-block h-4 w-2 bg-bull ml-0.5 animate-pulse rounded-sm align-middle" />
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Live Chat loading/thinking indicator */}
+            {isChatLoading && (
+              <div className="flex items-start gap-3 w-full">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-mono text-sm font-bold shadow-sm">
+                  AI
+                </div>
+                <div className="flex items-center gap-2.5 rounded-2xl bg-bg-2 border border-border-custom px-4 py-3 text-xs sm:text-sm text-text-2 shadow-sm transition-colors">
+                  <Loader2 className="animate-spin text-bull" size={14} />
+                  <span className="font-mono text-xs">Researching real-time updates...</span>
                 </div>
               </div>
             )}
@@ -432,89 +504,88 @@ ${analysis.marketImpact || "Analysis not available."}
           </div>
 
           {/* CONTROL / INPUT BAR */}
-          <div className="bg-bg-2 border-t border-border-strong p-4 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors duration-300 select-none">
+          <div className="bg-bg-2 border-t border-border-strong p-4 flex flex-col gap-3 transition-colors duration-300 select-none">
             
-            {/* Status Information */}
-            <div className="text-[10px] sm:text-xs font-mono text-text-2 transition-colors flex-1 text-left">
-              {chatStage === "idle" && "Ready to analyze."}
-              {chatStage === "sending" && "Sending instruction..."}
-              {chatStage === "analyzing" && "Connecting to server..."}
-              {chatStage === "typing" && "Streaming live report..."}
-              {chatStage === "complete" && "Analysis complete."}
+            {/* Status & Options Info Bar */}
+            <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono text-text-2 transition-colors">
+              <div>
+                {chatStage === "idle" && "Ready to analyze."}
+                {chatStage === "sending" && "Sending instruction..."}
+                {chatStage === "analyzing" && "Connecting to server..."}
+                {chatStage === "typing" && "Streaming AI reply..."}
+                {chatStage === "complete" && "AI Research Terminal active."}
+              </div>
+              
+              {chatStage === "complete" && (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleCopyClipboard}
+                    className="hover:text-bull transition-colors flex items-center gap-1 cursor-news"
+                  >
+                    {isCopied ? <Check size={11} className="text-[#0a8c5b]" /> : <Copy size={11} />}
+                    {isCopied ? "Copied" : "Copy Report"}
+                  </button>
+                  <span className="text-border-strong">|</span>
+                  <Link
+                    to={`/news/${id}`}
+                    className="hover:text-bull transition-colors cursor-news"
+                  >
+                    Exit Terminal
+                  </Link>
+                </div>
+              )}
             </div>
 
-            {/* Interactive Actions */}
-            <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-              
+            {/* Interactive Actions / Chat Form */}
+            <div className="w-full">
               {/* ERROR ALERT NOTICE */}
               {analysisError && (
-                <span className="text-xs text-bear mr-2 font-mono truncate max-w-[200px] sm:max-w-xs transition-colors">
-                  Error: API Quota Exceeded
-                </span>
+                <div className="text-xs text-bear mb-2 font-mono transition-colors">
+                  Error: {analysisError}
+                </div>
               )}
 
-              {/* ACTION BUTTONS */}
+              {/* ACTION BUTTONS (FOR INITIAL LAUNCH) */}
               {chatStage === "idle" && (
                 <button
                   onClick={handleInitiateAnalysis}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-bull hover:bg-bull/90 text-white px-5 py-3 transition-colors text-xs font-bold shadow-md hover:shadow-lg cursor-news active:scale-[0.98]"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-bull hover:bg-bull/90 text-white px-5 py-3.5 transition-colors text-sm font-bold shadow-md hover:shadow-lg cursor-news active:scale-[0.98]"
                 >
-                  <Sparkles size={14} />
+                  <Sparkles size={16} />
                   Initiate AI Analysis
                 </button>
               )}
 
-              {chatStage === "analyzing" && (
+              {(chatStage === "sending" || chatStage === "analyzing") && (
                 <button
                   disabled
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-border-custom text-text-2 px-5 py-3 text-xs font-bold transition-colors shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-border-custom text-text-2 px-5 py-3.5 text-sm font-bold transition-colors shadow-sm"
                 >
-                  <Loader2 className="animate-spin text-text-2" size={14} />
-                  Analyzing Data...
+                  <Loader2 className="animate-spin text-text-2" size={16} />
+                  Accessing Market Database & Analysing...
                 </button>
               )}
 
-
-
+              {/* LIVE CHAT INTERACTIVE TEXT FIELD */}
               {chatStage === "complete" && (
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <form onSubmit={handleSendChatMessage} className="flex items-center gap-2 w-full">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    disabled={isChatLoading}
+                    placeholder="Ask about live updates, stock valuation or sector risks..."
+                    className="flex-1 rounded-xl border border-border-strong bg-bg-0 px-4 py-3 text-xs sm:text-sm text-text-0 placeholder-text-3 shadow-inner transition-all focus:border-bull focus:outline-none focus:ring-1 focus:ring-bull disabled:opacity-60"
+                  />
                   <button
-                    onClick={handleCopyClipboard}
-                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-5 py-3 transition-colors text-xs font-bold shadow-sm cursor-news text-text-1 active:scale-[0.98]"
+                    type="submit"
+                    disabled={!chatInput.trim() || isChatLoading}
+                    className="inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl bg-bull hover:bg-bull/90 text-white transition-colors shadow-md hover:shadow-lg disabled:bg-border-strong disabled:text-text-3 cursor-news active:scale-[0.96]"
                   >
-                    {isCopied ? (
-                      <>
-                        <Check size={14} className="text-[#0a8c5b]" />
-                        Report Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        Copy Report
-                      </>
-                    )}
+                    <Send size={16} />
                   </button>
-
-                  <button
-                    onClick={() => navigate(`/news/${id}`)}
-                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl bg-bull hover:bg-bull/90 text-white px-5 py-3 transition-colors text-xs font-bold shadow-md hover:shadow-lg cursor-news active:scale-[0.98]"
-                  >
-                    Return to Article
-                  </button>
-                </div>
+                </form>
               )}
-
-              {/* RETRY BUTTON ON FAILURE */}
-              {analysisError && chatStage === "idle" && (
-                <button
-                  onClick={handleInitiateAnalysis}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-bear/20 bg-bear/5 hover:bg-bear/10 text-bear px-4 py-3 transition-colors text-xs font-bold cursor-news active:scale-[0.98]"
-                >
-                  <RefreshCw size={12} />
-                  Retry Request
-                </button>
-              )}
-
             </div>
           </div>
         </div>

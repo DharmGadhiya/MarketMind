@@ -56,3 +56,8 @@ export const verifyOTP = async (name, email, password, otp) => {
   const response = await API.post("/api/user/verify-otp", { name, email, password, otp });
   return response.data;
 };
+
+export const chatWithAI = async (id, message, history) => {
+  const response = await API.post(`/api/news/${id}/chat`, { message, history });
+  return response.data;
+};

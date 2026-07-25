@@ -210,4 +210,127 @@ router.get("/news/:id/analysis", async (req, res) => {
   }
 });
 
+// POST endpoint for interactive chat about a news article
+router.post("/news/:id/chat", async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message) {
+      return res.status(400).json({
+        success: false,
+        message: "Message is required",
+      });
+    }
+
+    const newsItem = await NEWS.findById(req.params.id).lean();
+    if (!newsItem) {
+      return res.status(404).json({
+        success: false,
+        message: "News article not found",
+      });
+    }
+
+    // Look up existing analysis context
+    const analysisRecord = await AIAnalysis.findOne({
+      $or: [
+        { newsId: newsItem._id },
+        { uuid: newsItem.uuid }
+      ]
+    }).lean();
+
+    // Map chat history to Gemini API format
+    const contents = (history || []).map(msg => ({
+      role: msg.sender === "ai" ? "model" : "user",
+      parts: [{ text: msg.text }]
+    }));
+
+    // Append the latest user message
+    contents.push({
+      role: "user",
+      parts: [{ text: message }]
+    });
+
+    const apiKey = process.env.GEMINI;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        message: "Gemini API key is not configured on the server",
+      });
+    }
+
+    const systemInstructionText = `You are MarketMind, a real-time personalised financial AI assistant.
+Engage in a natural, 2-way chat with the user about this news article and its market/financial implications.
+Context of the News Article:
+- Title: ${newsItem.title}
+- Source: ${newsItem.source}
+- Published At: ${newsItem.published_at}
+- Description: ${newsItem.description}
+
+Entities and Market Sentiments associated:
+${JSON.stringify(newsItem.entities || [])}
+
+AI Analysis Report Context:
+${analysisRecord ? JSON.stringify(analysisRecord.analysis) : "Not available."}
+
+Provide real-time answers. Answer questions clearly, accurately, and contextually. Keep replies professional, yet engaging and formatted nicely in markdown. Do NOT use JSON formatting, return clean markdown and text response directly.`;
+
+    const modelName = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+    const payload = {
+      contents,
+      systemInstruction: {
+        parts: [{ text: systemInstructionText }]
+      }
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(response.status).json({
+        success: false,
+        message: "Error communicating with Gemini API",
+        error: errorText,
+      });
+    }
+
+    const data = await response.json();
+    let replyText = "";
+
+    if (
+      data &&
+      data.candidates &&
+      data.candidates[0] &&
+      data.candidates[0].content &&
+      data.candidates[0].content.parts &&
+      data.candidates[0].content.parts[0]
+    ) {
+      replyText = data.candidates[0].content.parts[0].text;
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Invalid response structure from Gemini API",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      reply: replyText,
+    });
+  } catch (err) {
+    console.error(`Error in /news/:id/chat route:`, err);
+    res.status(500).json({
+      success: false,
+      message: "Server error during chat",
+      error: err.message,
+    });
+  }
+});
+
 export default router;

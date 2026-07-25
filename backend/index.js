@@ -27,7 +27,7 @@ mongoose
     initAIAnalysisCron(); // Initialize the background AI analysis scheduler
   })
   .catch((err) => {
-    console.log("DB connection failed");
+    console.log("DB connection failed: ", err);
   });
 
 app.use(
