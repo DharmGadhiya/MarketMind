@@ -46,4 +46,3 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Automated NSE Data Scrape Update [skip ci]"
-        file_pattern: "backend/Logic Files/*.csv"
