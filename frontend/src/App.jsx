@@ -12,6 +12,7 @@ import StockDetails from "./pages/StockDetails";
 import Nifty50 from "./pages/Nifty50";
 import WatchlistPage from "./pages/WatchlistPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
+import PortfolioPage from "./pages/PortfolioPage";
 
 function App() {
   return (
@@ -56,6 +57,10 @@ function App() {
         <Route
           path="/price-alerts"
           element={<WatchlistPage type="alerts" />}
+        />
+        <Route
+          path="/portfolio"
+          element={<PortfolioPage />}
         />
         <Route
           path="/corporate-announcements"

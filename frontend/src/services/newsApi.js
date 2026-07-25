@@ -120,3 +120,24 @@ export const deleteNotification = async (id) => {
   const response = await API.delete(`/api/notifications/${encodeURIComponent(id)}`);
   return response.data;
 };
+
+// PORTFOLIO API METHODS
+export const getHoldings = async () => {
+  const response = await API.get("/api/holdings");
+  return response.data;
+};
+
+export const addHolding = async (symbol, buyPrice, qty) => {
+  const response = await API.post("/api/holdings", { symbol, buyPrice, qty });
+  return response.data;
+};
+
+export const updateHolding = async (id, buyPrice, qty) => {
+  const response = await API.put(`/api/holdings/${encodeURIComponent(id)}`, { buyPrice, qty });
+  return response.data;
+};
+
+export const removeHolding = async (id) => {
+  const response = await API.delete(`/api/holdings/${encodeURIComponent(id)}`);
+  return response.data;
+};

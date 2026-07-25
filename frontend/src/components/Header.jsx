@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { X, Sun, Moon, Search, Menu, Bell, Home, LineChart, TrendingUp, Star, Megaphone } from "lucide-react";
+import { X, Sun, Moon, Search, Menu, Bell, Home, LineChart, TrendingUp, Star, Megaphone, Briefcase } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin, forgotPassword, resetPassword } from "../services/newsApi";
@@ -23,6 +23,7 @@ const Header = () => {
       title: "Workspace",
       items: [
         { name: "My Watchlist", path: "/watchlist", icon: Star },
+        { name: "Portfolio Tracker", path: "/portfolio", icon: Briefcase },
         { name: "Price Alerts", path: "/price-alerts", icon: Bell },
         { name: "Announcements", path: "/corporate-announcements", icon: Megaphone },
       ]
