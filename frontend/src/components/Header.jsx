@@ -14,7 +14,7 @@ const Header = () => {
     {
       title: "Main Terminal",
       items: [
-        { name: "Home Terminal", path: "/", icon: Home },
+        { name: "Home Terminal", path: "/app", icon: Home },
         { name: "IPO Center", path: "/ipo", icon: LineChart },
         { name: "NIFTY 50", path: "/nifty50", icon: TrendingUp },
         { name: "Market Indices", path: "/indices", icon: LineChart },
