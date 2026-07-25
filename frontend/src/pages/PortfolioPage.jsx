@@ -63,6 +63,10 @@ const PortfolioPage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Sorting States
+  const [sortField, setSortField] = useState(null); // 'name' | 'pnl' | null
+  const [sortDirection, setSortDirection] = useState(null); // 'asc' | 'desc' | null
+
   const handleSymbolChange = async (e) => {
     const value = e.target.value;
     setFormData({ ...formData, symbol: value });
@@ -357,6 +361,34 @@ const PortfolioPage = () => {
     }
   };
 
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedHoldings = (() => {
+    if (!sortField || !sortDirection) return holdings;
+    return [...holdings].sort((a, b) => {
+      let valA, valB;
+      if (sortField === "name") {
+        valA = (a.name || a.symbol || "").toLowerCase();
+        valB = (b.name || b.symbol || "").toLowerCase();
+        return sortDirection === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      } else if (sortField === "pnl") {
+        valA = a.pnl !== null ? a.pnl : -Infinity;
+        valB = b.pnl !== null ? b.pnl : -Infinity;
+        return sortDirection === "asc" ? valA - valB : valB - valA;
+      }
+      return 0;
+    });
+  })();
+
   const isPnlPositive = summary.totalPnl >= 0;
 
   return (
@@ -527,18 +559,44 @@ const PortfolioPage = () => {
                     <thead>
                       <tr className="bg-bg-2 border-b border-border-strong text-[10px] font-mono uppercase tracking-wider text-text-2 transition-colors">
                         <th className="py-4 px-6">Symbol</th>
-                        <th className="py-4 px-4">Company Name</th>
+                        <th 
+                          onClick={() => handleSort("name")}
+                          className="py-4 px-4 cursor-pointer select-none hover:bg-bg-1/50 transition-colors"
+                          title="Click to sort by Company Name"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            Company Name
+                            {sortField === "name" && (
+                              <span className="text-[10px] text-bull font-bold font-mono">
+                                {sortDirection === "asc" ? "▲" : "▼"}
+                              </span>
+                            )}
+                          </div>
+                        </th>
                         <th className="py-4 px-4 text-right">Qty</th>
                         <th className="py-4 px-4 text-right">Avg. Price (₹)</th>
                         <th className="py-4 px-4 text-right">Live Price (₹)</th>
                         <th className="py-4 px-4 text-right">Invested Value</th>
                         <th className="py-4 px-4 text-right">Current Value</th>
-                        <th className="py-4 px-4 text-right">Unrealised Returns (P&L)</th>
+                        <th 
+                          onClick={() => handleSort("pnl")}
+                          className="py-4 px-4 text-right cursor-pointer select-none hover:bg-bg-1/50 transition-colors"
+                          title="Click to sort by Unrealised Returns"
+                        >
+                          <div className="flex items-center justify-end gap-1.5">
+                            Unrealised Returns (P&L)
+                            {sortField === "pnl" && (
+                              <span className="text-[10px] text-bull font-bold font-mono">
+                                {sortDirection === "asc" ? "▲" : "▼"}
+                              </span>
+                            )}
+                          </div>
+                        </th>
                         <th className="py-4 px-6 text-center">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border-custom font-sans text-xs sm:text-sm transition-colors">
-                      {holdings.map((item) => {
+                      {sortedHoldings.map((item) => {
                         const cleanSymbol = item.symbol.replace(".NS", "");
                         const isLiveAvailable = item.cmp !== null;
                         const itemPnlPositive = item.pnl >= 0;
