@@ -148,13 +148,19 @@ const MarketPulse = ({ initialStocks }) => {
             const cleanSymbol = stock.symbol.replace(".NS", "");
             const isPositive = stock.changePercent >= 0;
             return (
-              <Link
+              <div
                 key={stock.symbol}
-                to={`/stock/${encodeURIComponent(cleanSymbol)}`}
-                className="flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01] cursor-pointer"
+                className="group flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01] cursor-pointer"
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 mr-1 z-10">
                   <WatchToggle symbol={stock.symbol} currentPrice={stock.cmp} changePercent={stock.changePercent} className="p-1 h-7 w-7 border-none bg-transparent" />
+                </div>
+                
+                {/* Clickable Area Link */}
+                <Link
+                  to={`/stock/${encodeURIComponent(cleanSymbol)}`}
+                  className="flex items-center justify-between flex-1 min-w-0"
+                >
                   <div className="flex flex-col min-w-0">
                     <span className="font-mono text-xs font-bold text-text-0 transition-colors">
                       {cleanSymbol}
@@ -163,23 +169,23 @@ const MarketPulse = ({ initialStocks }) => {
                       {stock.name}
                     </span>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs font-semibold text-text-1 transition-colors">
-                    ₹{formatNum(stock.cmp)}
-                  </span>
-                  <span
-                    className={`inline-flex min-w-[60px] items-center justify-center rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
-                      isPositive
-                        ? "bg-bull/10 text-bull"
-                        : "bg-bear/10 text-bear"
-                    }`}
-                  >
-                    {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
-                  </span>
-                </div>
-              </Link>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs font-semibold text-text-1 transition-colors">
+                      ₹{formatNum(stock.cmp)}
+                    </span>
+                    <span
+                      className={`inline-flex min-w-[60px] items-center justify-center rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
+                        isPositive
+                          ? "bg-bull/10 text-bull"
+                          : "bg-bear/10 text-bear"
+                      }`}
+                    >
+                      {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
+                    </span>
+                  </div>
+                </Link>
+              </div>
             );
           })
         ) : (

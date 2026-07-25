@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Star, Loader2 } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Star, Bell, Loader2, X } from "lucide-react";
 import { useUser } from "../../services/UserContext";
 import { getWatchlist, addToWatchlist, removeFromWatchlist, fetchStockDetails } from "../../services/newsApi";
 
@@ -14,10 +15,11 @@ import { getWatchlist, addToWatchlist, removeFromWatchlist, fetchStockDetails } 
  * @param {number} [props.changePercent] - Live percent change (from parent)
  * @param {string} [props.className] - Optional tailwind classes
  */
-const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) => {
+const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", iconClassName = "h-4 w-4" }) => {
   const { user } = useUser();
   
   const [isWatched, setIsWatched] = useState(false);
+  const [isAlertSet, setIsAlertSet] = useState(false);
   const [alertThreshold, setAlertThreshold] = useState(3.0);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -63,6 +65,7 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
   const fetchWatchlistState = async () => {
     if (!user) {
       setIsWatched(false);
+      setIsAlertSet(false);
       return;
     }
 
@@ -71,19 +74,27 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
       if (res && res.success && res.data) {
         const item = res.data.find(w => w.symbol.toUpperCase() === formattedSymbol);
         if (item) {
-          setIsWatched(true);
-          setAlertThreshold(item.alertThreshold);
-          setInputThreshold(item.alertThreshold.toString());
-          
-          // Pre-populate target price based on watched threshold and current direction
-          if (prevClose > 0) {
-            const price = direction === "upside"
-              ? prevClose * (1 + item.alertThreshold / 100)
-              : prevClose * (1 - item.alertThreshold / 100);
-            setInputPrice(price.toFixed(2));
+          if (item.alertThreshold === 0) {
+            setIsWatched(true);
+            setIsAlertSet(false);
+            setAlertThreshold(0);
+          } else {
+            setIsWatched(false);
+            setIsAlertSet(true);
+            setAlertThreshold(item.alertThreshold);
+            setInputThreshold(item.alertThreshold.toString());
+            
+            // Pre-populate target price based on watched threshold and current direction
+            if (prevClose > 0) {
+              const price = direction === "upside"
+                ? prevClose * (1 + item.alertThreshold / 100)
+                : prevClose * (1 - item.alertThreshold / 100);
+              setInputPrice(price.toFixed(2));
+            }
           }
         } else {
           setIsWatched(false);
+          setIsAlertSet(false);
         }
       }
     } catch (err) {
@@ -155,7 +166,7 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
     }
   }, [showModal, prevClose]);
 
-  const handleToggle = async (e) => {
+  const handleWatchlistClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -164,20 +175,36 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
       return;
     }
 
-    if (isWatched) {
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
+      if (isWatched) {
         await removeFromWatchlist(formattedSymbol);
         setIsWatched(false);
-        window.dispatchEvent(new CustomEvent("watchlist-updated"));
-      } catch (err) {
-        console.error("[Watchlist Remove Error]:", err);
-      } finally {
-        setLoading(false);
+        setAlertThreshold(0);
+      } else {
+        await addToWatchlist(formattedSymbol, 0); // threshold = 0
+        setIsWatched(true);
+        setIsAlertSet(false);
+        setAlertThreshold(0);
       }
-    } else {
-      setShowModal(true);
+      window.dispatchEvent(new CustomEvent("watchlist-updated"));
+    } catch (err) {
+      console.error("[Watchlist Click Error]:", err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleAlertClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      window.dispatchEvent(new CustomEvent("open-login-modal"));
+      return;
+    }
+
+    setShowModal(true);
   };
 
   const handleSaveThreshold = async (e) => {
@@ -190,7 +217,8 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
     try {
       setLoading(true);
       await addToWatchlist(formattedSymbol, val);
-      setIsWatched(true);
+      setIsWatched(false);
+      setIsAlertSet(true);
       setAlertThreshold(val);
       setShowModal(false);
       window.dispatchEvent(new CustomEvent("watchlist-updated"));
@@ -201,28 +229,67 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
     }
   };
 
+  const handleRemoveFromWatchlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      setLoading(true);
+      await removeFromWatchlist(formattedSymbol);
+      setIsWatched(false);
+      setIsAlertSet(false);
+      setAlertThreshold(0);
+      setShowModal(false);
+      window.dispatchEvent(new CustomEvent("watchlist-updated"));
+    } catch (err) {
+      console.error("[Watchlist Remove Error]:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const cleanSymbol = symbol.replace(".NS", "");
 
   return (
-    <>
+    <div className="flex items-center gap-1.5 z-10">
+      {/* 1. WATCHLIST BUTTON (STAR) */}
       <button
-        onClick={handleToggle}
+        onClick={handleWatchlistClick}
         disabled={loading}
-        className={`flex items-center justify-center p-2 rounded-lg border transition-all cursor-pointer select-none duration-200 active:scale-95 ${
+        className={`flex items-center justify-center rounded-lg transition-all cursor-pointer select-none duration-200 active:scale-90 p-1.5 h-7 w-7 border border-transparent ${
           isWatched
             ? "bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20"
-            : "bg-bg-1 border-border-strong text-text-2 hover:bg-bg-2 hover:text-text-0"
-        } ${className}`}
-        title={isWatched ? `Watching (Alert at ±${alertThreshold}%)` : "Watch stock"}
+            : "bg-bg-1 border-border-strong/45 text-text-2 hover:bg-bg-2 hover:text-text-0"
+        }`}
+        title={isWatched ? "Remove from Watch List" : "Add to Watch List"}
       >
         {loading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-text-2" />
+          <Loader2 className={`${iconClassName} animate-spin text-text-2`} />
         ) : (
-          <Star className="h-4 w-4" fill={isWatched ? "currentColor" : "none"} />
+          <Star className={iconClassName} fill={isWatched ? "currentColor" : "none"} />
         )}
       </button>
 
-      {showModal && (
+      {/* 2. PRICE ALERT BUTTON (BELL) */}
+      <button
+        onClick={handleAlertClick}
+        disabled={loading}
+        className={`flex items-center justify-center rounded-lg transition-all cursor-pointer select-none duration-200 active:scale-90 p-1.5 h-7 w-7 border border-transparent ${
+          isAlertSet
+            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20"
+            : "bg-bg-1 border-border-strong/45 text-text-2 hover:bg-bg-2 hover:text-text-0"
+        }`}
+        title={isAlertSet ? `Alert active at ±${alertThreshold}%` : "Set Price Alert"}
+      >
+        {loading ? (
+          <Loader2 className={`${iconClassName} animate-spin text-text-2`} />
+        ) : (
+          <Bell className={iconClassName} fill={isAlertSet ? "currentColor" : "none"} />
+        )}
+      </button>
+
+      {/* PRICE ALERT CONFIG MODAL */}
+      {showModal && createPortal(
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
           onClick={(e) => {
@@ -235,123 +302,121 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "" }) =>
             className="w-full max-w-md rounded-2xl border border-border-strong bg-bg-1 p-6 shadow-2xl transition-all duration-300"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-serif text-lg text-text-0 font-bold mb-1">Set Price Alert</h3>
-            <p className="text-xs text-text-2 mb-4">
-              Sync alert values dynamically. Setting one updates the other relative to current prices.
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-serif text-lg text-text-0 font-bold">Configure Price Alert</h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-text-3 hover:text-text-0 rounded-lg p-1 transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-[11px] text-text-2 mb-4 leading-relaxed">
+              Trigger immediate email alerts when absolute price changes cross your threshold for {cleanSymbol}.
             </p>
 
-            <form onSubmit={handleSaveThreshold} className="flex flex-col gap-4">
-              
-              {/* CURRENT STOCK STATS */}
-              <div className="bg-bg-0 p-3 rounded-xl flex items-center justify-between border border-border-custom/50 text-xs">
-                <div>
-                  <span className="font-mono font-bold text-text-0">{cleanSymbol}</span>
-                  <span className="text-[10px] text-text-3 ml-2 font-mono">Last Price</span>
-                </div>
-                <div className="font-mono text-text-1">
-                  ₹{stockInfo.cmp ? stockInfo.cmp.toLocaleString("en-IN") : "-"} 
-                  <span className={`ml-2 text-[10px] ${pctChange >= 0 ? "text-bull" : "text-bear"}`}>
-                    ({pctChange >= 0 ? "+" : ""}{pctChange.toFixed(2)}%)
-                  </span>
-                </div>
+            {/* CURRENT STOCK STATS */}
+            <div className="bg-bg-0 p-3 rounded-xl flex items-center justify-between border border-border-custom/50 text-xs mb-4">
+              <div>
+                <span className="font-mono font-bold text-text-0">{cleanSymbol}</span>
+                <span className="text-[10px] text-text-3 ml-2 font-mono">Last Price</span>
               </div>
-
-              {/* DIRECTION SELECTOR */}
-              <div className="flex flex-col gap-1.5">
-                <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
-                  Alert Direction
-                </label>
-                <div className="grid grid-cols-2 gap-2 bg-bg-0 p-1 rounded-xl text-xs font-mono font-semibold">
-                  <button
-                    type="button"
-                    onClick={() => handleDirectionChange("upside")}
-                    className={`py-1.5 rounded-lg transition-colors cursor-pointer text-center ${
-                      direction === "upside" ? "bg-bull/10 text-bull shadow-sm" : "text-text-2 hover:text-text-0"
-                    }`}
-                  >
-                    Upside (&gt;= Target)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDirectionChange("downside")}
-                    className={`py-1.5 rounded-lg transition-colors cursor-pointer text-center ${
-                      direction === "downside" ? "bg-bear/10 text-bear shadow-sm" : "text-text-2 hover:text-text-0"
-                    }`}
-                  >
-                    Downside (&lt;= Target)
-                  </button>
-                </div>
+              <div className="font-mono text-text-1">
+                ₹{stockInfo.cmp ? stockInfo.cmp.toLocaleString("en-IN") : "-"} 
+                <span className={`ml-2 text-[10px] ${pctChange >= 0 ? "text-bull" : "text-bear"}`}>
+                  ({pctChange >= 0 ? "+" : ""}{pctChange.toFixed(2)}%)
+                </span>
               </div>
+            </div>
 
-              {/* DUAL SYNC INPUTS CONTAINER */}
-              <div className="grid grid-cols-2 gap-4">
-                
-                {/* THRESHOLD PERCENTAGE INPUT */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
-                    Change Threshold
-                  </label>
-                  <div className="relative flex items-center">
-                    <input
-                      type="number"
-                      step="0.1"
-                      min="0.1"
-                      required
-                      value={inputThreshold}
-                      onChange={(e) => handleThresholdChange(e.target.value)}
-                      className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-xs text-text-0 focus:border-bull focus:outline-none font-mono"
-                    />
-                    <span className="absolute right-4 text-text-2 text-xs font-semibold">%</span>
-                  </div>
+            {isAlertSet ? (
+              <div className="space-y-3 text-left">
+                <div className="text-xs font-mono bg-emerald-500/5 text-emerald-700 px-3.5 py-2.5 rounded-xl border border-emerald-500/15">
+                  Current alert trigger: <span className="font-bold">±{alertThreshold}%</span> (Target: <span className="font-bold">₹{inputPrice}</span>)
                 </div>
-
-                {/* TARGET PRICE INPUT */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
-                    Target Price
-                  </label>
-                  <div className="relative flex items-center">
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0.01"
-                      required
-                      value={inputPrice}
-                      onChange={(e) => handlePriceChange(e.target.value)}
-                      className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-xs text-text-0 focus:border-bull focus:outline-none font-mono"
-                    />
-                    <span className="absolute right-4 text-text-2 text-xs font-semibold">₹</span>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* BUTTONS */}
-              <div className="flex justify-end gap-3 mt-2 border-t border-border-custom pt-4">
                 <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowModal(false);
-                  }}
-                  className="rounded-lg border border-border-strong bg-bg-1 px-4 py-2 text-xs font-medium text-text-1 hover:bg-border-custom/50 cursor-pointer"
+                  onClick={handleRemoveFromWatchlist}
+                  disabled={loading}
+                  className="w-full text-center text-xs font-semibold text-bear bg-bear/5 border border-bear/10 hover:border-bear/30 rounded-xl py-2.5 transition-all cursor-pointer"
                 >
-                  Cancel
+                  Delete Price Alert
                 </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSaveThreshold} className="space-y-4 text-left">
+                {/* DIRECTION SELECTOR */}
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-text-2 font-semibold">Direction</span>
+                  <div className="grid grid-cols-2 gap-1.5 bg-bg-0 p-0.5 rounded-lg text-[10px] font-mono">
+                    <button
+                      type="button"
+                      onClick={() => handleDirectionChange("upside")}
+                      className={`py-1.5 rounded-md transition-colors cursor-pointer text-center font-bold ${
+                        direction === "upside" ? "bg-bull/10 text-bull" : "text-text-2 hover:text-text-0"
+                      }`}
+                    >
+                      Upside (&gt;= Target)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDirectionChange("downside")}
+                      className={`py-1.5 rounded-md transition-colors cursor-pointer text-center font-bold ${
+                        direction === "downside" ? "bg-bear/10 text-bear" : "text-text-2 hover:text-text-0"
+                      }`}
+                    >
+                      Downside (&lt;= Target)
+                    </button>
+                  </div>
+                </div>
+
+                {/* TARGET PRICE & PERCENTAGE INPUTS */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-text-2 font-semibold">Threshold (%)</span>
+                    <div className="relative flex items-center">
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0.1"
+                        required
+                        value={inputThreshold}
+                        onChange={(e) => handleThresholdChange(e.target.value)}
+                        className="w-full rounded-lg border border-border-strong bg-bg-0 pl-2.5 pr-5 py-2 text-xs text-text-0 focus:border-bull focus:outline-none font-mono"
+                      />
+                      <span className="absolute right-3 text-text-2 text-[10px] font-bold">%</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-text-2 font-semibold">Target Price (₹)</span>
+                    <div className="relative flex items-center">
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        required
+                        value={inputPrice}
+                        onChange={(e) => handlePriceChange(e.target.value)}
+                        className="w-full rounded-lg border border-border-strong bg-bg-0 pl-2.5 pr-5 py-2 text-xs text-text-0 focus:border-bull focus:outline-none font-mono"
+                      />
+                      <span className="absolute right-3 text-text-2 text-[10px] font-bold">₹</span>
+                    </div>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
-                  className="rounded-lg bg-bull px-4 py-2 text-xs font-medium text-white hover:bg-bull/90 cursor-pointer animate-fade-in"
+                  disabled={loading}
+                  className="w-full text-center text-xs font-semibold bg-bull text-white hover:bg-bull/95 rounded-xl py-2.5 transition-all cursor-pointer active:scale-95"
                 >
-                  Set Alert
+                  Set Price Alert
                 </button>
-              </div>
-
-            </form>
+              </form>
+            )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </>
+    </div>
   );
 };
 

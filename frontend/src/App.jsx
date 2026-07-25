@@ -9,6 +9,7 @@ import NewsDetail from "./pages/NewsDetail";
 import AIAnalysisPage from "./pages/AIAnalysisPage";
 import IPOPage from "./pages/IPOPage";
 import StockDetails from "./pages/StockDetails";
+import Nifty50 from "./pages/Nifty50";
 import WatchlistPage from "./pages/WatchlistPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 
@@ -44,8 +45,17 @@ function App() {
         />
 
         <Route
+          path="/nifty50"
+          element={<Nifty50 />}
+        />
+
+        <Route
           path="/watchlist"
-          element={<WatchlistPage />}
+          element={<WatchlistPage type="watchlist" />}
+        />
+        <Route
+          path="/price-alerts"
+          element={<WatchlistPage type="alerts" />}
         />
         <Route
           path="/corporate-announcements"

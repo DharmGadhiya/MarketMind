@@ -188,7 +188,7 @@ const Home = () => {
 
         </div>
 
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_365px]">
 
           <div>
 

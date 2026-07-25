@@ -35,8 +35,8 @@ export async function checkWatchlistAlerts() {
       const currentChangePercent = stock.changePercent || 0;
       const absChangePercent = Math.abs(currentChangePercent);
 
-      // Check if threshold is met
-      if (absChangePercent >= entry.alertThreshold) {
+      // Check if threshold is met (alertThreshold > 0 means alert is enabled)
+      if (entry.alertThreshold > 0 && absChangePercent >= entry.alertThreshold) {
         // Debounce logic: check if already alerted in the last 24 hours (86,400,000 ms)
         const debouncePeriod = 24 * 60 * 60 * 1000;
         const now = new Date();

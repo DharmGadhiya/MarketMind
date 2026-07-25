@@ -2,7 +2,7 @@ import YahooFinance from "yahoo-finance2";
 import Stock from "../models/stock.js";
 import { STOCKS } from "../config/stocks.js";
 
-const yahooFinance = new YahooFinance();
+const yahooFinance = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 
 
 /**

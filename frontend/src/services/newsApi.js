@@ -58,6 +58,11 @@ export const fetchStockChart = async (symbol, range = "1d") => {
   return response.data;
 };
 
+export const fetchNifty50 = async () => {
+  const response = await API.get("/api/nifty50");
+  return response.data;
+};
+
 // USER AUTHENTICATION API METHODS
 export const getCurrentUser = async () => {
   const response = await API.get("/api/user/current-user");

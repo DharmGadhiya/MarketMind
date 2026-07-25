@@ -19,6 +19,7 @@ import watchlistRouter from "./routes/watchlist.js";
 import notificationRouter from "./routes/notification.js";
 import ipoRouter from "./routes/ipoRoutes.js";
 import announcementRouter from "./routes/announcementRoutes.js";
+import niftyRouter from "./routes/niftyRoutes.js";
 import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 
 const app = express();
@@ -86,6 +87,7 @@ app.use("/api/stocks", stockDetailRouter);
 app.use("/stocks", stockRouter);
 app.use("/api", ipoRouter);
 app.use("/api", announcementRouter);
+app.use("/api/nifty50", niftyRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

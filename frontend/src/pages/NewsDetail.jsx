@@ -115,7 +115,7 @@ const NewsDetail = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_365px]">
           <article className="rise-up flex flex-col gap-6">
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-text-2 transition-colors">
               <span className="text-bull font-semibold">

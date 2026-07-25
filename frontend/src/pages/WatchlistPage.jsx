@@ -12,7 +12,7 @@ import { formatNum } from "../Utilities/utils/format";
  * Displays the user's current watchlist with live prices, changes, alert thresholds,
  * and allows deleting entries directly.
  */
-const WatchlistPage = () => {
+const WatchlistPage = ({ type = "watchlist" }) => {
   const { user } = useUser();
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +68,22 @@ const WatchlistPage = () => {
     window.dispatchEvent(new CustomEvent("open-login-modal"));
   };
 
+  // Filter items based on type
+  const filteredList = watchlist.filter(item => {
+    if (type === "alerts") {
+      return item.alertThreshold > 0;
+    } else {
+      return item.alertThreshold === 0;
+    }
+  });
+
+  const Icon = type === "alerts" ? Bell : Star;
+  const iconColor = type === "alerts" ? "text-emerald-500" : "text-amber-500";
+  const pageTitle = type === "alerts" ? "Price Alerts" : "My Watchlist";
+  const pageDesc = type === "alerts"
+    ? "Manage your active price threshold triggers. Receive instant email and terminal alerts when stock prices cross these boundaries."
+    : "Monitor your favorite tickers and track live market performance. No price alert triggers or notifications are configured for these assets.";
+
   return (
     <div className="min-h-screen bg-bg-0 text-text-0 transition-colors duration-300 flex flex-col justify-between">
       <div>
@@ -78,10 +94,10 @@ const WatchlistPage = () => {
           {/* TITLE SECTION */}
           <div className="mb-8">
             <h1 className="font-serif text-3xl sm:text-4xl text-text-0 mb-2 transition-colors flex items-center gap-3">
-              <Star className="text-bull" size={28} fill="currentColor" /> My Watchlist
+              <Icon className={iconColor} size={28} fill="currentColor" /> {pageTitle}
             </h1>
             <p className="text-sm text-text-2 transition-colors max-w-xl">
-              Monitor your favorite tickers, track live changes, and receive instant email alerts when thresholds are crossed.
+              {pageDesc}
             </p>
           </div>
 
@@ -90,7 +106,7 @@ const WatchlistPage = () => {
             /* LOGGED OUT STATE */
             <div className="rounded-2xl border border-border-strong bg-bg-1 py-16 px-6 text-center shadow-lg transition-colors flex flex-col items-center justify-center gap-4">
               <Bell className="text-text-3 animate-bounce" size={48} />
-              <h2 className="font-serif text-xl font-bold text-text-0">Access Your Watchlist</h2>
+              <h2 className="font-serif text-xl font-bold text-text-0">Access Your Workspace</h2>
               <p className="text-sm text-text-2 max-w-md">
                 Log in to your MarketMind account to start watching stocks, tracking performance, and setting up custom email alerts.
               </p>
@@ -105,7 +121,7 @@ const WatchlistPage = () => {
             /* LOADING STATE */
             <div className="rounded-2xl border border-border-strong bg-bg-1 py-20 text-center shadow-lg flex flex-col items-center justify-center gap-3">
               <Loader2 className="animate-spin text-bull" size={36} />
-              <p className="font-mono text-xs text-text-2 tracking-wider">Accessing Watchlist Database...</p>
+              <p className="font-mono text-xs text-text-2 tracking-wider">Accessing Workspace Database...</p>
             </div>
           ) : error ? (
             /* ERROR STATE */
@@ -113,15 +129,19 @@ const WatchlistPage = () => {
               <p className="text-bear text-sm font-semibold mb-2">⚠️ {error}</p>
               <p className="text-text-3 text-xs">Ensure your backend server is active and try refreshing.</p>
             </div>
-          ) : watchlist.length === 0 ? (
+          ) : filteredList.length === 0 ? (
             /* EMPTY STATE */
             <div className="rounded-2xl border border-border-strong bg-bg-1 py-20 px-6 text-center shadow-lg transition-colors flex flex-col items-center justify-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-bull/10 flex items-center justify-center text-bull">
-                <Star size={24} />
+              <div className={`h-12 w-12 rounded-full flex items-center justify-center ${type === "alerts" ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"}`}>
+                <Icon size={24} />
               </div>
-              <h2 className="font-serif text-lg font-bold text-text-0">Your watchlist is empty</h2>
+              <h2 className="font-serif text-lg font-bold text-text-0">
+                {type === "alerts" ? "No active price alerts" : "Your watchlist is empty"}
+              </h2>
               <p className="text-xs text-text-2 max-w-md leading-relaxed">
-                Start watching stocks by clicking the star (★) icon in the Home Terminal list or on any stock details page.
+                {type === "alerts"
+                  ? "Configure price alerts by clicking the bell icon next to any stock in the Terminal."
+                  : "Start watching stocks by clicking the star icon in the Terminal list or on any stock details page."}
               </p>
               <Link
                 to="/"
@@ -141,13 +161,17 @@ const WatchlistPage = () => {
                       <th className="py-4 px-4">Company Name</th>
                       <th className="py-4 px-4 text-right">Last Price (CMP)</th>
                       <th className="py-4 px-4 text-right">Change (%)</th>
-                      <th className="py-4 px-4 text-center">Alert Threshold</th>
-                      <th className="py-4 px-4 text-center">Last Alerted</th>
+                      {type === "alerts" && (
+                        <>
+                          <th className="py-4 px-4 text-center">Alert Threshold</th>
+                          <th className="py-4 px-4 text-center">Last Alerted</th>
+                        </>
+                      )}
                       <th className="py-4 px-6 text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-custom font-sans text-xs sm:text-sm transition-colors">
-                    {watchlist.map((item) => {
+                    {filteredList.map((item) => {
                       const cleanSymbol = item.symbol.replace(".NS", "");
                       const isPositive = item.changePercent >= 0;
                       
@@ -184,29 +208,31 @@ const WatchlistPage = () => {
                             </span>
                           </td>
 
-                          {/* Alert Threshold */}
-                          <td className="py-4 px-4 text-center font-mono text-text-1 font-semibold">
-                            {item.alertThreshold.toFixed(1)}%
-                          </td>
-
-                          {/* Last Alerted */}
-                          <td className="py-4 px-4 text-center text-xs text-text-2 font-mono">
-                            {item.lastAlertedAt
-                              ? new Date(item.lastAlertedAt).toLocaleString("en-IN", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })
-                              : "Never"}
-                          </td>
+                          {/* Alert Threshold & Last Alerted for alerts view only */}
+                          {type === "alerts" && (
+                            <>
+                              <td className="py-4 px-4 text-center font-mono text-text-1 font-semibold">
+                                {item.alertThreshold.toFixed(1)}%
+                              </td>
+                              <td className="py-4 px-4 text-center text-xs text-text-2 font-mono">
+                                {item.lastAlertedAt
+                                  ? new Date(item.lastAlertedAt).toLocaleString("en-IN", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
+                                  : "Never"}
+                              </td>
+                            </>
+                          )}
 
                           {/* Actions */}
                           <td className="py-4 px-6 text-center">
                             <button
                               onClick={() => handleRemove(item.symbol)}
                               className="p-2 rounded-lg text-bear hover:bg-bear/10 border border-transparent hover:border-bear/20 transition-all cursor-pointer inline-flex items-center justify-center"
-                              title="Remove from Watchlist"
+                              title={type === "alerts" ? "Delete Price Alert" : "Remove from Watchlist"}
                             >
                               <Trash2 size={15} />
                             </button>

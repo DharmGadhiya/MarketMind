@@ -1,13 +1,33 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { X, Sun, Moon, Search, Menu, Bell } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { X, Sun, Moon, Search, Menu, Bell, Home, LineChart, TrendingUp, Star, Megaphone } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin, forgotPassword, resetPassword } from "../services/newsApi";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, setUser } = useUser();
+
+  const menuGroups = [
+    {
+      title: "Main Terminal",
+      items: [
+        { name: "Home Terminal", path: "/", icon: Home },
+        { name: "IPO Center", path: "/ipo", icon: LineChart },
+        { name: "NIFTY 50", path: "/nifty50", icon: TrendingUp },
+      ]
+    },
+    {
+      title: "Workspace",
+      items: [
+        { name: "My Watchlist", path: "/watchlist", icon: Star },
+        { name: "Price Alerts", path: "/price-alerts", icon: Bell },
+        { name: "Announcements", path: "/corporate-announcements", icon: Megaphone },
+      ]
+    }
+  ];
   const { theme, toggleTheme } = useTheme();
   
   useEffect(() => {
@@ -523,9 +543,6 @@ const Header = () => {
                   <span className="font-sans text-xs font-semibold text-text-0 transition-colors">
                     {user.userName || "Investor"}
                   </span>
-                  <span className="font-mono text-[9px] text-text-2 transition-colors mt-0.5">
-                    {user.email}
-                  </span>
                 </div>
                 <button
                   onClick={handleLogoutClick}
@@ -893,9 +910,11 @@ const Header = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-custom">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-lg font-bold text-text-0">Menu</span>
+        {/* DRAWER HEADER */}
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-border-custom bg-gradient-to-r from-bull/5 to-transparent -mx-6 px-6 pt-2">
+          <div className="flex items-center gap-2.5">
+            <div className="h-2 w-2 rounded-full bg-bull animate-pulse" />
+            <span className="font-serif text-sm font-bold text-text-0 tracking-tight">MarketMind Navigator</span>
           </div>
           <button
             onClick={() => setIsSidebarOpen(false)}
@@ -905,50 +924,83 @@ const Header = () => {
           </button>
         </div>
 
-        <nav className="flex flex-col gap-2">
-          <Link
-            to="/"
-            onClick={() => setIsSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
-          >
-            <span>🏠</span>
-            <span>Home Terminal</span>
-          </Link>
-          <Link
-            to="/ipo"
-            onClick={() => setIsSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
-          >
-            <span>📊</span>
-            <span>IPO Center</span>
-          </Link>
-          <Link
-            to="/watchlist"
-            onClick={() => setIsSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
-          >
-            <span>⭐</span>
-            <span>My Watchlist</span>
-          </Link>
-          <Link
-            to="/corporate-announcements"
-            onClick={() => setIsSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
-          >
-            <span>📢</span>
-            <span>Corporate Announcements</span>
-          </Link>
+        {/* NAVIGATION LIST */}
+        <nav className="flex flex-col gap-5">
+          {menuGroups.map((group) => (
+            <div key={group.title} className="flex flex-col gap-2">
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-text-3 px-1 font-bold">
+                {group.title}
+              </span>
+              <div className="flex flex-col gap-1">
+                {group.items.map((item) => {
+                  const isActive = location.pathname === item.path;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsSidebarOpen(false)}
+                      className={`group flex items-center gap-3 px-3 py-2 rounded-r-xl border-l-4 transition-all font-semibold text-xs shadow-sm ${
+                        isActive
+                          ? "border-l-bull bg-bull/10 text-bull"
+                          : "border-l-transparent hover:border-l-bull hover:bg-bull/5 text-text-1 hover:text-bull"
+                      }`}
+                    >
+                      <div className={`p-1 rounded-lg border transition-colors ${
+                        isActive 
+                          ? "bg-bull/20 border-bull/30 text-bull" 
+                          : "bg-bg-2 border-border-custom text-text-2 group-hover:bg-bull/10 group-hover:text-bull group-hover:border-bull/20"
+                      }`}>
+                        <Icon size={13} />
+                      </div>
+                      <span>{item.name}</span>
+                      {isActive && (
+                        <div className="ml-auto h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
+        {/* MARKET HEALTH snapshot CARD */}
+        <div className="mt-6 bg-bg-2/50 border border-border-custom p-3 rounded-xl shadow-inner select-none">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[8px] uppercase tracking-wider text-text-3 font-bold">Market Heartbeat</span>
+            <div className="flex items-center gap-1">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-bull opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-bull"></span>
+              </span>
+              <span className="text-[8px] font-mono font-bold text-bull">LIVE</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border-custom/50 text-[10px] font-mono leading-none">
+            <div className="space-y-1">
+              <span className="text-text-3 text-[8.5px]">NIFTY 50</span>
+              <div className="font-bold text-text-0">24,320.15</div>
+              <div className="text-bull font-semibold text-[8px]">+0.85%</div>
+            </div>
+            <div className="space-y-1 border-l border-border-custom/50 pl-3">
+              <span className="text-text-3 text-[8.5px]">SENSEX</span>
+              <div className="font-bold text-text-0">79,802.40</div>
+              <div className="text-bull font-semibold text-[8px]">+0.78%</div>
+            </div>
+          </div>
+        </div>
+
+        {/* USER PROFILE CARD */}
         {user && (
           <div className="absolute bottom-6 left-6 right-6 pt-4 border-t border-border-custom">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 p-3 bg-bg-2/60 border border-border-custom rounded-xl shadow-inner">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-bold font-mono">
                 {user.name ? user.name[0].toUpperCase() : "U"}
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-xs font-bold text-text-0 truncate">{user.name}</span>
-                <span className="text-[10px] text-text-3 truncate">{user.email}</span>
+                <span className="text-[11px] text-text-3 truncate">{user.email}</span>
               </div>
             </div>
             <button

@@ -33,8 +33,8 @@ router.post("/", async (req, res) => {
   }
 
   const thresholdNum = parseFloat(alertThreshold);
-  if (isNaN(thresholdNum) || thresholdNum <= 0) {
-    return res.status(400).json({ success: false, msg: "alertThreshold must be a positive number." });
+  if (isNaN(thresholdNum) || thresholdNum < 0) {
+    return res.status(400).json({ success: false, msg: "alertThreshold must be a non-negative number." });
   }
 
   try {
@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
     const watchlistEntry = await Watchlist.findOneAndUpdate(
       { userId: req.user._id, symbol: formattedSymbol },
       { alertThreshold: thresholdNum, lastAlertedAt: null },
-      { new: true, upsert: true }
+      { returnDocument: "after", upsert: true }
     );
 
     return res.status(200).json({
