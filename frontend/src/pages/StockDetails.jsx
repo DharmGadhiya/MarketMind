@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // API services
@@ -110,13 +110,25 @@ const StockDetails = () => {
           <AnimatePresence mode="wait">
             {loading ? (
               <motion.div
-                key="skeleton"
+                key="loading-details"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
+                className="flex flex-col items-center justify-center py-32"
               >
-                <SkeletonLoader />
+                <div className="relative flex items-center justify-center mb-6">
+                  {/* Outer glowing rings */}
+                  <div className="absolute h-24 w-24 rounded-full border border-bull/20 animate-ping opacity-35" />
+                  <div className="absolute h-16 w-16 rounded-full border border-bull/35 animate-pulse opacity-55" />
+                  <div className="relative h-12 w-12 rounded-full bg-gradient-to-tr from-bull/10 to-bull/25 border border-bull/30 flex items-center justify-center shadow-md shadow-bull/5">
+                    <Loader2 className="h-5 w-5 text-bull animate-spin" />
+                  </div>
+                </div>
+                
+                <span className="text-[10px] font-mono text-text-3 font-bold uppercase tracking-[0.25em] animate-pulse">
+                  Retrieving Ticker Feed...
+                </span>
               </motion.div>
             ) : error ? (
               <motion.div

@@ -968,31 +968,6 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* MARKET HEALTH snapshot CARD */}
-          <div className="bg-bg-2/50 border border-border-custom p-3 rounded-xl shadow-inner select-none">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[8px] uppercase tracking-wider text-text-3 font-bold">Market Heartbeat</span>
-              <div className="flex items-center gap-1">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-bull opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-bull"></span>
-                </span>
-                <span className="text-[8px] font-mono font-bold text-bull">LIVE</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border-custom/50 text-[10px] font-mono leading-none">
-              <div className="space-y-1">
-                <span className="text-text-3 text-[8.5px]">NIFTY 50</span>
-                <div className="font-bold text-text-0">24,320.15</div>
-                <div className="text-bull font-semibold text-[8px]">+0.85%</div>
-              </div>
-              <div className="space-y-1 border-l border-border-custom/50 pl-3">
-                <span className="text-text-3 text-[8.5px]">SENSEX</span>
-                <div className="font-bold text-text-0">79,802.40</div>
-                <div className="text-bull font-semibold text-[8px]">+0.78%</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* DOCKED USER PROFILE CARD */}

@@ -45,7 +45,7 @@ router.get("/", async (req, res) => {
 });
 
 // Automatically update stock prices in the background every 2 minutes
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/30 * * * * *", async () => {
   try {
     console.log("[Scheduled Stock Update] Starting background update...");
     const result = await updateStocks();

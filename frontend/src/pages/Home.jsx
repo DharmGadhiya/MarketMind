@@ -111,7 +111,39 @@ const Home = () => {
 
             </div>
 
-            <div className="hidden lg:block rise-up">
+            <div className="hidden lg:block rise-up min-w-[330px]">
+
+              {/* MARKET HEARTBEAT HEADER SNAPSHOT */}
+              <div className="mb-4 bg-bg-1 border border-border-strong rounded-xl p-4 shadow-sm flex items-center justify-between gap-4 transition-all duration-300 hover:border-bull/20">
+                
+                {/* NIFTY 50 */}
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-mono font-bold text-text-3 uppercase tracking-wider">Nifty 50</span>
+                    <span className="inline-flex h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-serif text-xl font-bold text-text-0">24,320.15</span>
+                    <span className="text-xs font-mono font-bold text-bull">+0.85%</span>
+                  </div>
+                </div>
+
+                {/* Divider Line */}
+                <div className="h-8 w-px bg-border-custom" />
+
+                {/* SENSEX */}
+                <div className="flex-1 space-y-1 pl-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-mono font-bold text-text-3 uppercase tracking-wider">Sensex</span>
+                    <span className="inline-flex h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-serif text-xl font-bold text-text-0">79,802.40</span>
+                    <span className="text-xs font-mono font-bold text-bull">+0.78%</span>
+                  </div>
+                </div>
+
+              </div>
 
               <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-border-strong bg-border-strong shadow-sm transition-colors">
 

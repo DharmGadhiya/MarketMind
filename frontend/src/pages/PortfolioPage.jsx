@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, Trash2, Pencil, Plus, Briefcase, TrendingUp, TrendingDown, X, Info } from "lucide-react";
+import { Loader2, Trash2, Pencil, Plus, Briefcase, TrendingUp, TrendingDown, X, Info, Lock, Shield } from "lucide-react";
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
 import { useUser } from "../services/UserContext";
@@ -24,6 +24,23 @@ const PortfolioPage = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const PORTFOLIO_TIPS = [
+    "Rule No. 1: Never lose money. Rule No. 2: Never forget Rule No. 1. — Warren Buffett",
+    "The individual investor should act consistently as an investor and not as a speculator. — Benjamin Graham",
+    "The core of portfolio management is the control of investment risks, not the avoidance of them.",
+    "Know what you own, and know why you own it. — Peter Lynch",
+    "In investing, what is comfortable is rarely profitable. — Robert Arnott",
+    "Risk comes from not knowing what you're doing. — Warren Buffett"
+  ];
+
+  const [activeTip, setActiveTip] = useState("");
+
+  useEffect(() => {
+    if (!loading) return;
+    const randomIndex = Math.floor(Math.random() * PORTFOLIO_TIPS.length);
+    setActiveTip(PORTFOLIO_TIPS[randomIndex]);
+  }, [loading]);
 
   // Modal States
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -253,10 +270,40 @@ const PortfolioPage = () => {
               </button>
             </div>
           ) : loading ? (
-            /* LOADING STATE */
-            <div className="rounded-2xl border border-border-strong bg-bg-1 py-20 text-center shadow-lg flex flex-col items-center justify-center gap-3">
-              <Loader2 className="animate-spin text-bull" size={36} />
-              <p className="font-mono text-xs text-text-2 tracking-wider">Loading portfolio metrics...</p>
+            /* PREMIUM LOADER SCREEN */
+            <div className="mx-auto max-w-xl border border-border-custom bg-bg-1/40 backdrop-blur-md rounded-2xl p-8 shadow-2xl flex flex-col gap-6 items-center my-10 select-none text-center animate-fade-in">
+              {/* THEMATIC ICON CONTAINER */}
+              <div className="flex flex-col items-center justify-center relative py-4">
+                <div className="absolute h-32 w-32 rounded-full border border-emerald-500/20 animate-ping opacity-30" />
+                <div className="absolute h-24 w-24 rounded-full border border-emerald-500/30 animate-pulse opacity-60" />
+                <div className="relative h-16 w-16 rounded-full bg-gradient-to-tr from-emerald-500/10 to-emerald-500/30 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                  <Shield className="h-7 w-7 text-emerald-500 animate-pulse" />
+                </div>
+              </div>
+
+              {/* WISDOM QUOTE */}
+              <div className="space-y-4 max-w-md">
+                <div className="flex justify-center">
+                  <span className="font-mono text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded font-bold border text-emerald-500 bg-emerald-500/10 border-emerald-500/20">
+                    Capital Vault
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-8xl font-serif leading-none select-none text-emerald-500/5">“</span>
+                  <p className="font-serif text-[22px] font-extrabold text-text-0 leading-relaxed relative pt-2 px-4 transition-all duration-300">
+                    {activeTip}
+                  </p>
+                </div>
+              </div>
+
+              {/* ACTION TEXT */}
+              <div className="flex items-center gap-2 mt-2">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-500" />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] animate-pulse text-emerald-500">
+                  Decrypting investment ledger...
+                </span>
+              </div>
             </div>
           ) : error ? (
             /* ERROR STATE */

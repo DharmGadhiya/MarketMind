@@ -15,7 +15,7 @@ import { getWatchlist, addToWatchlist, removeFromWatchlist, fetchStockDetails } 
  * @param {number} [props.changePercent] - Live percent change (from parent)
  * @param {string} [props.className] - Optional tailwind classes
  */
-const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", iconClassName = "h-4 w-4" }) => {
+const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", iconClassName = "h-4 w-4", buttonClassName = "h-7 w-7 p-1.5 rounded-lg" }) => {
   const { user } = useUser();
   
   const [isWatched, setIsWatched] = useState(false);
@@ -74,23 +74,21 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
       if (res && res.success && res.data) {
         const item = res.data.find(w => w.symbol.toUpperCase() === formattedSymbol);
         if (item) {
-          if (item.alertThreshold === 0) {
-            setIsWatched(true);
-            setIsAlertSet(false);
-            setAlertThreshold(0);
-          } else {
-            setIsWatched(false);
-            setIsAlertSet(true);
-            setAlertThreshold(item.alertThreshold);
-            setInputThreshold(item.alertThreshold.toString());
-            
-            // Pre-populate target price based on watched threshold and current direction
-            if (prevClose > 0) {
-              const price = direction === "upside"
-                ? prevClose * (1 + item.alertThreshold / 100)
-                : prevClose * (1 - item.alertThreshold / 100);
-              setInputPrice(price.toFixed(2));
-            }
+          // If the item exists, set states independently
+          const watchedVal = !!item.isWatched || item.alertThreshold === 0;
+          const alertVal = item.alertThreshold > 0;
+          
+          setIsWatched(watchedVal);
+          setIsAlertSet(alertVal);
+          setAlertThreshold(item.alertThreshold);
+          setInputThreshold(item.alertThreshold.toString());
+          
+          // Pre-populate target price based on alert threshold and current direction
+          if (alertVal && prevClose > 0) {
+            const price = direction === "upside"
+              ? prevClose * (1 + item.alertThreshold / 100)
+              : prevClose * (1 - item.alertThreshold / 100);
+            setInputPrice(price.toFixed(2));
           }
         } else {
           setIsWatched(false);
@@ -178,14 +176,13 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
     try {
       setLoading(true);
       if (isWatched) {
-        await removeFromWatchlist(formattedSymbol);
+        // Toggle off watchlist, preserve current alertThreshold
+        await addToWatchlist(formattedSymbol, alertThreshold, false);
         setIsWatched(false);
-        setAlertThreshold(0);
       } else {
-        await addToWatchlist(formattedSymbol, 0); // threshold = 0
+        // Toggle on watchlist, preserve current alertThreshold
+        await addToWatchlist(formattedSymbol, alertThreshold, true);
         setIsWatched(true);
-        setIsAlertSet(false);
-        setAlertThreshold(0);
       }
       window.dispatchEvent(new CustomEvent("watchlist-updated"));
     } catch (err) {
@@ -216,8 +213,8 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
 
     try {
       setLoading(true);
-      await addToWatchlist(formattedSymbol, val);
-      setIsWatched(false);
+      // Save price alert, preserve current isWatched status
+      await addToWatchlist(formattedSymbol, val, isWatched);
       setIsAlertSet(true);
       setAlertThreshold(val);
       setShowModal(false);
@@ -235,8 +232,8 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
 
     try {
       setLoading(true);
-      await removeFromWatchlist(formattedSymbol);
-      setIsWatched(false);
+      // Deactivate only alert: threshold = 0, preserve isWatched status
+      await addToWatchlist(formattedSymbol, 0, isWatched);
       setIsAlertSet(false);
       setAlertThreshold(0);
       setShowModal(false);
@@ -256,10 +253,10 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
       <button
         onClick={handleWatchlistClick}
         disabled={loading}
-        className={`flex items-center justify-center rounded-lg transition-all cursor-pointer select-none duration-200 active:scale-90 p-1.5 h-7 w-7 border border-transparent ${
+        className={`flex items-center justify-center transition-all cursor-pointer select-none duration-200 active:scale-90 border ${buttonClassName} ${
           isWatched
             ? "bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20"
-            : "bg-bg-1 border-border-strong/45 text-text-2 hover:bg-bg-2 hover:text-text-0"
+            : "bg-bg-1 border-border-strong/70 text-text-1 hover:bg-bg-2 hover:text-text-0 shadow-sm"
         }`}
         title={isWatched ? "Remove from Watch List" : "Add to Watch List"}
       >
@@ -274,10 +271,10 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
       <button
         onClick={handleAlertClick}
         disabled={loading}
-        className={`flex items-center justify-center rounded-lg transition-all cursor-pointer select-none duration-200 active:scale-90 p-1.5 h-7 w-7 border border-transparent ${
+        className={`flex items-center justify-center transition-all cursor-pointer select-none duration-200 active:scale-90 border ${buttonClassName} ${
           isAlertSet
             ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20"
-            : "bg-bg-1 border-border-strong/45 text-text-2 hover:bg-bg-2 hover:text-text-0"
+            : "bg-bg-1 border-border-strong/70 text-text-1 hover:bg-bg-2 hover:text-text-0 shadow-sm"
         }`}
         title={isAlertSet ? `Alert active at ±${alertThreshold}%` : "Set Price Alert"}
       >

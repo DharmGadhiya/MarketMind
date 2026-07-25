@@ -37,7 +37,13 @@ const StockHeader = ({ stock }) => {
             <span className="rounded-lg bg-bg-2 border border-border-strong/50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold transition-colors">
               NSE: {stock.symbol}
             </span>
-            <WatchToggle symbol={stock.symbol} currentPrice={stock.currentPrice} changePercent={stock.percentChange} />
+            <WatchToggle
+              symbol={stock.symbol}
+              currentPrice={stock.currentPrice}
+              changePercent={stock.percentChange}
+              buttonClassName="h-9 w-9 p-2 rounded-xl bg-white dark:bg-bg-1 border-border-strong text-text-1 hover:bg-bg-2 shadow-sm"
+              iconClassName="h-[18px] w-[18px]"
+            />
           </div>
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-2 font-medium">

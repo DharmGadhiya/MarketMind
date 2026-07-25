@@ -15,25 +15,25 @@ const CompanyCard = ({ stock }) => {
 
       <div className="space-y-3">
         {/* SECTOR & INDUSTRY */}
-        <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+        <div className="grid grid-cols-2 gap-4 font-mono">
           <div className="space-y-1">
-            <span className="font-sans text-[10px] text-text-2 font-medium">Sector</span>
-            <div className="text-text-0 font-semibold">{stock.sector}</div>
+            <span className="font-sans text-xs text-text-2 font-medium">Sector</span>
+            <div className="text-text-0 font-semibold text-sm">{stock.sector}</div>
           </div>
           <div className="space-y-1">
-            <span className="font-sans text-[10px] text-text-2 font-medium">Industry</span>
-            <div className="text-text-0 font-semibold leading-tight">{stock.industry}</div>
+            <span className="font-sans text-xs text-text-2 font-medium">Industry</span>
+            <div className="text-text-0 font-semibold text-sm leading-tight">{stock.industry}</div>
           </div>
         </div>
 
         {/* BUSINESS DESCRIPTION */}
         {hasDescription && (
           <div className="border-t border-border-custom/50 pt-3 space-y-2">
-            <span className="font-sans text-[10px] text-text-2 font-medium block">
+            <span className="font-sans text-xs text-text-2 font-medium block">
               Business Description
             </span>
             <p 
-              className={`text-xs leading-relaxed text-text-2 transition-all duration-300 ${
+              className={`text-sm leading-relaxed text-text-2 transition-all duration-300 ${
                 isExpanded ? "" : "clamp-4"
               }`}
             >
@@ -42,7 +42,7 @@ const CompanyCard = ({ stock }) => {
             
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="font-mono text-[10px] font-bold text-bull hover:underline cursor-pointer select-none"
+              className="font-mono text-xs font-bold text-bull hover:underline cursor-pointer select-none"
             >
               {isExpanded ? "Read Less ▲" : "Read More ▼"}
             </button>

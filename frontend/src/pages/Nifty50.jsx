@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, RotateCcw, ArrowRight } from "lucide-react";
+import { Search, RotateCcw, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/Header";
 import { fetchNifty50 } from "../services/newsApi";
@@ -66,6 +66,39 @@ const Nifty50 = () => {
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const INVESTING_TIPS = [
+    "Never invest in a company you don't understand.",
+    "Protect your capital first; profits come later.",
+    "Patience is the biggest advantage in the stock market.",
+    "Buy quality businesses, not just cheap stocks.",
+    "Never let emotions control your investment decisions.",
+    "Invest with logic, not fear or greed.",
+    "Always do your own research before buying any stock.",
+    "A rising business is more important than a rising stock price.",
+    "Diversification reduces risk, but over-diversification reduces returns.",
+    "Market corrections are opportunities, not disasters.",
+    "Never chase stocks that have already skyrocketed.",
+    "Consistent investing beats perfect market timing.",
+    "Strong fundamentals always matter more than market hype.",
+    "Ignore daily market noise and focus on long-term growth.",
+    "A good company bought at the wrong price can still be a bad investment.",
+    "Review your investments regularly, but don't react to every fluctuation.",
+    "Learn from every mistake, but never repeat the same one.",
+    "Cash is a position—keep some ready for great opportunities.",
+    "Successful investing is about discipline, not predictions.",
+    "The best investment strategy is the one you can follow consistently."
+  ];
+
+  const [activeTip, setActiveTip] = useState("");
+
+  useEffect(() => {
+    if (!loading) return;
+
+    // Pick a random tip on mount/reload
+    const randomIndex = Math.floor(Math.random() * INVESTING_TIPS.length);
+    setActiveTip(INVESTING_TIPS[randomIndex]);
+  }, [loading]);
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -291,41 +324,39 @@ const Nifty50 = () => {
         <main className="mx-auto max-w-[1400px] px-6 py-6 lg:px-10">
           <AnimatePresence mode="wait">
             {loading ? (
-              /* SKELETON LOADER GRID */
+              /* PREMIUM TERMINAL LOADING SCREEN */
               <motion.div
-                key="loading-skeleton"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6"
+                key="loading-screen"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mx-auto max-w-xl border border-border-custom bg-bg-1/40 backdrop-blur-md rounded-2xl p-8 shadow-2xl flex flex-col gap-6 items-center my-10 select-none text-center"
               >
-                {Array.from({ length: 8 }).map((_, idx) => (
-                  <div
-                    key={`skeleton-${idx}`}
-                    className="h-[145px] rounded-2xl border border-border-custom bg-bg-1 p-4 flex flex-col justify-between animate-pulse shadow-sm"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1.5 flex-1">
-                        <div className="h-3.5 bg-border-custom rounded-md w-3/4" />
-                        <div className="h-2.5 bg-border-custom rounded-md w-1/4" />
-                      </div>
-                      <div className="h-4 bg-border-custom rounded-full w-12 animate-pulse" />
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1.5 flex-1">
-                        <div className="h-4.5 bg-border-custom rounded-md w-1/3" />
-                        <div className="h-2.5 bg-border-custom rounded-md w-1/4" />
-                      </div>
-                      <div className="h-5 bg-border-custom rounded-md w-16" />
-                    </div>
-                    
-                    <div className="border-t border-border-custom/50 pt-2 flex justify-between items-center">
-                      <div className="h-3 bg-border-custom rounded-md w-1/3" />
-                      <div className="h-3 bg-border-custom rounded-md w-12" />
-                    </div>
+                {/* GLOWING RINGS AND SPINNERS */}
+                <div className="flex flex-col items-center justify-center relative py-4">
+                  {/* Glowing Rings */}
+                  <div className="absolute h-32 w-32 rounded-full border border-bull/20 animate-ping opacity-30" />
+                  <div className="absolute h-24 w-24 rounded-full border border-bull/30 animate-pulse opacity-60" />
+                  <div className="relative h-16 w-16 rounded-full bg-gradient-to-tr from-bull/10 to-bull/30 border border-bull/40 flex items-center justify-center shadow-lg shadow-bull/10">
+                    <Loader2 className="h-7 w-7 text-bull animate-spin" />
                   </div>
-                ))}
+                </div>
+
+                {/* WISDOM QUOTE */}
+                <div className="space-y-4 max-w-md">
+
+                  <div className="relative">
+                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-bull/5 text-8xl font-serif leading-none select-none">“</span>
+                    <p className="font-serif text-[22px] font-extrabold text-text-0 leading-relaxed relative pt-2 px-4 transition-all duration-300">
+                      {activeTip}
+                    </p>
+                  </div>
+                </div>
+
+                {/* SIMPLE PULSING LOADER TEXT */}
+                <div className="text-[10px] font-mono text-text-3 font-bold uppercase tracking-[0.2em] animate-pulse mt-2">
+                  Synchronizing Live Market Data...
+                </div>
               </motion.div>
             ) : error ? (
               /* ERROR STATE */

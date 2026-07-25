@@ -20,6 +20,10 @@ const WatchlistSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    isWatched: {
+      type: Boolean,
+      default: false,
+    },
     lastAlertedAt: {
       type: Date,
       default: null,

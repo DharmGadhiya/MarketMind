@@ -4,7 +4,7 @@ import { Loader2, Trash2, Bell, Star } from "lucide-react";
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
 import { useUser } from "../services/UserContext";
-import { getWatchlist, removeFromWatchlist } from "../services/newsApi";
+import { getWatchlist, removeFromWatchlist, addToWatchlist } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
 /**
@@ -17,6 +17,31 @@ const WatchlistPage = ({ type = "watchlist" }) => {
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const ALERT_TIPS = [
+    "In the short run, the market is a voting machine, but in the long run, it is a weighing machine. — Benjamin Graham",
+    "Opportunity is missed by most people because it is dressed in overalls and looks like work. — Thomas Edison",
+    "Buy when there is blood in the streets, even if the blood is your own. — Baron Rothschild",
+    "The stock market is filled with individuals who know the price of everything, but the value of nothing. — Philip Fisher",
+    "Markets can remain irrational longer than you can remain solvent. — John Maynard Keynes"
+  ];
+
+  const WATCHLIST_TIPS = [
+    "The stock market is a device for transferring money from the active to the patient. — Warren Buffett",
+    "Waiting helps you as an investor, and a lot of people just can't stand to wait. — Charlie Munger",
+    "You don't need to be a rocket scientist. Investing is not a game where the guy with 160 IQ beats the guy with 130 IQ. — Warren Buffett",
+    "The best time to buy a stock is when its long-term viability is intact, but the short-term outlook is gloomy.",
+    "Time is the friend of the wonderful company, the enemy of the mediocre. — Warren Buffett"
+  ];
+
+  const [activeTip, setActiveTip] = useState("");
+
+  useEffect(() => {
+    if (!loading) return;
+    const tips = type === "alerts" ? ALERT_TIPS : WATCHLIST_TIPS;
+    const randomIndex = Math.floor(Math.random() * tips.length);
+    setActiveTip(tips[randomIndex]);
+  }, [loading, type]);
 
   const fetchWatchlist = async () => {
     if (!user) {
@@ -54,10 +79,16 @@ const WatchlistPage = ({ type = "watchlist" }) => {
     };
   }, [user]);
 
-  const handleRemove = async (symbol) => {
+  const handleRemove = async (item) => {
     try {
-      await removeFromWatchlist(symbol);
-      // Dispatch update to sync other star toggles
+      if (type === "alerts") {
+        // Disable only price alert: threshold = 0, preserve isWatched
+        await addToWatchlist(item.symbol, 0, !!item.isWatched);
+      } else {
+        // Disable only watchlist: isWatched = false, preserve alertThreshold
+        await addToWatchlist(item.symbol, item.alertThreshold, false);
+      }
+      // Dispatch update to sync other toggles
       window.dispatchEvent(new CustomEvent("watchlist-updated"));
     } catch (err) {
       console.error("[Watchlist Page Delete Error]:", err);
@@ -73,7 +104,7 @@ const WatchlistPage = ({ type = "watchlist" }) => {
     if (type === "alerts") {
       return item.alertThreshold > 0;
     } else {
-      return item.alertThreshold === 0;
+      return item.isWatched || item.alertThreshold === 0;
     }
   });
 
@@ -118,10 +149,52 @@ const WatchlistPage = ({ type = "watchlist" }) => {
               </button>
             </div>
           ) : loading ? (
-            /* LOADING STATE */
-            <div className="rounded-2xl border border-border-strong bg-bg-1 py-20 text-center shadow-lg flex flex-col items-center justify-center gap-3">
-              <Loader2 className="animate-spin text-bull" size={36} />
-              <p className="font-mono text-xs text-text-2 tracking-wider">Accessing Workspace Database...</p>
+            /* PREMIUM LOADER SCREEN */
+            <div className="mx-auto max-w-xl border border-border-custom bg-bg-1/40 backdrop-blur-md rounded-2xl p-8 shadow-2xl flex flex-col gap-6 items-center my-10 select-none text-center animate-fade-in">
+              {/* THEMATIC ICON CONTAINER */}
+              <div className="flex flex-col items-center justify-center relative py-4">
+                {type === "alerts" ? (
+                  <>
+                    <div className="absolute h-32 w-32 rounded-full border border-rose-500/20 animate-ping opacity-30" />
+                    <div className="absolute h-24 w-24 rounded-full border border-rose-500/30 animate-pulse opacity-60" />
+                    <div className="relative h-16 w-16 rounded-full bg-gradient-to-tr from-rose-500/10 to-rose-500/30 border border-rose-500/40 flex items-center justify-center shadow-lg shadow-rose-500/10">
+                      <Bell className="h-7 w-7 text-rose-500 animate-bounce" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="absolute h-32 w-32 rounded-full border border-amber-500/20 animate-ping opacity-30" />
+                    <div className="absolute h-24 w-24 rounded-full border border-amber-500/30 animate-pulse opacity-60" />
+                    <div className="relative h-16 w-16 rounded-full bg-gradient-to-tr from-amber-500/10 to-amber-500/30 border border-amber-500/40 flex items-center justify-center shadow-lg shadow-amber-500/10">
+                      <Star className="h-7 w-7 text-amber-500 animate-spin" style={{ animationDuration: "6s" }} />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* WISDOM QUOTE */}
+              <div className="space-y-4 max-w-md">
+                <div className="relative">
+                  <span className={`absolute -top-6 left-1/2 -translate-x-1/2 text-8xl font-serif leading-none select-none ${
+                    type === "alerts" ? "text-rose-500/5" : "text-amber-500/5"
+                  }`}>“</span>
+                  <p className="font-serif text-[22px] font-extrabold text-text-0 leading-relaxed relative pt-2 px-4 transition-all duration-300">
+                    {activeTip}
+                  </p>
+                </div>
+              </div>
+
+              {/* ACTION TEXT */}
+              <div className="flex items-center gap-2 mt-2">
+                <Loader2 className={`h-3.5 w-3.5 animate-spin ${
+                  type === "alerts" ? "text-rose-500" : "text-amber-500"
+                }`} />
+                <span className={`text-[10px] font-mono font-bold uppercase tracking-[0.2em] animate-pulse ${
+                  type === "alerts" ? "text-rose-500" : "text-amber-500"
+                }`}>
+                  {type === "alerts" ? "Scanning active price thresholds..." : "Syncing watched tickers..."}
+                </span>
+              </div>
             </div>
           ) : error ? (
             /* ERROR STATE */
@@ -230,7 +303,7 @@ const WatchlistPage = ({ type = "watchlist" }) => {
                           {/* Actions */}
                           <td className="py-4 px-6 text-center">
                             <button
-                              onClick={() => handleRemove(item.symbol)}
+                              onClick={() => handleRemove(item)}
                               className="p-2 rounded-lg text-bear hover:bg-bear/10 border border-transparent hover:border-bear/20 transition-all cursor-pointer inline-flex items-center justify-center"
                               title={type === "alerts" ? "Delete Price Alert" : "Remove from Watchlist"}
                             >

@@ -26,32 +26,56 @@ router.post("/", async (req, res) => {
     return res.status(401).json({ success: false, msg: "Unauthenticated. Please log in." });
   }
 
-  const { symbol, alertThreshold } = req.body;
+  const { symbol, isWatched, alertThreshold } = req.body;
 
-  if (!symbol || alertThreshold === undefined || alertThreshold === null) {
-    return res.status(400).json({ success: false, msg: "Symbol and alertThreshold are required." });
-  }
-
-  const thresholdNum = parseFloat(alertThreshold);
-  if (isNaN(thresholdNum) || thresholdNum < 0) {
-    return res.status(400).json({ success: false, msg: "alertThreshold must be a non-negative number." });
+  if (!symbol) {
+    return res.status(400).json({ success: false, msg: "Symbol is required." });
   }
 
   try {
     const formattedSymbol = standardizeSymbol(symbol);
 
-    // Upsert: update alertThreshold (and reset lastAlertedAt so they get new alerts) if it already exists, otherwise create it
-    const watchlistEntry = await Watchlist.findOneAndUpdate(
-      { userId: req.user._id, symbol: formattedSymbol },
-      { alertThreshold: thresholdNum, lastAlertedAt: null },
-      { returnDocument: "after", upsert: true }
-    );
+    // Find existing entry
+    let entry = await Watchlist.findOne({ userId: req.user._id, symbol: formattedSymbol });
 
-    return res.status(200).json({
-      success: true,
-      msg: "Watchlist updated successfully",
-      data: watchlistEntry,
-    });
+    if (entry) {
+      if (isWatched !== undefined && isWatched !== null) {
+        entry.isWatched = !!isWatched;
+      }
+      if (alertThreshold !== undefined && alertThreshold !== null) {
+        const thresholdNum = parseFloat(alertThreshold);
+        if (!isNaN(thresholdNum) && thresholdNum >= 0) {
+          entry.alertThreshold = thresholdNum;
+          entry.lastAlertedAt = null; // reset triggers
+        }
+      }
+    } else {
+      const thresholdNum = alertThreshold !== undefined && alertThreshold !== null ? parseFloat(alertThreshold) : 0;
+      entry = new Watchlist({
+        userId: req.user._id,
+        symbol: formattedSymbol,
+        isWatched: isWatched !== undefined && isWatched !== null ? !!isWatched : false,
+        alertThreshold: !isNaN(thresholdNum) && thresholdNum >= 0 ? thresholdNum : 0,
+        lastAlertedAt: null
+      });
+    }
+
+    // If both features are disabled, remove from database
+    if (entry.isWatched === false && entry.alertThreshold === 0) {
+      await Watchlist.deleteOne({ _id: entry._id });
+      return res.status(200).json({
+        success: true,
+        msg: "Stock completely removed from watchlist/alerts",
+        data: null
+      });
+    } else {
+      await entry.save();
+      return res.status(200).json({
+        success: true,
+        msg: "Watchlist entry updated successfully",
+        data: entry
+      });
+    }
   } catch (error) {
     console.error("[Watchlist POST Error]:", error);
     return res.status(500).json({ success: false, msg: "Failed to update watchlist." });
@@ -128,6 +152,7 @@ router.get("/", async (req, res) => {
           _id: 1,
           symbol: 1,
           alertThreshold: 1,
+          isWatched: { $ifNull: ["$isWatched", false] },
           lastAlertedAt: 1,
           name: { $ifNull: ["$stockDetails.name", "$symbol"] },
           cmp: { $ifNull: ["$stockDetails.cmp", 0] },

@@ -89,9 +89,6 @@ const FinancialCard = ({ stock }) => {
               <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-text-2">
                 {card.label}
               </span>
-              <span className="text-base select-none">
-                {card.icon}
-              </span>
             </div>
 
             <div className="mt-3.5 space-y-1">

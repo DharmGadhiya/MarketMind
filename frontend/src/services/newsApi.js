@@ -95,8 +95,8 @@ export const getWatchlist = async () => {
   return response.data;
 };
 
-export const addToWatchlist = async (symbol, alertThreshold) => {
-  const response = await API.post("/api/watchlist", { symbol, alertThreshold });
+export const addToWatchlist = async (symbol, alertThreshold, isWatched) => {
+  const response = await API.post("/api/watchlist", { symbol, alertThreshold, isWatched });
   return response.data;
 };
 
