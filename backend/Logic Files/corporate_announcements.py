@@ -67,5 +67,5 @@ if __name__ == "__main__":
         fetch_and_save_data()
         
         print("Waiting 5 minutes before the next fetch...\n")
-        # 300 seconds = 5 minutes
-        time.sleep(300)
+       
+        time.sleep(86400)
