@@ -896,13 +896,13 @@ const Header = () => {
         </div>
       )}
 
-      {/* SIDEBAR NAVIGATION DRAWER */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+      {/* SIDEBAR NAVIGATION DRAWER BACKDROP */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
+          isSidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
       
       <div
         className={`fixed inset-y-0 left-0 z-50 w-72 bg-bg-1 border-r border-border-strong shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
