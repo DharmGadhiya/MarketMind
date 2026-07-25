@@ -3,6 +3,7 @@ import { Activity, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
+import WatchToggle from "./stock/WatchToggle";
 
 const MarketPulse = ({ initialStocks }) => {
   const [stocks, setStocks] = useState(initialStocks || []);
@@ -152,13 +153,16 @@ const MarketPulse = ({ initialStocks }) => {
                 to={`/stock/${encodeURIComponent(cleanSymbol)}`}
                 className="flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01] cursor-pointer"
               >
-                <div className="flex flex-col min-w-0">
-                  <span className="font-mono text-xs font-bold text-text-0 transition-colors">
-                    {cleanSymbol}
-                  </span>
-                  <span className="clamp-1 text-[10px] text-text-2 font-sans mt-0.5 transition-colors">
-                    {stock.name}
-                  </span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <WatchToggle symbol={stock.symbol} currentPrice={stock.cmp} changePercent={stock.changePercent} className="p-1 h-7 w-7 border-none bg-transparent" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-mono text-xs font-bold text-text-0 transition-colors">
+                      {cleanSymbol}
+                    </span>
+                    <span className="clamp-1 text-[10px] text-text-2 font-sans mt-0.5 transition-colors">
+                      {stock.name}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-3">

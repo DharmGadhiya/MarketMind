@@ -9,6 +9,7 @@ import NewsDetail from "./pages/NewsDetail";
 import AIAnalysisPage from "./pages/AIAnalysisPage";
 import IPOPage from "./pages/IPOPage";
 import StockDetails from "./pages/StockDetails";
+import WatchlistPage from "./pages/WatchlistPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 
 function App() {
@@ -42,6 +43,10 @@ function App() {
           element={<IPOPage />}
         />
 
+        <Route
+          path="/watchlist"
+          element={<WatchlistPage />}
+        />
         <Route
           path="/corporate-announcements"
           element={<AnnouncementsPage />}

@@ -67,3 +67,35 @@ export const verifyOTP = async (name, email, password, otp) => {
   const response = await API.post("/api/user/verify-otp", { name, email, password, otp });
   return response.data;
 };
+
+// WATCHLIST API METHODS
+export const getWatchlist = async () => {
+  const response = await API.get("/api/watchlist");
+  return response.data;
+};
+
+export const addToWatchlist = async (symbol, alertThreshold) => {
+  const response = await API.post("/api/watchlist", { symbol, alertThreshold });
+  return response.data;
+};
+
+export const removeFromWatchlist = async (symbol) => {
+  const response = await API.delete(`/api/watchlist/${encodeURIComponent(symbol)}`);
+  return response.data;
+};
+
+// NOTIFICATION API METHODS
+export const getNotifications = async () => {
+  const response = await API.get("/api/notifications");
+  return response.data;
+};
+
+export const markNotificationsAsRead = async () => {
+  const response = await API.post("/api/notifications/read");
+  return response.data;
+};
+
+export const deleteNotification = async (id) => {
+  const response = await API.delete(`/api/notifications/${encodeURIComponent(id)}`);
+  return response.data;
+};

@@ -1,14 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { X, Sun, Moon, Search, Menu } from "lucide-react";
+import { X, Sun, Moon, Search, Menu, Bell } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
-import { loginUser, logoutUser, createAccount, verifyOTP } from "../services/newsApi";
+import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification } from "../services/newsApi";
 
 const Header = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const { theme, toggleTheme } = useTheme();
+  
+  useEffect(() => {
+    const handleOpenLoginModal = () => {
+      openModal("login");
+    };
+    window.addEventListener("open-login-modal", handleOpenLoginModal);
+    return () => {
+      window.removeEventListener("open-login-modal", handleOpenLoginModal);
+    };
+  }, []);
+
+  // Notification states
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const fetchNotifications = async () => {
+    if (!user) return;
+    try {
+      const res = await getNotifications();
+      if (res && res.success) {
+        setNotifications(res.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    if (user) {
+      const interval = setInterval(fetchNotifications, 30000); // poll every 30s
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  // Sync state if watchlist/alert triggers update
+  useEffect(() => {
+    const handleWatchlistUpdate = () => {
+      fetchNotifications();
+    };
+    window.addEventListener("watchlist-updated", handleWatchlistUpdate);
+    return () => {
+      window.removeEventListener("watchlist-updated", handleWatchlistUpdate);
+    };
+  }, [user]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!showNotifications) return;
+    const closeDropdown = () => setShowNotifications(false);
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, [showNotifications]);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markNotificationsAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch (err) {
+      console.error("Failed to mark notifications read:", err);
+    }
+  };
+
+  const handleDeleteNotification = async (id, e) => {
+    e.stopPropagation();
+    try {
+      await deleteNotification(id);
+      setNotifications(prev => prev.filter(n => n._id !== id));
+    } catch (err) {
+      console.error("Failed to delete notification:", err);
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
   
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -285,7 +359,81 @@ const Header = () => {
 
             {user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex flex-col items-end leading-none">
+                {/* NOTIFICATION CENTRE BELL */}
+                <div className="relative" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-border-strong bg-bg-1 text-text-1 hover:bg-border-custom/50 hover:text-text-0 transition-colors shadow-sm cursor-news animate-fade-in"
+                    aria-label="Notifications"
+                  >
+                    <Bell size={14} />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-bull px-1 text-[9px] font-bold text-white font-mono pulse-dot">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* NOTIFICATION DROPDOWN */}
+                  {showNotifications && (
+                    <div
+                      className="absolute right-0 mt-2 w-80 z-50 rounded-2xl border border-border-strong bg-bg-1 p-3 shadow-xl transition-all duration-300"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center justify-between border-b border-border-custom pb-2 mb-2">
+                        <span className="font-serif text-sm font-bold text-text-0">Alert Notifications</span>
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={handleMarkAllRead}
+                            className="text-[10px] text-bull hover:underline cursor-pointer font-semibold"
+                          >
+                            Mark all read
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="max-h-64 overflow-y-auto pr-1 flex flex-col gap-1.5">
+                        {notifications.length > 0 ? (
+                          notifications.map((item) => (
+                            <div
+                              key={item._id}
+                              className={`flex items-start justify-between gap-2 p-2 rounded-xl border transition-colors ${
+                                item.read
+                                  ? "bg-bg-1 border-transparent text-text-2"
+                                  : "bg-bull/5 border-bull/10 text-text-0"
+                              }`}
+                            >
+                              <div className="flex flex-col gap-1 min-w-0">
+                                <p className="text-[11px] leading-relaxed break-words font-medium">
+                                  {item.message}
+                                </p>
+                                <span className="text-[9px] font-mono text-text-3 font-semibold">
+                                  {new Date(item.createdAt).toLocaleTimeString("en-IN", {
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                  })}
+                                </span>
+                              </div>
+                              <button
+                                onClick={(e) => handleDeleteNotification(item._id, e)}
+                                className="text-text-3 hover:text-bear p-1 rounded transition-colors cursor-pointer shrink-0"
+                                title="Dismiss notification"
+                              >
+                                <X size={11} />
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="py-8 text-center text-text-3 text-xs font-serif">
+                            No recent price alerts.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="hidden sm:flex flex-col items-end leading-none animate-fade-in">
                   <span className="font-sans text-xs font-semibold text-text-0 transition-colors">
                     {user.userName || "Investor"}
                   </span>
@@ -562,6 +710,14 @@ const Header = () => {
             <span>IPO Center</span>
           </Link>
           <Link
+            to="/watchlist"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
+          >
+            <span>⭐</span>
+            <span>My Watchlist</span>
+          </Link>
+          <Link
             to="/corporate-announcements"
             onClick={() => setIsSidebarOpen(false)}
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
@@ -598,4 +754,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header;

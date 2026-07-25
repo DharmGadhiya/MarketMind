@@ -7,6 +7,7 @@ import dns from "dns";
 import { spawn } from "child_process";
 import path from "path";
 
+dns.setDefaultResultOrder("ipv4first");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 import checkForAuthenticationCookie from "./middlewares/auth.js";
@@ -14,6 +15,8 @@ import newsRouter from "./routes/news.js";
 import stockRouter from "./routes/stockRoutes.js";
 import stockDetailRouter from "./routes/stockDetailRoutes.js";
 import userRouter from "./routes/user.js";
+import watchlistRouter from "./routes/watchlist.js";
+import notificationRouter from "./routes/notification.js";
 import ipoRouter from "./routes/ipoRoutes.js";
 import announcementRouter from "./routes/announcementRoutes.js";
 import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
@@ -77,6 +80,8 @@ app.get("/", (req, res) => {
 
 app.use("/api", newsRouter);
 app.use("/api/user", userRouter);
+app.use("/api/watchlist", watchlistRouter);
+app.use("/api/notifications", notificationRouter);
 app.use("/api/stocks", stockDetailRouter);
 app.use("/stocks", stockRouter);
 app.use("/api", ipoRouter);

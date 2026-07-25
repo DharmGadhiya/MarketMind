@@ -1,6 +1,7 @@
 import express from "express";
 import Stock from "../models/stock.js";
 import { updateStocks } from "../services/stockService.js";
+import { checkWatchlistAlerts } from "../services/watchlistAlert.service.js";
 import cron from "node-cron";
 
 const router = express.Router();
@@ -47,7 +48,10 @@ router.get("/", async (req, res) => {
 cron.schedule("*/1 * * * *", async () => {
   try {
     console.log("[Scheduled Stock Update] Starting background update...");
-    await updateStocks();
+    const result = await updateStocks();
+    if (result && result.success) {
+      await checkWatchlistAlerts();
+    }
   } catch (error) {
     console.error("[Scheduled Stock Update Error] Failed:", error.message);
   }
