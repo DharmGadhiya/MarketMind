@@ -9,6 +9,8 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout Repository
@@ -35,6 +37,10 @@ jobs:
         RUN_ONCE: "true"
       run: |
         python "backend/Logic Files/corporate_announcements.py"
+
+    - name: Check Git Status
+      run: |
+        git status
 
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v5
