@@ -98,31 +98,33 @@ app.use("/api/nifty50", niftyRouter);
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 
-  // Start the Python IPO scraper in the background
-  try {
-    const scriptPath = path.resolve("Logic Files", "ipo_listing.py");
-    console.log(`[Scraper] Spawning background IPO scraper at ${scriptPath}...`);
-    const scraperProcess = spawn("python", [scriptPath], {
-      detached: true,
-      stdio: "ignore",
-    });
-    scraperProcess.unref();
-    console.log("[Scraper] Background IPO scraper process spawned successfully.");
-  } catch (err) {
-    console.error("[Scraper] Failed to start background IPO scraper:", err);
-  }
+  // Start the Python scrapers in the background only in local development
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const scriptPath = path.resolve("Logic Files", "ipo_listing.py");
+      console.log(`[Scraper] Spawning background IPO scraper at ${scriptPath}...`);
+      const scraperProcess = spawn("python", [scriptPath], {
+        detached: true,
+        stdio: "ignore",
+      });
+      scraperProcess.unref();
+      console.log("[Scraper] Background IPO scraper process spawned successfully.");
+    } catch (err) {
+      console.error("[Scraper] Failed to start background IPO scraper:", err);
+    }
 
-  // Start the Python Corporate Announcements scraper in the background
-  try {
-    const scriptPath = path.resolve("Logic Files", "corporate_announcements.py");
-    console.log(`[Scraper] Spawning background Announcements scraper at ${scriptPath}...`);
-    const scraperProcess = spawn("python", [scriptPath], {
-      detached: true,
-      stdio: "ignore",
-    });
-    scraperProcess.unref();
-    console.log("[Scraper] Background Announcements scraper process spawned successfully.");
-  } catch (err) {
-    console.error("[Scraper] Failed to start background Announcements scraper:", err);
+    // Start the Python Corporate Announcements scraper in the background
+    try {
+      const scriptPath = path.resolve("Logic Files", "corporate_announcements.py");
+      console.log(`[Scraper] Spawning background Announcements scraper at ${scriptPath}...`);
+      const scraperProcess = spawn("python", [scriptPath], {
+        detached: true,
+        stdio: "ignore",
+      });
+      scraperProcess.unref();
+      console.log("[Scraper] Background Announcements scraper process spawned successfully.");
+    } catch (err) {
+      console.error("[Scraper] Failed to start background Announcements scraper:", err);
+    }
   }
 });

@@ -61,11 +61,13 @@ def fetch_and_save_data():
         print(f"Error scraping data: {e}")
 
 if __name__ == "__main__":
-    print("Starting NSE Corporate Announcements Scraper. Press Ctrl+C to stop.")
-    
-    while True:
+    if os.environ.get("RUN_ONCE") == "true":
+        print("Running NSE Corporate Announcements Scraper once (GitHub Actions)...")
         fetch_and_save_data()
-        
-        print("Waiting 5 minutes before the next fetch...\n")
-       
-        time.sleep(86400)
+    else:
+        print("Starting NSE Corporate Announcements Scraper. Press Ctrl+C to stop.")
+        while True:
+            fetch_and_save_data()
+            print("Waiting 5 minutes before the next fetch...\n")
+            # 300 seconds = 5 minutes
+            time.sleep(300)

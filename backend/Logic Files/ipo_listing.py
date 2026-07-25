@@ -98,11 +98,13 @@ def fetch_and_save_data():
         print(f"Error scraping data: {e}")
 
 if __name__ == "__main__":
-    print("Starting Multi-Tab NSE IPOs Scraper. Press Ctrl+C to stop.")
-    
-    while True:
+    if os.environ.get("RUN_ONCE") == "true":
+        print("Running Multi-Tab NSE IPOs Scraper once (GitHub Actions)...")
         fetch_and_save_data()
-        
-        print("\nWaiting 5 minutes before the next fetch...")
-       
-        time.sleep(86400)
+    else:
+        print("Starting Multi-Tab NSE IPOs Scraper. Press Ctrl+C to stop.")
+        while True:
+            fetch_and_save_data()
+            print("\nWaiting 5 minutes before the next fetch...")
+            # 300 seconds = 5 minutes
+            time.sleep(300)
