@@ -1,13 +1,85 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { X, Sun, Moon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { X, Sun, Moon, Search } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP } from "../services/newsApi";
 
 const Header = () => {
+  const navigate = useNavigate();
   const { user, setUser } = useUser();
   const { theme, toggleTheme } = useTheme();
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
+
+  const SEARCHABLE_STOCKS = [
+    { symbol: "RELIANCE", name: "Reliance Industries Ltd" },
+    { symbol: "TCS", name: "Tata Consultancy Services Ltd" },
+    { symbol: "INFY", name: "Infosys Ltd" },
+    { symbol: "HDFCBANK", name: "HDFC Bank Ltd" },
+    { symbol: "ICICIBANK", name: "ICICI Bank Ltd" },
+    { symbol: "BHARTIARTL", name: "Bharti Airtel Ltd" },
+    { symbol: "SBIN", name: "State Bank of India" },
+    { symbol: "LT", name: "Larsen & Toubro Ltd" },
+    { symbol: "ITC", name: "ITC Ltd" },
+    { symbol: "HINDUNILVR", name: "Hindustan Unilever Ltd" },
+    { symbol: "AXISBANK", name: "Axis Bank Ltd" },
+    { symbol: "ADANIENT", name: "Adani Enterprises Ltd" },
+    { symbol: "KOTAKBANK", name: "Kotak Mahindra Bank Ltd" },
+    { symbol: "M&M", name: "Mahindra & Mahindra Ltd" },
+    { symbol: "WIPRO", name: "Wipro Ltd" },
+    { symbol: "HCLTECH", name: "HCL Technologies Ltd" },
+    { symbol: "NTPC", name: "NTPC Ltd" },
+    { symbol: "ONGC", name: "Oil & Natural Gas Corporation Ltd" },
+    { symbol: "POWERGRID", name: "Power Grid Corp of India Ltd" },
+    { symbol: "ASIANPAINT", name: "Asian Paints Ltd" },
+    { symbol: "MARUTI", name: "Maruti Suzuki India Ltd" },
+    { symbol: "SUNPHARMA", name: "Sun Pharmaceutical Industries Ltd" },
+    { symbol: "TATASTEEL", name: "Tata Steel Ltd" },
+    { symbol: "TITAN", name: "Titan Company Ltd" },
+    { symbol: "ULTRACEMCO", name: "UltraTech Cement Ltd" },
+    { symbol: "COALINDIA", name: "Coal India Ltd" },
+    { symbol: "BAJFINANCE", name: "Bajaj Finance Ltd" },
+    { symbol: "BAJAJFINSV", name: "Bajaj Finserv Ltd" },
+    { symbol: "BPCL", name: "Bharat Petroleum Corporation Ltd" },
+    { symbol: "ADANIPORTS", name: "Adani Ports & SEZ Ltd" },
+    { symbol: "BEL", name: "Bharat Electronics Ltd" },
+    { symbol: "BRITANNIA", name: "Britannia Industries Ltd" },
+    { symbol: "CIPLA", name: "Cipla Ltd" },
+    { symbol: "DRREDDY", name: "Dr. Reddy's Laboratories Ltd" },
+    { symbol: "EICHERMOT", name: "Eicher Motors Ltd" },
+    { symbol: "GRASIM", name: "Grasim Industries Ltd" },
+    { symbol: "HDFCLIFE", name: "HDFC Life Insurance Co Ltd" },
+    { symbol: "HEROMOTOCO", name: "Hero MotoCorp Ltd" },
+    { symbol: "HINDALCO", name: "Hindalco Industries Ltd" },
+    { symbol: "INDUSINDBK", name: "IndusInd Bank Ltd" },
+    { symbol: "JSWSTEEL", name: "JSW Steel Ltd" },
+    { symbol: "NESTLEIND", name: "Nestle India Ltd" },
+    { symbol: "SBILIFE", name: "SBI Life Insurance Co Ltd" },
+    { symbol: "TATACONSUM", name: "Tata Consumer Products Ltd" },
+    { symbol: "TECHM", name: "Tech Mahindra Ltd" },
+    { symbol: "TRENT", name: "Trent Ltd" }
+  ];
+
+  const filteredResults = searchQuery.trim() === "" ? [] : SEARCHABLE_STOCKS.filter(
+    (stock) =>
+      stock.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ).slice(0, 6);
+
+  const handleSearchSelect = (symbol) => {
+    setSearchQuery("");
+    setShowResults(false);
+    navigate(`/stock/${encodeURIComponent(symbol)}`);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && filteredResults.length > 0) {
+      handleSearchSelect(filteredResults[0].symbol);
+    }
+  };
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -127,6 +199,54 @@ const Header = () => {
               </span>
             </div>
           </Link>
+
+          {/* SEARCH BAR */}
+          <div className="relative hidden sm:block w-44 md:w-60 lg:w-72">
+            <div className="relative flex items-center">
+              <Search className="absolute left-3 text-text-3" size={13} />
+              <input
+                type="text"
+                placeholder="Search stocks (e.g. RELIANCE, TCS)..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => setShowResults(true)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                onKeyDown={handleKeyDown}
+                className="w-full rounded-xl border border-border-custom bg-bg-0 pl-9 pr-8 py-2 text-[11px] font-sans outline-none transition-all focus:border-bull focus:bg-bg-1 text-text-0 placeholder-text-3"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 text-text-3 hover:text-text-0 cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              )}
+            </div>
+
+            {/* RESULTS DROPDOWN */}
+            {showResults && filteredResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-xl border border-border-strong bg-bg-1 p-1.5 shadow-lg max-h-56 overflow-y-auto">
+                {filteredResults.map((stock) => (
+                  <div
+                    key={stock.symbol}
+                    onMouseDown={() => handleSearchSelect(stock.symbol)}
+                    className="flex flex-col px-3 py-1.5 rounded-lg hover:bg-bg-0 cursor-pointer transition-colors"
+                  >
+                    <span className="font-mono text-[11px] font-bold text-text-0">
+                      {stock.symbol}
+                    </span>
+                    <span className="text-[9px] text-text-2 font-sans mt-0.5">
+                      {stock.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* LIVE MARKET COVERAGE DATE */}
           <div className="hidden md:flex flex-col items-center text-center">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Activity, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 import { getStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
@@ -55,12 +56,12 @@ const MarketPulse = ({ initialStocks }) => {
     // Filter and sort by tab
     if (activeTab === "gainers") {
       list = list
-        .filter((s) => s.changePercent > 0)
-        .sort((a, b) => b.changePercent - a.changePercent);
+          .filter((s) => s.changePercent > 0)
+          .sort((a, b) => b.changePercent - a.changePercent);
     } else if (activeTab === "losers") {
       list = list
-        .filter((s) => s.changePercent < 0)
-        .sort((a, b) => a.changePercent - b.changePercent);
+          .filter((s) => s.changePercent < 0)
+          .sort((a, b) => a.changePercent - b.changePercent);
     } else {
       // Sort alphabetically by symbol
       list.sort((a, b) => a.symbol.localeCompare(b.symbol));
@@ -146,9 +147,10 @@ const MarketPulse = ({ initialStocks }) => {
             const cleanSymbol = stock.symbol.replace(".NS", "");
             const isPositive = stock.changePercent >= 0;
             return (
-              <div
+              <Link
                 key={stock.symbol}
-                className="flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01]"
+                to={`/stock/${encodeURIComponent(cleanSymbol)}`}
+                className="flex items-center justify-between rounded-xl border border-border-custom/50 hover:border-bull/30 bg-bg-1 p-3 shadow-sm transition-all duration-300 hover:scale-[1.01] cursor-pointer"
               >
                 <div className="flex flex-col min-w-0">
                   <span className="font-mono text-xs font-bold text-text-0 transition-colors">
@@ -173,7 +175,7 @@ const MarketPulse = ({ initialStocks }) => {
                     {isPositive ? "+" : ""}{stock.changePercent.toFixed(2)}%
                   </span>
                 </div>
-              </div>
+              </Link>
             );
           })
         ) : (

@@ -10,6 +10,7 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 import checkForAuthenticationCookie from "./middlewares/auth.js";
 import newsRouter from "./routes/news.js";
 import stockRouter from "./routes/stockRoutes.js";
+import stockDetailRouter from "./routes/stockDetailRoutes.js";
 import userRouter from "./routes/user.js";
 import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 
@@ -35,7 +36,29 @@ mongoose
 
 app.use(
   CORS({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or postman)
+      if (!origin) return callback(null, true);
+      
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+      ];
+      
+      // Check if origin matches any of the common local dev servers or localhost wildcards
+      const isLocal = allowedOrigins.includes(origin) || 
+                      origin.startsWith("http://localhost:") || 
+                      origin.startsWith("http://127.0.0.1:");
+                      
+      if (isLocal) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
@@ -50,6 +73,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", newsRouter);
 app.use("/api/user", userRouter);
+app.use("/api/stocks", stockDetailRouter);
 app.use("/stocks", stockRouter);
 
 app.listen(PORT, () => {

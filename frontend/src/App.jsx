@@ -7,6 +7,7 @@ import {
 import Home from "./pages/Home";
 import NewsDetail from "./pages/NewsDetail";
 import AIAnalysisPage from "./pages/AIAnalysisPage";
+import StockDetails from "./pages/StockDetails";
 
 function App() {
   return (
@@ -17,6 +18,11 @@ function App() {
         <Route
           path="/"
           element={<Home />}
+        />
+
+        <Route
+          path="/stock/:symbol"
+          element={<StockDetails />}
         />
 
         <Route
