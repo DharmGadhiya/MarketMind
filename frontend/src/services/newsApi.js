@@ -142,6 +142,16 @@ export const removeHolding = async (id) => {
   return response.data;
 };
 
+export const buyHolding = async (id, buyPrice, qty) => {
+  const response = await API.post(`/api/holdings/${encodeURIComponent(id)}/buy`, { buyPrice, qty });
+  return response.data;
+};
+
+export const sellHolding = async (id, sellPrice, qty) => {
+  const response = await API.post(`/api/holdings/${encodeURIComponent(id)}/sell`, { sellPrice, qty });
+  return response.data;
+};
+
 export const searchStocks = async (query) => {
   const response = await API.get(`/api/stocks/search?query=${encodeURIComponent(query)}`);
   return response.data;

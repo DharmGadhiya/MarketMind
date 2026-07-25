@@ -84,6 +84,15 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ success: false, msg: `Invalid stock symbol: "${symbol}". Please choose a valid stock.` });
     }
 
+    // Check if user already holds this stock
+    const existingHolding = await Holding.findOne({ userId: req.user._id, symbol: formattedSymbol });
+    if (existingHolding) {
+      return res.status(400).json({
+        success: false,
+        msg: "This stock already exists in your holdings. Please use the Buy option to purchase additional shares or the Sell option to reduce your position."
+      });
+    }
+
     const holding = new Holding({
       userId: req.user._id,
       symbol: formattedSymbol,
@@ -270,6 +279,127 @@ router.delete("/:id", async (req, res) => {
   } catch (error) {
     console.error("[Holding DELETE Error]:", error);
     return res.status(500).json({ success: false, msg: "Failed to remove holding." });
+  }
+});
+
+/**
+ * POST /api/holdings/:id/buy
+ * Buy additional shares for an existing holding.
+ */
+router.post("/:id/buy", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, msg: "Unauthenticated. Please log in." });
+  }
+
+  const { id } = req.params;
+  const { buyPrice, qty } = req.body;
+
+  if (buyPrice === undefined || qty === undefined) {
+    return res.status(400).json({ success: false, msg: "buyPrice and qty are required." });
+  }
+
+  const parsedBuyPrice = parseFloat(buyPrice);
+  const parsedQty = parseFloat(qty);
+
+  if (isNaN(parsedBuyPrice) || parsedBuyPrice <= 0) {
+    return res.status(400).json({ success: false, msg: "buyPrice must be a positive number." });
+  }
+
+  if (isNaN(parsedQty) || parsedQty <= 0) {
+    return res.status(400).json({ success: false, msg: "qty must be a positive number." });
+  }
+
+  try {
+    const holding = await Holding.findOne({ _id: id, userId: req.user._id });
+    if (!holding) {
+      return res.status(404).json({ success: false, msg: "Holding not found or not owned by user." });
+    }
+
+    const oldQty = holding.qty;
+    const oldPrice = holding.buyPrice;
+
+    const newQty = oldQty + parsedQty;
+    // Weighted average price calculation
+    const newAvgPrice = (oldQty * oldPrice + parsedQty * parsedBuyPrice) / newQty;
+
+    holding.qty = newQty;
+    holding.buyPrice = newAvgPrice;
+    await holding.save();
+
+    return res.status(200).json({
+      success: true,
+      data: holding,
+    });
+  } catch (error) {
+    console.error("[Holding BUY Error]:", error);
+    return res.status(500).json({ success: false, msg: "Failed to process buy transaction." });
+  }
+});
+
+/**
+ * POST /api/holdings/:id/sell
+ * Sell shares from an existing holding.
+ */
+router.post("/:id/sell", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, msg: "Unauthenticated. Please log in." });
+  }
+
+  const { id } = req.params;
+  const { sellPrice, qty } = req.body;
+
+  if (sellPrice === undefined || qty === undefined) {
+    return res.status(400).json({ success: false, msg: "sellPrice and qty are required." });
+  }
+
+  const parsedSellPrice = parseFloat(sellPrice);
+  const parsedQty = parseFloat(qty);
+
+  if (isNaN(parsedSellPrice) || parsedSellPrice <= 0) {
+    return res.status(400).json({ success: false, msg: "sellPrice must be a positive number." });
+  }
+
+  if (isNaN(parsedQty) || parsedQty <= 0) {
+    return res.status(400).json({ success: false, msg: "qty must be a positive number." });
+  }
+
+  try {
+    const holding = await Holding.findOne({ _id: id, userId: req.user._id });
+    if (!holding) {
+      return res.status(404).json({ success: false, msg: "Holding not found or not owned by user." });
+    }
+
+    if (parsedQty > holding.qty) {
+      return res.status(400).json({
+        success: false,
+        msg: `You only own ${holding.qty} shares.`
+      });
+    }
+
+    const oldQty = holding.qty;
+    const newQty = oldQty - parsedQty;
+
+    if (newQty === 0) {
+      // Liquidate completely
+      await Holding.deleteOne({ _id: id, userId: req.user._id });
+      return res.status(200).json({
+        success: true,
+        data: null,
+        msg: "Position completely liquidated."
+      });
+    } else {
+      // Reduce quantity, keep buy price (average price) unchanged
+      holding.qty = newQty;
+      await holding.save();
+
+      return res.status(200).json({
+        success: true,
+        data: holding,
+      });
+    }
+  } catch (error) {
+    console.error("[Holding SELL Error]:", error);
+    return res.status(500).json({ success: false, msg: "Failed to process sell transaction." });
   }
 });
 

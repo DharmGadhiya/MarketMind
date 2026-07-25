@@ -4,7 +4,7 @@ import { Loader2, Trash2, Pencil, Plus, Briefcase, TrendingUp, TrendingDown, X, 
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
 import { useUser } from "../services/UserContext";
-import { getHoldings, addHolding, updateHolding, removeHolding, searchStocks } from "../services/newsApi";
+import { getHoldings, addHolding, updateHolding, removeHolding, buyHolding, sellHolding, searchStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
 /**
@@ -45,6 +45,9 @@ const PortfolioPage = () => {
   // Modal States
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [selectedHolding, setSelectedHolding] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState(null);
 
@@ -155,6 +158,28 @@ const PortfolioPage = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleOpenBuyModal = (holding) => {
+    setSelectedHolding(holding);
+    setFormData({
+      symbol: holding.symbol.replace(".NS", ""),
+      buyPrice: "",
+      qty: "",
+    });
+    setModalError(null);
+    setIsBuyModalOpen(true);
+  };
+
+  const handleOpenSellModal = (holding) => {
+    setSelectedHolding(holding);
+    setFormData({
+      symbol: holding.symbol.replace(".NS", ""),
+      buyPrice: "",
+      qty: "",
+    });
+    setModalError(null);
+    setIsSellModalOpen(true);
+  };
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -232,6 +257,89 @@ const PortfolioPage = () => {
       }
     } catch (err) {
       setModalError(err.response?.data?.msg || "Server error. Could not update trade.");
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleBuySubmit = async (e) => {
+    e.preventDefault();
+    const { buyPrice, qty } = formData;
+
+    if (!buyPrice || !qty) {
+      setModalError("All fields are required.");
+      return;
+    }
+
+    const price = parseFloat(buyPrice);
+    const quantity = parseFloat(qty);
+
+    if (isNaN(price) || price <= 0) {
+      setModalError("Buy price must be a positive number.");
+      return;
+    }
+
+    if (isNaN(quantity) || quantity <= 0) {
+      setModalError("Quantity must be a positive number.");
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      setModalError(null);
+      const res = await buyHolding(selectedHolding._id, price, quantity);
+      if (res && res.success) {
+        setIsBuyModalOpen(false);
+        fetchPortfolio(false);
+      } else {
+        setModalError(res.msg || "Failed to process buy transaction.");
+      }
+    } catch (err) {
+      setModalError(err.response?.data?.msg || "Server error. Could not record buy trade.");
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleSellSubmit = async (e) => {
+    e.preventDefault();
+    const { buyPrice, qty } = formData;
+
+    if (!buyPrice || !qty) {
+      setModalError("All fields are required.");
+      return;
+    }
+
+    const price = parseFloat(buyPrice);
+    const quantity = parseFloat(qty);
+
+    if (isNaN(price) || price <= 0) {
+      setModalError("Sell price must be a positive number.");
+      return;
+    }
+
+    if (isNaN(quantity) || quantity <= 0) {
+      setModalError("Quantity must be a positive number.");
+      return;
+    }
+
+    if (quantity > selectedHolding.qty) {
+      setModalError(`You only own ${selectedHolding.qty} shares.`);
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      setModalError(null);
+      const res = await sellHolding(selectedHolding._id, price, quantity);
+      if (res && res.success) {
+        setIsSellModalOpen(false);
+        fetchPortfolio(false);
+      } else {
+        setModalError(res.msg || "Failed to process sell transaction.");
+      }
+    } catch (err) {
+      setModalError(err.response?.data?.msg || "Server error. Could not record sell trade.");
     } finally {
       setModalLoading(false);
     }
@@ -514,6 +622,20 @@ const PortfolioPage = () => {
                             <td className="py-4 px-6 text-center">
                               <div className="flex items-center justify-center gap-1.5">
                                 <button
+                                  onClick={() => handleOpenBuyModal(item)}
+                                  className="px-2.5 py-1 rounded-lg text-bull bg-bull/10 hover:bg-bull/20 border border-bull/20 hover:border-bull/30 transition-all cursor-pointer font-bold text-xs active:scale-95 inline-flex items-center justify-center"
+                                  title="Buy Additional Shares"
+                                >
+                                  Buy
+                                </button>
+                                <button
+                                  onClick={() => handleOpenSellModal(item)}
+                                  className="px-2.5 py-1 rounded-lg text-bear bg-bear/10 hover:bg-bear/20 border border-bear/20 hover:border-bear/30 transition-all cursor-pointer font-bold text-xs active:scale-95 inline-flex items-center justify-center"
+                                  title="Sell Shares"
+                                >
+                                  Sell
+                                </button>
+                                <button
                                   onClick={() => handleOpenEditModal(item)}
                                   className="p-1.5 rounded-lg text-text-2 hover:text-bull hover:bg-bull/10 border border-transparent hover:border-bull/20 transition-all cursor-pointer inline-flex items-center justify-center"
                                   title="Edit Trade Details"
@@ -732,6 +854,174 @@ const PortfolioPage = () => {
                 className="w-full rounded-xl bg-bull py-2.5 text-sm font-semibold text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-pointer active:scale-95"
               >
                 {modalLoading ? "Saving Changes..." : "Save Changes"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* BUY TRANSACTION MODAL */}
+      {isBuyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-md rounded-2xl border border-border-strong bg-bg-1 p-6 shadow-2xl transition-all duration-300">
+            <button
+              onClick={() => setIsBuyModalOpen(false)}
+              className="absolute right-4 top-4 rounded-full p-1 text-text-2 hover:bg-bg-2 hover:text-text-0 transition-colors cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="mb-5">
+              <h3 className="font-serif text-2xl text-text-0 font-bold">Buy Shares</h3>
+              <p className="text-xs text-text-2 mt-1">
+                Purchase additional shares of {formData.symbol}.
+              </p>
+            </div>
+
+            {modalError && (
+              <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-950/20 px-4 py-3 text-xs font-medium text-bear border border-red-100 dark:border-red-900/30">
+                {modalError}
+              </div>
+            )}
+
+            <form onSubmit={handleBuySubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                  Stock Symbol
+                </label>
+                <input
+                  type="text"
+                  name="symbol"
+                  disabled
+                  value={formData.symbol}
+                  className="w-full rounded-xl border border-border-strong bg-bg-2 px-4 py-2.5 text-sm text-text-3 cursor-not-allowed uppercase"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Buy Price (₹)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="buyPrice"
+                    required
+                    placeholder="0.00"
+                    value={formData.buyPrice}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="qty"
+                    required
+                    placeholder="0"
+                    value={formData.qty}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={modalLoading}
+                className="w-full rounded-xl bg-bull py-2.5 text-sm font-semibold text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-pointer active:scale-95"
+              >
+                {modalLoading ? "Saving buy entry..." : "Confirm Buy"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* SELL TRANSACTION MODAL */}
+      {isSellModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-md rounded-2xl border border-border-strong bg-bg-1 p-6 shadow-2xl transition-all duration-300">
+            <button
+              onClick={() => setIsSellModalOpen(false)}
+              className="absolute right-4 top-4 rounded-full p-1 text-text-2 hover:bg-bg-2 hover:text-text-0 transition-colors cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="mb-5">
+              <h3 className="font-serif text-2xl text-text-0 font-bold">Sell Shares</h3>
+              <p className="text-xs text-text-2 mt-1">
+                Reduce your position in {formData.symbol}. You currently own {selectedHolding?.qty} shares.
+              </p>
+            </div>
+
+            {modalError && (
+              <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-950/20 px-4 py-3 text-xs font-medium text-bear border border-red-100 dark:border-red-900/30">
+                {modalError}
+              </div>
+            )}
+
+            <form onSubmit={handleSellSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                  Stock Symbol
+                </label>
+                <input
+                  type="text"
+                  name="symbol"
+                  disabled
+                  value={formData.symbol}
+                  className="w-full rounded-xl border border-border-strong bg-bg-2 px-4 py-2.5 text-sm text-text-3 cursor-not-allowed uppercase"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Sell Price (₹)
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="buyPrice"
+                    required
+                    placeholder="0.00"
+                    value={formData.buyPrice}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    name="qty"
+                    required
+                    placeholder="0"
+                    value={formData.qty}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={modalLoading}
+                className="w-full rounded-xl bg-bull py-2.5 text-sm font-semibold text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-pointer active:scale-95"
+              >
+                {modalLoading ? "Saving sell entry..." : "Confirm Sell"}
               </button>
             </form>
           </div>
