@@ -3,6 +3,8 @@ import Holding from "../models/holding.js";
 import Stock from "../models/stock.js";
 import { addStockSymbol } from "../config/stocks.js";
 import { fetchSingleStock } from "../services/stockService.js";
+import fs from "fs";
+import path from "path";
 
 const router = Router();
 
@@ -16,6 +18,36 @@ const standardizeSymbol = (symbol) => {
   if (!symbol) return "";
   const upper = symbol.trim().toUpperCase();
   return upper.endsWith(".NS") ? upper : `${upper}.NS`;
+};
+
+// Helper to check if symbol is valid in EQUITY_L.csv
+const isValidSymbol = (symbol) => {
+  try {
+    const cleanSymbol = symbol.trim().toUpperCase().replace(".NS", "");
+    const filePath = path.resolve("Logic Files", "EQUITY_L.csv");
+    if (!fs.existsSync(filePath)) {
+      console.warn("EQUITY_L.csv not found for validation.");
+      return true; // Fallback to true if file is missing
+    }
+    
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n").map(l => l.trim()).filter(Boolean);
+    
+    // Check if cleanSymbol is equal to the first column (SYMBOL) of any line
+    // Skip header line 0
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(",");
+      if (parts.length > 0) {
+        if (parts[0].trim().toUpperCase() === cleanSymbol) {
+          return true;
+        }
+      }
+    }
+    return false;
+  } catch (err) {
+    console.error("Error validating symbol against EQUITY_L.csv:", err);
+    return true; // Fallback to true on error so we don't block
+  }
 };
 
 /**
@@ -46,6 +78,11 @@ router.post("/", async (req, res) => {
 
   try {
     const formattedSymbol = standardizeSymbol(symbol);
+
+    // Validate if the symbol exists in EQUITY_L.csv
+    if (!isValidSymbol(formattedSymbol)) {
+      return res.status(400).json({ success: false, msg: `Invalid stock symbol: "${symbol}". Please choose a valid stock.` });
+    }
 
     const holding = new Holding({
       userId: req.user._id,
