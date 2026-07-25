@@ -347,7 +347,7 @@ ${analysis.marketImpact || "Analysis not available."}
           <h2 className="font-serif text-3xl mb-4 text-text-0">Access Denied</h2>
           <p className="text-sm text-text-2 mb-8">{newsError || "Unable to locate news article."}</p>
           <Link
-            to="/"
+            to="/app"
             className="inline-flex items-center gap-2 rounded-xl border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-5 py-3 transition-colors text-sm font-medium shadow-sm cursor-news"
           >
             <ArrowLeft size={16} />

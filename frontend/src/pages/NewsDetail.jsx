@@ -88,7 +88,7 @@ const NewsDetail = () => {
           <h2 className="font-serif text-3xl mb-4">Market Insight Unavailable</h2>
           <p className="text-sm text-text-2 mb-8">{error || "The requested article could not be found."}</p>
           <Link
-            to="/"
+            to="/app"
             className="inline-flex items-center gap-2 rounded-xl border border-border-strong bg-bg-1 hover:bg-border-custom/50 px-5 py-3 transition-colors text-sm font-medium shadow-sm cursor-news"
           >
             <ArrowLeft size={16} />
@@ -107,7 +107,7 @@ const NewsDetail = () => {
       <main className="mx-auto max-w-[1400px] px-6 py-10 lg:px-10 lg:py-14">
         <div className="mb-6">
           <Link
-            to="/"
+            to="/app"
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-text-2 hover:text-bull transition-colors"
           >
             <ArrowLeft size={12} />

@@ -217,7 +217,7 @@ const WatchlistPage = ({ type = "watchlist" }) => {
                   : "Start watching stocks by clicking the star icon in the Terminal list or on any stock details page."}
               </p>
               <Link
-                to="/"
+                to="/app"
                 className="mt-2 rounded-xl border border-border-strong bg-bg-2 px-5 py-2.5 text-xs font-semibold text-text-0 hover:bg-bg-0 transition-colors shadow-sm"
               >
                 Go to Terminal

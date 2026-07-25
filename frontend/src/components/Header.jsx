@@ -376,7 +376,7 @@ const Header = () => {
             </button>
 
             {/* LOGO */}
-            <Link to="/" className="group flex items-center gap-3">
+            <Link to="/app" className="group flex items-center gap-3">
               <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border-strong bg-gradient-to-br from-[#0a8c5b] to-[#064a30]">
                 <div className="absolute inset-0 flex items-center justify-center font-serif text-2xl text-white">
                   M

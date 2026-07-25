@@ -21,6 +21,7 @@ import WatchlistPage from "./pages/WatchlistPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 import PortfolioPage from "./pages/PortfolioPage";
 import IndicesPage from "./pages/IndicesPage";
+import LandingPage from "./pages/LandingPage";
 
 function ProtectedRoute({ children }) {
   const { user } = useUser();
@@ -81,6 +82,11 @@ function App() {
 
         <Route
           path="/"
+          element={<LandingPage />}
+        />
+
+        <Route
+          path="/app"
           element={<Home />}
         />
 

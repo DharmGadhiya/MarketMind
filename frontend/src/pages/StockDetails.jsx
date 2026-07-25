@@ -97,7 +97,7 @@ const StockDetails = () => {
         {/* BREADCRUMB / BACK LINK */}
         <div className="mx-auto max-w-[1400px] px-6 pt-6 lg:px-10">
           <Link
-            to="/"
+            to="/app"
             className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-text-2 hover:text-bull transition-colors select-none"
           >
             <ArrowLeft size={13} />
