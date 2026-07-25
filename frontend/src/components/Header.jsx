@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { X, Sun, Moon, Search, Menu, Bell, Home, LineChart, TrendingUp, Star, Megaphone, Briefcase } from "lucide-react";
+import { X, Sun, Moon, Search, Menu, Bell, Home, LineChart, TrendingUp, Star, Megaphone, Briefcase, Lock } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin, forgotPassword, resetPassword } from "../services/newsApi";
@@ -366,15 +366,13 @@ const Header = () => {
 
           {/* LEFT SIDE LOGO & SIDEBAR MENU */}
           <div className="flex items-center gap-3">
-            {user && (
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="rounded-lg p-2 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer active:scale-95 border border-transparent hover:border-border-custom"
-                title="Open Navigation Menu"
-              >
-                <Menu size={20} />
-              </button>
-            )}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="rounded-lg p-2 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer active:scale-95 border border-transparent hover:border-border-custom"
+              title="Open Navigation Menu"
+            >
+              <Menu size={20} />
+            </button>
 
             {/* LOGO */}
             <Link to="/" className="group flex items-center gap-3">
@@ -957,8 +955,12 @@ const Header = () => {
                           <Icon size={13} />
                         </div>
                         <span>{item.name}</span>
-                        {isActive && (
+                        {isActive ? (
                           <div className="ml-auto h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
+                        ) : (
+                          !user && item.path !== "/" && (
+                            <Lock size={10} className="ml-auto text-text-3 group-hover:text-bull transition-colors" />
+                          )
                         )}
                       </Link>
                     );
