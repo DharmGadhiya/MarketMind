@@ -907,101 +907,104 @@ const Header = () => {
       )}
       
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-bg-1 border-r border-border-strong p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-bg-1 border-r border-border-strong shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* DRAWER HEADER */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-border-custom bg-gradient-to-r from-bull/5 to-transparent -mx-6 px-6 pt-2">
-          <div className="flex items-center gap-2.5">
-            <div className="h-2 w-2 rounded-full bg-bull animate-pulse" />
-            <span className="font-serif text-sm font-bold text-text-0 tracking-tight">MarketMind Navigator</span>
+        {/* SCROLLABLE CONTENT AREA */}
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-none">
+          {/* DRAWER HEADER */}
+          <div className="flex items-center justify-between pb-4 border-b border-border-custom bg-gradient-to-r from-bull/5 to-transparent -mx-6 px-6 pt-2">
+            <div className="flex items-center gap-2.5">
+              <div className="h-2 w-2 rounded-full bg-bull animate-pulse" />
+              <span className="font-serif text-sm font-bold text-text-0 tracking-tight">MarketMind Navigator</span>
+            </div>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="rounded-lg p-1.5 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer border border-transparent hover:border-border-custom"
+            >
+              <X size={18} />
+            </button>
           </div>
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="rounded-lg p-1.5 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer border border-transparent hover:border-border-custom"
-          >
-            <X size={18} />
-          </button>
-        </div>
 
-        {/* NAVIGATION LIST */}
-        <nav className="flex flex-col gap-5">
-          {menuGroups.map((group) => (
-            <div key={group.title} className="flex flex-col gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-text-3 px-1 font-bold">
-                {group.title}
-              </span>
-              <div className="flex flex-col gap-1">
-                {group.items.map((item) => {
-                  const isActive = location.pathname === item.path;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setIsSidebarOpen(false)}
-                      className={`group flex items-center gap-3 px-3 py-2 rounded-r-xl border-l-4 transition-all font-semibold text-xs shadow-sm ${
-                        isActive
-                          ? "border-l-bull bg-bull/10 text-bull"
-                          : "border-l-transparent hover:border-l-bull hover:bg-bull/5 text-text-1 hover:text-bull"
-                      }`}
-                    >
-                      <div className={`p-1 rounded-lg border transition-colors ${
-                        isActive 
-                          ? "bg-bull/20 border-bull/30 text-bull" 
-                          : "bg-bg-2 border-border-custom text-text-2 group-hover:bg-bull/10 group-hover:text-bull group-hover:border-bull/20"
-                      }`}>
-                        <Icon size={13} />
-                      </div>
-                      <span>{item.name}</span>
-                      {isActive && (
-                        <div className="ml-auto h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
-                      )}
-                    </Link>
-                  );
-                })}
+          {/* NAVIGATION LIST */}
+          <nav className="flex flex-col gap-5">
+            {menuGroups.map((group) => (
+              <div key={group.title} className="flex flex-col gap-2">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-text-3 px-1 font-bold">
+                  {group.title}
+                </span>
+                <div className="flex flex-col gap-1">
+                  {group.items.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={`group flex items-center gap-3 px-3 py-2 rounded-r-xl border-l-4 transition-all font-semibold text-xs shadow-sm ${
+                          isActive
+                            ? "border-l-bull bg-bull/10 text-bull"
+                            : "border-l-transparent hover:border-l-bull hover:bg-bull/5 text-text-1 hover:text-bull"
+                        }`}
+                      >
+                        <div className={`p-1 rounded-lg border transition-colors ${
+                          isActive 
+                            ? "bg-bull/20 border-bull/30 text-bull" 
+                            : "bg-bg-2 border-border-custom text-text-2 group-hover:bg-bull/10 group-hover:text-bull group-hover:border-bull/20"
+                        }`}>
+                          <Icon size={13} />
+                        </div>
+                        <span>{item.name}</span>
+                        {isActive && (
+                          <div className="ml-auto h-1.5 w-1.5 rounded-full bg-bull animate-pulse" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </nav>
+
+          {/* MARKET HEALTH snapshot CARD */}
+          <div className="bg-bg-2/50 border border-border-custom p-3 rounded-xl shadow-inner select-none">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[8px] uppercase tracking-wider text-text-3 font-bold">Market Heartbeat</span>
+              <div className="flex items-center gap-1">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-bull opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-bull"></span>
+                </span>
+                <span className="text-[8px] font-mono font-bold text-bull">LIVE</span>
               </div>
             </div>
-          ))}
-        </nav>
-
-        {/* MARKET HEALTH snapshot CARD */}
-        <div className="mt-6 bg-bg-2/50 border border-border-custom p-3 rounded-xl shadow-inner select-none">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[8px] uppercase tracking-wider text-text-3 font-bold">Market Heartbeat</span>
-            <div className="flex items-center gap-1">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-bull opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-bull"></span>
-              </span>
-              <span className="text-[8px] font-mono font-bold text-bull">LIVE</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border-custom/50 text-[10px] font-mono leading-none">
-            <div className="space-y-1">
-              <span className="text-text-3 text-[8.5px]">NIFTY 50</span>
-              <div className="font-bold text-text-0">24,320.15</div>
-              <div className="text-bull font-semibold text-[8px]">+0.85%</div>
-            </div>
-            <div className="space-y-1 border-l border-border-custom/50 pl-3">
-              <span className="text-text-3 text-[8.5px]">SENSEX</span>
-              <div className="font-bold text-text-0">79,802.40</div>
-              <div className="text-bull font-semibold text-[8px]">+0.78%</div>
+            <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border-custom/50 text-[10px] font-mono leading-none">
+              <div className="space-y-1">
+                <span className="text-text-3 text-[8.5px]">NIFTY 50</span>
+                <div className="font-bold text-text-0">24,320.15</div>
+                <div className="text-bull font-semibold text-[8px]">+0.85%</div>
+              </div>
+              <div className="space-y-1 border-l border-border-custom/50 pl-3">
+                <span className="text-text-3 text-[8.5px]">SENSEX</span>
+                <div className="font-bold text-text-0">79,802.40</div>
+                <div className="text-bull font-semibold text-[8px]">+0.78%</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* USER PROFILE CARD */}
+        {/* DOCKED USER PROFILE CARD */}
         {user && (
-          <div className="absolute bottom-6 left-6 right-6 pt-4 border-t border-border-custom">
+          <div className="p-6 border-t border-border-custom bg-bg-1 shrink-0">
             <div className="flex items-center gap-3 mb-4 p-3 bg-bg-2/60 border border-border-custom rounded-xl shadow-inner">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-bold font-mono">
                 {user.name ? user.name[0].toUpperCase() : "U"}
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-xs font-bold text-text-0 truncate">{user.name}</span>
-                <span className="text-[11px] text-text-3 truncate">{user.email}</span>
+                <span className="text-[10px] text-text-3 truncate">{user.email}</span>
               </div>
             </div>
             <button
