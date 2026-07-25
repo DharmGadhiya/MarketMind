@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import CORS from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import dns from "dns";
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 import checkForAuthenticationCookie from "./middlewares/auth.js";
 import newsRouter from "./routes/news.js";
