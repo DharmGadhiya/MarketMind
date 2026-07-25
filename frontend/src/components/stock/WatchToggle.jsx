@@ -75,7 +75,7 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
         const item = res.data.find(w => w.symbol.toUpperCase() === formattedSymbol);
         if (item) {
           // If the item exists, set states independently
-          const watchedVal = !!item.isWatched || item.alertThreshold === 0;
+          const watchedVal = !!item.isWatched;
           const alertVal = item.alertThreshold > 0;
           
           setIsWatched(watchedVal);
@@ -176,12 +176,12 @@ const WatchToggle = ({ symbol, currentPrice, changePercent, className = "", icon
     try {
       setLoading(true);
       if (isWatched) {
-        // Toggle off watchlist, preserve current alertThreshold
-        await addToWatchlist(formattedSymbol, alertThreshold, false);
+        // Toggle off watchlist, preserve current alertThreshold if active
+        await addToWatchlist(formattedSymbol, isAlertSet ? alertThreshold : 0, false);
         setIsWatched(false);
       } else {
-        // Toggle on watchlist, preserve current alertThreshold
-        await addToWatchlist(formattedSymbol, alertThreshold, true);
+        // Toggle on watchlist, preserve current alertThreshold if active
+        await addToWatchlist(formattedSymbol, isAlertSet ? alertThreshold : 0, true);
         setIsWatched(true);
       }
       window.dispatchEvent(new CustomEvent("watchlist-updated"));
