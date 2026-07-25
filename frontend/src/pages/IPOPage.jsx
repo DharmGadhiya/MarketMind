@@ -94,7 +94,7 @@ const IPOPage = () => {
                 : "border-transparent text-text-2 hover:text-text-0"
             }`}
           >
-            🔥 Current Issues
+            Current Issues
           </button>
           <button
             onClick={() => {
@@ -107,7 +107,7 @@ const IPOPage = () => {
                 : "border-transparent text-text-2 hover:text-text-0"
             }`}
           >
-            📅 Upcoming Issues
+            Upcoming Issues
           </button>
           <button
             onClick={() => {
@@ -120,7 +120,7 @@ const IPOPage = () => {
                 : "border-transparent text-text-2 hover:text-text-0"
             }`}
           >
-            🏛️ Past Issues
+            Past Issues
           </button>
         </div>
 
