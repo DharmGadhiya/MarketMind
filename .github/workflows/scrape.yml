@@ -37,7 +37,7 @@ jobs:
         python "backend/Logic Files/corporate_announcements.py"
 
     - name: Commit and Push Changes
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Automated NSE Data Scrape Update [skip ci]"
         file_pattern: "backend/Logic Files/*.csv"
