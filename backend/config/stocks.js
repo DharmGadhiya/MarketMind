@@ -1,4 +1,4 @@
- export const STOCKS = [
+export const STOCKS = [
   "ADANIENT.NS",
   "ADANIPORTS.NS",
   "APOLLOHOSP.NS",
@@ -64,10 +64,10 @@ export const addStockSymbol = (symbol) => {
       const filePath = path.resolve("config", "stocks.js");
       if (fs.existsSync(filePath)) {
         const fileContent = fs.readFileSync(filePath, "utf-8");
-        const lastIndex = fileContent.lastIndexOf("  "IRFC.NS",
-];");
-        if (lastIndex !== -1) {
-          const updatedContent = fileContent.slice(0, lastIndex) + `  "${cleanSymbol}",\n` + fileContent.slice(lastIndex);
+        // Locate the first ]; which marks the end of the STOCKS array definition
+        const arrayEndIndex = fileContent.indexOf("];");
+        if (arrayEndIndex !== -1) {
+          const updatedContent = fileContent.slice(0, arrayEndIndex) + `  "${cleanSymbol}",\n` + fileContent.slice(arrayEndIndex);
           fs.writeFileSync(filePath, updatedContent, "utf-8");
         }
       }
@@ -76,5 +76,3 @@ export const addStockSymbol = (symbol) => {
     }
   }
 };
-
-
