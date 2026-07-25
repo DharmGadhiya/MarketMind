@@ -2,8 +2,8 @@ name: Scheduled NSE Scraper
 
 on:
   schedule:
-    # Runs every 12 hours
-    - cron: '0 */12 * * *'
+    # Runs every 24 hours (at midnight UTC)
+    - cron: '0 0 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
