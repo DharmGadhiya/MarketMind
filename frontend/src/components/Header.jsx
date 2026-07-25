@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { X, Sun, Moon, Search, Menu, Bell } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
-import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin } from "../services/newsApi";
+import { loginUser, logoutUser, createAccount, verifyOTP, getNotifications, markNotificationsAsRead, deleteNotification, googleLogin, forgotPassword, resetPassword } from "../services/newsApi";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -224,7 +224,7 @@ const Header = () => {
 
   const openModal = (initialMode = "login") => {
     setMode(initialMode);
-    setFormData({ name: "", email: "", password: "", otp: "" });
+    setFormData({ name: "", email: "", password: "", otp: "", confirmPassword: "" });
     setError(null);
     setSuccess(null);
     setIsModalOpen(true);
@@ -284,6 +284,45 @@ const Header = () => {
       }
     } catch (err) {
       setError(err.response?.data?.msg || "Invalid OTP code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await forgotPassword(formData.email);
+      if (data) {
+        setSuccess("Recovery OTP code sent to your email.");
+        setMode("reset");
+      }
+    } catch (err) {
+      setError(err.response?.data?.msg || "Account does not exist");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await resetPassword(formData.email, formData.otp, formData.password);
+      if (data) {
+        setSuccess("Password successfully updated. Please login with your new password.");
+        setFormData(prev => ({ ...prev, password: "", confirmPassword: "", otp: "" }));
+        setMode("login");
+      }
+    } catch (err) {
+      setError(err.response?.data?.msg || "Password reset failed. Check your OTP.");
     } finally {
       setLoading(false);
     }
@@ -584,6 +623,19 @@ const Header = () => {
                     onChange={handleInputChange}
                     className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
                   />
+                  <div className="flex justify-between items-center mt-1">
+                    <span />
+                    <span
+                      onClick={() => {
+                        setMode("forgot");
+                        setError(null);
+                        setSuccess(null);
+                      }}
+                      className="text-xs text-bull font-semibold hover:underline cursor-pointer"
+                    >
+                      Forgot Password?
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="submit"
@@ -728,6 +780,100 @@ const Header = () => {
                     Resend Code
                   </span>
                 </p>
+              </form>
+            )}
+
+            {mode === "forgot" && (
+              <form onSubmit={handleForgotSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="name@company.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-bull py-2.5 text-sm font-medium text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
+                >
+                  {loading ? "Checking..." : "Request Recovery Code"}
+                </button>
+                <p className="text-center text-xs text-text-2 mt-2">
+                  Remember password?{" "}
+                  <span
+                    onClick={() => {
+                      setMode("login");
+                      setError(null);
+                      setSuccess(null);
+                    }}
+                    className="text-bull font-semibold hover:underline cursor-pointer"
+                  >
+                    Back to Login
+                  </span>
+                </p>
+              </form>
+            )}
+
+            {mode === "reset" && (
+              <form onSubmit={handleResetSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Recovery OTP Code
+                  </label>
+                  <input
+                    type="text"
+                    name="otp"
+                    required
+                    placeholder="12345"
+                    maxLength={5}
+                    value={formData.otp}
+                    onChange={handleInputChange}
+                    className="w-full tracking-[0.2em] text-center rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-md font-bold text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    required
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-bull py-2.5 text-sm font-medium text-white hover:bg-bull/90 transition-colors disabled:opacity-75 flex items-center justify-center mt-2 cursor-news"
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
+                </button>
               </form>
             )}
           </div>

@@ -31,6 +31,16 @@ export const googleLogin = async (credential) => {
   return response.data;
 };
 
+export const forgotPassword = async (email) => {
+  const response = await API.post("/api/user/forgot-password", { email });
+  return response.data;
+};
+
+export const resetPassword = async (email, otp, newPassword) => {
+  const response = await API.post("/api/user/reset-password", { email, otp, newPassword });
+  return response.data;
+};
+
 
 // STOCK API METHODS
 export const getStocks = async () => {
