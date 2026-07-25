@@ -80,9 +80,8 @@ def fetch_and_save_data():
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 csv_filename = os.path.join(script_dir, config["csv_file"])
                 file_exists = os.path.isfile(csv_filename)
-                
-                # Step 4: Append to CSV (creates headers if file doesn't exist)
-                df.to_csv(csv_filename, mode='a', index=False, header=not file_exists)
+                # Step 4: Overwrite CSV (creates headers automatically)
+                df.to_csv(csv_filename, mode='w', index=False, header=True)
                 print(f"    ✅ Success! Saved {len(df)} records to {csv_filename}.")
             else:
                 print(f"    ⚠️ No IPOs found in the '{tab_name}' response (list is empty).")

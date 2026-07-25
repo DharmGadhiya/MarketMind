@@ -44,10 +44,8 @@ def fetch_and_save_data():
             
             script_dir = os.path.dirname(os.path.abspath(__file__))
             csv_filename = os.path.join(script_dir, "nse_corporate_announcements.csv")
-            file_exists = os.path.isfile(csv_filename)
-            
-            # Step 4: Append to CSV (creates a new file with headers if it doesn't exist)
-            df.to_csv(csv_filename, mode='a', index=False, header=not file_exists)
+            # Step 4: Overwrite CSV (creates a new file with headers)
+            df.to_csv(csv_filename, mode='w', index=False, header=True)
             
             print(f"Success! Saved {len(df)} records to {csv_filename}.")
         else:
