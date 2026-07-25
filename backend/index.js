@@ -15,6 +15,7 @@ import stockRouter from "./routes/stockRoutes.js";
 import stockDetailRouter from "./routes/stockDetailRoutes.js";
 import userRouter from "./routes/user.js";
 import ipoRouter from "./routes/ipoRoutes.js";
+import announcementRouter from "./routes/announcementRoutes.js";
 import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 
 const app = express();
@@ -79,6 +80,7 @@ app.use("/api/user", userRouter);
 app.use("/api/stocks", stockDetailRouter);
 app.use("/stocks", stockRouter);
 app.use("/api", ipoRouter);
+app.use("/api", announcementRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
@@ -95,5 +97,19 @@ app.listen(PORT, () => {
     console.log("[Scraper] Background IPO scraper process spawned successfully.");
   } catch (err) {
     console.error("[Scraper] Failed to start background IPO scraper:", err);
+  }
+
+  // Start the Python Corporate Announcements scraper in the background
+  try {
+    const scriptPath = path.resolve("Logic Files", "corporate_announcements.py");
+    console.log(`[Scraper] Spawning background Announcements scraper at ${scriptPath}...`);
+    const scraperProcess = spawn("python", [scriptPath], {
+      detached: true,
+      stdio: "ignore",
+    });
+    scraperProcess.unref();
+    console.log("[Scraper] Background Announcements scraper process spawned successfully.");
+  } catch (err) {
+    console.error("[Scraper] Failed to start background Announcements scraper:", err);
   }
 });

@@ -561,6 +561,14 @@ const Header = () => {
             <span>📊</span>
             <span>IPO Center</span>
           </Link>
+          <Link
+            to="/corporate-announcements"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
+          >
+            <span>📢</span>
+            <span>Corporate Announcements</span>
+          </Link>
         </nav>
 
         {user && (

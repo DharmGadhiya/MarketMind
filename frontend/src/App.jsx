@@ -9,6 +9,7 @@ import NewsDetail from "./pages/NewsDetail";
 import AIAnalysisPage from "./pages/AIAnalysisPage";
 import IPOPage from "./pages/IPOPage";
 import StockDetails from "./pages/StockDetails";
+import AnnouncementsPage from "./pages/AnnouncementsPage";
 
 function App() {
   return (
@@ -39,6 +40,11 @@ function App() {
         <Route
           path="/ipo"
           element={<IPOPage />}
+        />
+
+        <Route
+          path="/corporate-announcements"
+          element={<AnnouncementsPage />}
         />
 
       </Routes>
