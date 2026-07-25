@@ -58,12 +58,15 @@ app.use(
         "http://127.0.0.1:3000"
       ];
       
-      // Check if origin matches any of the common local dev servers or localhost wildcards
-      const isLocal = allowedOrigins.includes(origin) || 
-                      origin.startsWith("http://localhost:") || 
-                      origin.startsWith("http://127.0.0.1:");
+      // Check if origin matches any of the common local dev servers, vercel domains, or custom FRONTEND_URL env var
+      const frontendUrl = process.env.FRONTEND_URL;
+      const isAllowed = allowedOrigins.includes(origin) || 
+                        origin.startsWith("http://localhost:") || 
+                        origin.startsWith("http://127.0.0.1:") ||
+                        origin.endsWith(".vercel.app") ||
+                        (frontendUrl && origin === frontendUrl);
                       
-      if (isLocal) {
+      if (isAllowed) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
