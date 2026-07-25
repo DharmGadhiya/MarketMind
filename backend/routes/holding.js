@@ -1,6 +1,8 @@
 import { Router } from "express";
 import Holding from "../models/holding.js";
 import Stock from "../models/stock.js";
+import { addStockSymbol } from "../config/stocks.js";
+import { fetchSingleStock } from "../services/stockService.js";
 
 const router = Router();
 
@@ -53,6 +55,23 @@ router.post("/", async (req, res) => {
     });
 
     await holding.save();
+
+    // Dynamically register the stock symbol for live updates if not already present
+    addStockSymbol(formattedSymbol);
+
+    // Fetch the single stock quote immediately and cache it in the Stock collection
+    try {
+      const stockQuote = await fetchSingleStock(formattedSymbol);
+      if (stockQuote) {
+        await Stock.updateOne(
+          { symbol: formattedSymbol },
+          { $set: stockQuote },
+          { upsert: true }
+        );
+      }
+    } catch (fetchErr) {
+      console.warn(`[Holding Post] Immediate price fetch failed for ${formattedSymbol}:`, fetchErr.message);
+    }
 
     return res.status(201).json({
       success: true,

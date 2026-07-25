@@ -35,9 +35,35 @@ mongoose
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 5000,
   })
-  .then(() => {
+  .then(async () => {
     console.log("DB connected");
     initAIAnalysisCron(); // Initialize the background AI analysis scheduler
+
+    // Load custom stock symbols from database holdings/watchlists on startup
+    try {
+      const Holding = mongoose.model("Holding");
+      const Watchlist = mongoose.model("Watchlist");
+      const { addStockSymbol } = await import("./config/stocks.js");
+      
+      const [holdingSymbols, watchlistSymbols] = await Promise.all([
+        Holding.distinct("symbol"),
+        Watchlist.distinct("symbol")
+      ]);
+      
+      const allDbSymbols = [...new Set([...holdingSymbols, ...watchlistSymbols])];
+      let loadedCount = 0;
+      allDbSymbols.forEach(symbol => {
+        if (symbol) {
+          addStockSymbol(symbol);
+          loadedCount++;
+        }
+      });
+      if (loadedCount > 0) {
+        console.log(`[Startup] Loaded ${loadedCount} custom stock symbols from DB into active watchlists.`);
+      }
+    } catch (dbErr) {
+      console.warn("[Startup] Failed to load custom stock symbols from database:", dbErr.message);
+    }
   })
   .catch((err) => {
     console.log("DB connection failed: ", err);

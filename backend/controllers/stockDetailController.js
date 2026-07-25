@@ -1,5 +1,7 @@
 import YahooFinance from "yahoo-finance2";
 import { getCache, setCache } from "../utils/redisCache.js";
+import fs from "fs";
+import path from "path";
 
 const yahooFinance = new YahooFinance({ suppressNotices: ["yahooSurvey", "ripHistorical"] });
 
@@ -226,5 +228,70 @@ export const getStockChart = async (req, res) => {
   } catch (error) {
     console.error("[getStockChart Error]:", error.message);
     return res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};
+
+/**
+ * Search stocks from EQUITY_L.csv
+ * GET /api/stocks/search
+ */
+export const searchStocks = async (req, res) => {
+  const query = (req.query.query || "").trim().toLowerCase();
+  if (!query) {
+    return res.status(200).json({ success: true, data: [] });
+  }
+
+  try {
+    const filePath = path.resolve("Logic Files", "EQUITY_L.csv");
+    if (!fs.existsSync(filePath)) {
+      return res.status(500).json({ success: false, error: "Stock database (EQUITY_L.csv) not found" });
+    }
+
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n").map(l => l.trim()).filter(Boolean);
+    
+    const matches = [];
+    
+    // Custom CSV parser to handle quotes and commas in company names
+    const parseCSVLine = (line) => {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    };
+
+    // Start from line 1 to skip header
+    for (let i = 1; i < lines.length; i++) {
+      const parts = parseCSVLine(lines[i]);
+      if (parts.length >= 2) {
+        const symbol = parts[0].trim();
+        const companyName = parts[1].trim();
+        
+        if (symbol.toLowerCase().includes(query) || companyName.toLowerCase().includes(query)) {
+          matches.push({ symbol, name: companyName });
+        }
+        
+        if (matches.length >= 10) {
+          break; // Limit to 10 suggestions for performance
+        }
+      }
+    }
+    
+    return res.status(200).json({ success: true, data: matches });
+  } catch (err) {
+    console.error("Error searching EQUITY_L.csv:", err);
+    return res.status(500).json({ success: false, error: err.message });
   }
 };

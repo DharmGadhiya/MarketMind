@@ -108,4 +108,8 @@ const updateStocks = async () => {
   }
 };
 
-export { updateStocks, fetchAllStocks };
+export {
+  updateStocks,
+  fetchAllStocks,
+  fetchSingleStock
+};

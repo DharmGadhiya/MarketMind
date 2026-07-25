@@ -4,7 +4,7 @@ import { Loader2, Trash2, Pencil, Plus, Briefcase, TrendingUp, TrendingDown, X, 
 import Header from "../components/Header";
 import TickerTape from "../components/TickerTape";
 import { useUser } from "../services/UserContext";
-import { getHoldings, addHolding, updateHolding, removeHolding } from "../services/newsApi";
+import { getHoldings, addHolding, updateHolding, removeHolding, searchStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
 /**
@@ -55,6 +55,30 @@ const PortfolioPage = () => {
     qty: "",
   });
   const [editingId, setEditingId] = useState(null);
+
+  // Suggestions States
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const handleSymbolChange = async (e) => {
+    const value = e.target.value;
+    setFormData({ ...formData, symbol: value });
+    
+    if (value.trim().length > 1) {
+      try {
+        const res = await searchStocks(value);
+        if (res && res.success) {
+          setSuggestions(res.data || []);
+          setShowSuggestions(true);
+        }
+      } catch (err) {
+        console.error("Autocomplete fetch error:", err);
+      }
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
 
   const fetchPortfolio = async (showLoading = true) => {
     if (!user) {
@@ -546,15 +570,42 @@ const PortfolioPage = () => {
                 <label className="font-mono text-[10px] uppercase tracking-wider text-text-1 font-semibold">
                   Stock Symbol
                 </label>
-                <input
-                  type="text"
-                  name="symbol"
-                  required
-                  placeholder="e.g. RELIANCE, TCS"
-                  value={formData.symbol}
-                  onChange={handleInputChange}
-                  className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors uppercase"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="symbol"
+                    required
+                    placeholder="e.g. RELIANCE, TCS"
+                    value={formData.symbol}
+                    onChange={handleSymbolChange}
+                    onFocus={() => {
+                      if (formData.symbol.trim().length > 1 && suggestions.length > 0) {
+                        setShowSuggestions(true);
+                      }
+                    }}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    className="w-full rounded-xl border border-border-strong bg-bg-0 px-4 py-2.5 text-sm text-text-0 placeholder-text-3 focus:border-bull focus:outline-none transition-colors uppercase"
+                    autoComplete="off"
+                  />
+                  {showSuggestions && suggestions.length > 0 && (
+                    <ul className="absolute left-0 right-0 z-50 mt-1 max-h-48 overflow-y-auto rounded-xl border border-border-strong bg-bg-1 shadow-lg divide-y divide-border-custom">
+                      {suggestions.map((s) => (
+                        <li
+                          key={s.symbol}
+                          onClick={() => {
+                            setFormData({ ...formData, symbol: s.symbol });
+                            setSuggestions([]);
+                            setShowSuggestions(false);
+                          }}
+                          className="px-4 py-2.5 hover:bg-bg-2 cursor-pointer transition-colors text-left"
+                        >
+                          <div className="font-semibold text-text-0 text-xs sm:text-sm font-mono">{s.symbol}</div>
+                          <div className="text-[10px] text-text-2 truncate">{s.name}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

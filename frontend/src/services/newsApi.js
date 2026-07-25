@@ -141,3 +141,8 @@ export const removeHolding = async (id) => {
   const response = await API.delete(`/api/holdings/${encodeURIComponent(id)}`);
   return response.data;
 };
+
+export const searchStocks = async (query) => {
+  const response = await API.get(`/api/stocks/search?query=${encodeURIComponent(query)}`);
+  return response.data;
+};

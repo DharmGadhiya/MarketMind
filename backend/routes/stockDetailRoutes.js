@@ -1,7 +1,10 @@
 import express from "express";
-import { getStockDetails, getStockChart } from "../controllers/stockDetailController.js";
+import { getStockDetails, getStockChart, searchStocks } from "../controllers/stockDetailController.js";
 
 const router = express.Router();
+
+// GET /api/stocks/search (Must be defined before wildcard parameter)
+router.get("/search", searchStocks);
 
 // GET /api/stocks/:symbol
 router.get("/:symbol", getStockDetails);

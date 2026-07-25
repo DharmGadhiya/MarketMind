@@ -51,3 +51,30 @@
   "TRENT.NS",
 ];
 
+import fs from "fs";
+import path from "path";
+
+export const addStockSymbol = (symbol) => {
+  const cleanSymbol = symbol.trim().toUpperCase();
+  if (!STOCKS.includes(cleanSymbol)) {
+    STOCKS.push(cleanSymbol);
+    
+    // Save to file on disk to persist
+    try {
+      const filePath = path.resolve("config", "stocks.js");
+      if (fs.existsSync(filePath)) {
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        const lastIndex = fileContent.lastIndexOf("  "IRFC.NS",
+];");
+        if (lastIndex !== -1) {
+          const updatedContent = fileContent.slice(0, lastIndex) + `  "${cleanSymbol}",\n` + fileContent.slice(lastIndex);
+          fs.writeFileSync(filePath, updatedContent, "utf-8");
+        }
+      }
+    } catch (err) {
+      console.error("[stocks.js] Failed to save dynamically added symbol:", err);
+    }
+  }
+};
+
+
