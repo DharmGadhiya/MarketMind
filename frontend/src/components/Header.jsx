@@ -400,7 +400,7 @@ const Header = () => {
               <Search className="absolute left-3 text-text-3" size={13} />
               <input
                 type="text"
-                placeholder="Search stocks (e.g. RELIANCE, TCS)..."
+                placeholder="Enter Nifty 50 stock"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);

@@ -100,7 +100,7 @@ const MarketPulse = ({ initialStocks }) => {
         <Search className="absolute left-3 text-text-3 transition-colors" size={14} />
         <input
           type="text"
-          placeholder="Search stocks..."
+          placeholder="Enter Nifty 50 stock"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full rounded-xl border border-border-custom bg-bg-0 pl-9 pr-4 py-2 text-xs font-sans outline-none transition-all focus:border-bull focus:bg-bg-1 text-text-0 placeholder-text-3"
