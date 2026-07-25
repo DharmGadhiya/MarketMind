@@ -3,7 +3,7 @@ import { createChart, ColorType, CandlestickSeries, HistogramSeries } from "ligh
 import { useTheme } from "../../services/ThemeContext";
 import { formatPrice, formatVolume } from "../../Utilities/utils/stockFormat";
 
-const PriceChart = ({ chartData, activeRange = "1d" }) => {
+const PriceChart = ({ chartData, activeRange = "1d", height }) => {
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
   const candlestickSeriesRef = useRef(null);
@@ -11,6 +11,8 @@ const PriceChart = ({ chartData, activeRange = "1d" }) => {
   const { theme } = useTheme();
 
   const [hoverData, setHoverData] = useState(null);
+
+  const chartHeight = height || (typeof window !== "undefined" && window.innerWidth < 640 ? 320 : 450);
 
   // Initialize tooltips with the latest bar when data changes
   useEffect(() => {
@@ -69,7 +71,7 @@ const PriceChart = ({ chartData, activeRange = "1d" }) => {
         },
       },
       width: container.clientWidth,
-      height: 450,
+      height: container.clientHeight || chartHeight,
       localization: {
         priceFormatter: (price) => formatPrice(price),
         timeFormatter: (time) => {
@@ -160,7 +162,7 @@ const PriceChart = ({ chartData, activeRange = "1d" }) => {
         param.point.x < 0 ||
         param.point.x > container.clientWidth ||
         param.point.y < 0 ||
-        param.point.y > 450
+        param.point.y > chartHeight
       ) {
         // Fallback to the latest price when not hover
         if (chartData && chartData.length > 0) {
@@ -185,8 +187,11 @@ const PriceChart = ({ chartData, activeRange = "1d" }) => {
     // Handle container resize
     const resizeObserver = new ResizeObserver((entries) => {
       if (entries.length === 0 || !entries[0].contentRect) return;
-      const { width } = entries[0].contentRect;
-      chart.applyOptions({ width });
+      const { width, height } = entries[0].contentRect;
+      chart.applyOptions({ 
+        width, 
+        height: height > 50 ? height : chartHeight 
+      });
       chart.timeScale().fitContent();
     });
     resizeObserver.observe(container);
@@ -214,7 +219,7 @@ const PriceChart = ({ chartData, activeRange = "1d" }) => {
   const hasData = chartData && chartData.length > 0;
 
   return (
-    <div className="relative min-h-[490px] w-full flex flex-col justify-end">
+    <div className="relative w-full h-full min-h-[250px] flex-1 flex flex-col justify-end">
       
       {/* FLOATING LEGEND / OHLV INFO */}
       {hoverData && (

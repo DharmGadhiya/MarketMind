@@ -279,7 +279,7 @@ const IndicesPage = () => {
               </div>
 
               {/* Modal Body */}
-              <div className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
+              <div className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto min-h-0">
                 {/* Micro Details Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-bg-0/35 border border-border-custom">
                   <div className="flex flex-col gap-1">
@@ -310,7 +310,7 @@ const IndicesPage = () => {
                 </div>
 
                 {/* Lightweight-Chart Container */}
-                <div className="h-[520px] w-full relative border border-border-custom rounded-xl p-2 bg-bg-0/30 overflow-hidden">
+                <div className="flex-1 min-h-[280px] sm:min-h-[380px] lg:h-[450px] w-full relative border border-border-custom rounded-xl p-2 bg-bg-0/30 overflow-hidden">
                   <AnimatePresence mode="wait">
                     {loadingChart ? (
                       <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg-1/40 backdrop-blur-[1.5px]">
