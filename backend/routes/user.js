@@ -3,10 +3,51 @@ const router = Router();
 import USER from "../models/user.js";
 import Redis from "ioredis";
 
-const redisOTP = new Redis(process.env.REDIS_URL, {
+const otpRetryStrategy = (times) => {
+  if (times <= 3) return times * 1000;
+  return 15000;
+};
+
+const getOtpRedisUrl = () => {
+  const url = process.env.REDIS_URL;
+  if (!url) return "";
+  if (url.includes("upstash.io") && url.startsWith("redis://")) {
+    return url.replace("redis://", "rediss://");
+  }
+  return url;
+};
+
+const otpRedisUrl = getOtpRedisUrl();
+const otpRedisOptions = {
   maxRetriesPerRequest: 3,
   lazyConnect: true,
+  enableOfflineQueue: false, // Don't queue commands when offline
+  retryStrategy: otpRetryStrategy,
+};
+
+if (otpRedisUrl.startsWith("rediss://")) {
+  otpRedisOptions.tls = {
+    rejectUnauthorized: false,
+  };
+}
+
+const redisOTP = new Redis(otpRedisUrl, otpRedisOptions);
+
+let hasLoggedOtpError = false;
+
+redisOTP.on("error", (err) => {
+  if (!hasLoggedOtpError) {
+    console.error("[Redis OTP Error] Client connection failed:", err.message);
+    console.warn("[Redis OTP] Using in-memory fallback store for OTPs.");
+    hasLoggedOtpError = true;
+  }
 });
+
+redisOTP.on("ready", () => {
+  console.log("Redis Connected (OTP Cache)");
+  hasLoggedOtpError = false;
+});
+
 redisOTP.connect().catch(() => {});
 
 async function sendOTP(email, otp) {
@@ -75,17 +116,7 @@ async function sendOTP(email, otp) {
   return data;
 }
 
-let isRedisConnectedLogged = false;
-redisOTP.on("connect", () => {
-  if (!isRedisConnectedLogged) {
-    console.log("Redis Connected");
-    isRedisConnectedLogged = true;
-  }
-});
 
-redisOTP.on("error", (err) => {
-  // Silent error listener to prevent unhandled rejection/exceptions spamming the terminal
-});
 
 // Simple in-memory fallback store for OTPs when Redis is down
 const memoryOTPStore = {

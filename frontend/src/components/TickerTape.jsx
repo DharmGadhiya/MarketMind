@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getStocks } from "../services/newsApi";
 import { formatNum } from "../Utilities/utils/format";
 
@@ -42,9 +43,10 @@ const TickerTape = ({ initialStocks }) => {
             const cleanSymbol = stock.symbol.replace(".NS", "");
             const isPositive = stock.changePercent >= 0;
             return (
-              <span
+              <Link
                 key={`${stock.symbol}-${i}`}
-                className="mx-6 inline-flex items-center gap-2 whitespace-nowrap"
+                to={`/stock/${encodeURIComponent(cleanSymbol)}`}
+                className="mx-6 inline-flex items-center gap-2 whitespace-nowrap cursor-pointer hover:text-bull transition-all hover:scale-[1.02] duration-300"
               >
                 <span className="font-semibold text-text-0 transition-colors">
                   {cleanSymbol}
@@ -62,7 +64,7 @@ const TickerTape = ({ initialStocks }) => {
                 <span className="text-text-3 transition-colors ml-2">
                   •
                 </span>
-              </span>
+              </Link>
             );
           })
         ) : (
