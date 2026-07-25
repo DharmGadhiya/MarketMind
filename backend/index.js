@@ -4,6 +4,8 @@ import CORS from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dns from "dns";
+import { spawn } from "child_process";
+import path from "path";
 
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
@@ -12,6 +14,7 @@ import newsRouter from "./routes/news.js";
 import stockRouter from "./routes/stockRoutes.js";
 import stockDetailRouter from "./routes/stockDetailRoutes.js";
 import userRouter from "./routes/user.js";
+import ipoRouter from "./routes/ipoRoutes.js";
 import { initAIAnalysisCron } from "./cron/aiAnalysis.cron.js";
 
 const app = express();
@@ -75,7 +78,22 @@ app.use("/api", newsRouter);
 app.use("/api/user", userRouter);
 app.use("/api/stocks", stockDetailRouter);
 app.use("/stocks", stockRouter);
+app.use("/api", ipoRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
+
+  // Start the Python IPO scraper in the background
+  try {
+    const scriptPath = path.resolve("Logic Files", "ipo_listing.py");
+    console.log(`[Scraper] Spawning background IPO scraper at ${scriptPath}...`);
+    const scraperProcess = spawn("python", [scriptPath], {
+      detached: true,
+      stdio: "ignore",
+    });
+    scraperProcess.unref();
+    console.log("[Scraper] Background IPO scraper process spawned successfully.");
+  } catch (err) {
+    console.error("[Scraper] Failed to start background IPO scraper:", err);
+  }
 });

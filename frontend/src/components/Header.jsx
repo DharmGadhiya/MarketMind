@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { X, Sun, Moon, Search } from "lucide-react";
+import { X, Sun, Moon, Search, Menu } from "lucide-react";
 import { useUser } from "../services/UserContext";
 import { useTheme } from "../services/ThemeContext";
 import { loginUser, logoutUser, createAccount, verifyOTP } from "../services/newsApi";
@@ -13,6 +13,7 @@ const Header = () => {
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const SEARCHABLE_STOCKS = [
     { symbol: "RELIANCE", name: "Reliance Industries Ltd" },
@@ -182,23 +183,36 @@ const Header = () => {
       <header className="sticky top-0 z-40 glass border-b border-border-custom transition-all duration-300">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 lg:px-10">
 
-          {/* LOGO */}
-          <Link to="/" className="group flex items-center gap-3">
-            <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border-strong bg-gradient-to-br from-[#0a8c5b] to-[#064a30]">
-              <div className="absolute inset-0 flex items-center justify-center font-serif text-2xl text-white">
-                M
+          {/* LEFT SIDE LOGO & SIDEBAR MENU */}
+          <div className="flex items-center gap-3">
+            {user && (
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="rounded-lg p-2 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer active:scale-95 border border-transparent hover:border-border-custom"
+                title="Open Navigation Menu"
+              >
+                <Menu size={20} />
+              </button>
+            )}
+
+            {/* LOGO */}
+            <Link to="/" className="group flex items-center gap-3">
+              <div className="relative h-9 w-9 overflow-hidden rounded-md border border-border-strong bg-gradient-to-br from-[#0a8c5b] to-[#064a30]">
+                <div className="absolute inset-0 flex items-center justify-center font-serif text-2xl text-white">
+                  M
+                </div>
+                <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-bull pulse-dot" />
               </div>
-              <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-bull pulse-dot" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-serif text-xl text-text-0 transition-colors">
-                MarketMind
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-2 transition-colors">
-                news terminal
-              </span>
-            </div>
-          </Link>
+              <div className="flex flex-col leading-none">
+                <span className="font-serif text-xl text-text-0 transition-colors">
+                  MarketMind
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-2 transition-colors">
+                  news terminal
+                </span>
+              </div>
+            </Link>
+          </div>
 
           {/* SEARCH BAR */}
           <div className="relative hidden sm:block w-44 md:w-60 lg:w-72">
@@ -504,8 +518,76 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {/* SIDEBAR NAVIGATION DRAWER */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-bg-1 border-r border-border-strong p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-custom">
+          <div className="flex items-center gap-2">
+            <span className="font-serif text-lg font-bold text-text-0">Menu</span>
+          </div>
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="rounded-lg p-1.5 hover:bg-bg-2 text-text-2 hover:text-text-0 transition-all cursor-pointer border border-transparent hover:border-border-custom"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col gap-2">
+          <Link
+            to="/"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
+          >
+            <span>🏠</span>
+            <span>Home Terminal</span>
+          </Link>
+          <Link
+            to="/ipo"
+            onClick={() => setIsSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-bg-2 text-text-1 hover:text-bull transition-all font-semibold text-sm border border-transparent hover:border-border-custom shadow-sm"
+          >
+            <span>📊</span>
+            <span>IPO Center</span>
+          </Link>
+        </nav>
+
+        {user && (
+          <div className="absolute bottom-6 left-6 right-6 pt-4 border-t border-border-custom">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-bull/10 text-bull border border-bull/20 font-bold font-mono">
+                {user.name ? user.name[0].toUpperCase() : "U"}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-text-0 truncate">{user.name}</span>
+                <span className="text-[10px] text-text-3 truncate">{user.email}</span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setIsSidebarOpen(false);
+                handleLogoutClick();
+              }}
+              className="w-full text-center text-xs font-bold text-bear hover:bg-bear/5 border border-bear/10 hover:border-bear/30 rounded-xl py-2.5 transition-all cursor-pointer active:scale-95"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
     </>
   );
 };
 
-export default Header;
+export default Header;
