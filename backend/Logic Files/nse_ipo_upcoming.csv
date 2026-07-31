@@ -1,4 +1,6 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-MV Electrosystems Limited,03-Aug-2026,Rs.400 to Rs.425,3987491,30-Jul-2026,EQ,Active,MVELECTRO,2026-07-30 02:23:38
-Juniper Green Energy Limited,03-Aug-2026,Rs.214 to Rs.225,58916709,30-Jul-2026,EQ,Active,JNPR,2026-07-30 02:23:38
-Manipal Health Enterprises Limited,31-Jul-2026,Rs.560 to Rs.590,90088286,29-Jul-2026,EQ,Active,MANIPALHOS,2026-07-30 02:23:38
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+MV Electrosystems Limited,03-Aug-2026,Rs.400 to Rs.425,3987491,30-Jul-2026,EQ,Active,MVELECTRO,,,2026-07-31 02:48:02
+Juniper Green Energy Limited,03-Aug-2026,Rs.214 to Rs.225,58916709,30-Jul-2026,EQ,Active,JNPR,,,2026-07-31 02:48:02
+Manipal Health Enterprises Limited,31-Jul-2026,Rs.560 to Rs.590,90088286,29-Jul-2026,EQ,Active,MANIPALHOS,,,2026-07-31 02:48:02
+Ardee Industries Limited,07-Aug-2026,Rs.50 to Rs.53,83974436,05-Aug-2026,EQ,Forthcoming,ARDEE,,,2026-07-31 02:48:02
+Anawil Wire and Engineering Limited,05-Aug-2026,Rs.257 to Rs.270,6585600,03-Aug-2026,SME,Forthcoming,ANAWIL,400,Rs.257 to Rs.270,2026-07-31 02:48:02
