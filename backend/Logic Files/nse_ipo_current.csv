@@ -1,4 +1,8 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
-MV Electrosystems Limited,03-Aug-2026,Rs.400 to Rs.425,3987491,30-Jul-2026,EQ,Active,MVELECTRO,Total,3987491.0,2.3022080802188643,9180034.0,,2026-07-31 02:48:02
-Juniper Green Energy Limited,03-Aug-2026,Rs.214 to Rs.225,58916709,30-Jul-2026,EQ,Active,JNPR,Total,5.8916709E7,0.3455985296123719,2.0361528E7,,2026-07-31 02:48:02
-Manipal Health Enterprises Limited,31-Jul-2026,Rs.560 to Rs.590,90088286,29-Jul-2026,EQ,Active,MANIPALHOS,Total,9.0088286E7,0.40027817823063033,3.6060375E7,,2026-07-31 02:48:02
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
+Annu Projects Limited,28-Aug-2026,Rs.94 to Rs.99,17683000,25-Aug-2026,EQ,Active,ANNU,Total,1.7683E7,0.23044941469207714,4075037.0,,,2026-08-26 01:16:09
+Symbiotec Pharmalab Limited,27-Aug-2026,Rs.938 to Rs.988,13124929,24-Aug-2026,EQ,Active,SYMBIOTEC,Total,1.3124929E7,1.3419158305542072,1.761255E7,,,2026-08-26 01:16:09
+Skyways Air Services Limited,27-Aug-2026,Rs.131 to Rs.138,29583600,24-Aug-2026,EQ,Active,SKYWAYS,Total,2.95836E7,1.6276315255749807,4.81512E7,,,2026-08-26 01:16:09
+Hy-Tech Engineers Limited,27-Aug-2026,Rs.50 to Rs.53,18145406,24-Aug-2026,EQ,Active,HTEL,Total,1.8145406E7,12.819090683338802,2.32607605E8,,,2026-08-26 01:16:09
+Sumax Engineering Limited,28-Aug-2026,,,25-Aug-2026,SME,Active,SUMAX,,3852000,2.94,11306400,,1,2026-08-26 01:16:09
+Madhur Knit Crafts Limited,27-Aug-2026,,,24-Aug-2026,SME,Active,MADHURKNIT,,5024400,0.45,2245200,,1,2026-08-26 01:16:09
+ABH Healthcare Limited,27-Aug-2026,,,24-Aug-2026,SME,Active,ABH,,3429600,0.84,2871600,,1,2026-08-26 01:16:09
