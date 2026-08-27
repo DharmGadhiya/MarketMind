@@ -1,8 +1,11 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-Annu Projects Limited,28-Aug-2026,Rs.94 to Rs.99,17683000,25-Aug-2026,EQ,Active,ANNU,2026-08-26 01:16:09
-Symbiotec Pharmalab Limited,27-Aug-2026,Rs.938 to Rs.988,13124929,24-Aug-2026,EQ,Active,SYMBIOTEC,2026-08-26 01:16:09
-Skyways Air Services Limited,27-Aug-2026,Rs.131 to Rs.138,29583600,24-Aug-2026,EQ,Active,SKYWAYS,2026-08-26 01:16:09
-Hy-Tech Engineers Limited,27-Aug-2026,Rs.50 to Rs.53,18145406,24-Aug-2026,EQ,Active,HTEL,2026-08-26 01:16:09
-Augmont Enterprises Limited,25-Aug-2026,Rs.750 to Rs.788,7715999,21-Aug-2026,EQ,Closed,AUGMONT,2026-08-26 01:16:09
-Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,4575000,28-Aug-2026,EQ,Forthcoming,PRIORITY,2026-08-26 01:16:09
-Lumino Industries Limited,31-Aug-2026,Rs.78 to Rs.82,63205127,27-Aug-2026,EQ,Forthcoming,LUMINO,2026-08-26 01:16:09
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+Lumino Industries Limited,31-Aug-2026,Rs.78 to Rs.82,63205127,27-Aug-2026,EQ,Active,LUMINO,,,2026-08-27 07:47:12
+Annu Projects Limited,28-Aug-2026,Rs.94 to Rs.99,17683000,25-Aug-2026,EQ,Active,ANNU,,,2026-08-27 07:47:12
+Hy-Tech Engineers Limited,27-Aug-2026,Rs.50 to Rs.53,18145406,24-Aug-2026,EQ,Active,HTEL,,,2026-08-27 07:47:12
+Skyways Air Services Limited,27-Aug-2026,Rs.131 to Rs.138,29583600,24-Aug-2026,EQ,Active,SKYWAYS,,,2026-08-27 07:47:12
+Symbiotec Pharmalab Limited,27-Aug-2026,Rs.938 to Rs.988,13124929,24-Aug-2026,EQ,Active,SYMBIOTEC,,,2026-08-27 07:47:12
+Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,12454212,31-Aug-2026,EQ,Forthcoming,PERNIASPOP,,,2026-08-27 07:47:12
+Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,4575000,28-Aug-2026,EQ,Forthcoming,PRIORITY,,,2026-08-27 07:47:12
+ESDS Software Solution Limited,01-Sep-2026,Rs.408 to Rs.429,17647058,28-Aug-2026,EQ,Forthcoming,ESDS,,,2026-08-27 07:47:12
+Ashutosh Fibre Limited,02-Sep-2026,Rs.87 to Rs.92,6124800,31-Aug-2026,SME,Forthcoming,ASHUTOSH,1200,Rs.87 to Rs.92,2026-08-27 07:47:12
+Shanti Inorganics Limited,02-Sep-2026,Rs.79 to Rs.83,5691200,31-Aug-2026,SME,Forthcoming,SHANTIINOR,1600,Rs.79 to Rs.83,2026-08-27 07:47:12
