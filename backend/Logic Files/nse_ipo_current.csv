@@ -1,6 +1,4 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-ESDS Software Solution Limited,01-Sep-2026,Rs.408 to Rs.429,12352942,28-Aug-2026,EQ,Active,ESDS,Total,1.2352942E7,1.1906358825290364,1.4707856E7,,,2026-08-28 09:51:51
-Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,3202500,28-Aug-2026,EQ,Active,PRIORITY,Total,3202500.0,1.104847775175644,3538275.0,,,2026-08-28 09:51:51
-Lumino Industries Limited,31-Aug-2026,Rs.78 to Rs.82,63205127,27-Aug-2026,EQ,Active,LUMINO,Total,6.3205127E7,2.306504502395826,1.4578291E8,,,2026-08-28 09:51:51
-Annu Projects Limited,28-Aug-2026,Rs.94 to Rs.99,17683000,25-Aug-2026,EQ,Active,ANNU,Total,1.7683E7,1.978601255443081,3.4987606E7,,,2026-08-28 09:51:51
-Sumax Engineering Limited,28-Aug-2026,,,25-Aug-2026,SME,Active,SUMAX,,3852000,132.36,509833200,,1,2026-08-28 09:51:51
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
+ESDS Software Solution Limited,01-Sep-2026,Rs.408 to Rs.429,12352942,28-Aug-2026,EQ,Active,ESDS,Total,1.2352942E7,1.5433727447275314,1.9065194E7,,2026-08-29 05:51:48
+Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,3202500,28-Aug-2026,EQ,Active,PRIORITY,Total,3202500.0,1.367704918032787,4380075.0,,2026-08-29 05:51:48
+Lumino Industries Limited,31-Aug-2026,Rs.78 to Rs.82,63205127,27-Aug-2026,EQ,Active,LUMINO,Total,6.3205127E7,2.858714515358857,1.80685414E8,,2026-08-29 05:51:48
