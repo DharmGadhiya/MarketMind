@@ -1,8 +1,6 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,Total,0.0,0.00,0.0,,,2026-09-01 03:49:28
-Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,Total,0.0,0.00,0.0,,,2026-09-01 03:49:28
-Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Active,PERNIASPOP,Total,6849816.0,0.09228539861508689,632138.0,,,2026-09-01 03:49:28
-Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,3202500,28-Aug-2026,EQ,Active,PRIORITY,Total,3202500.0,22.16063231850117,7.0969425E7,,,2026-09-01 03:49:28
-ESDS Software Solution Limited,01-Sep-2026,Rs.408 to Rs.429,12352942,28-Aug-2026,EQ,Active,ESDS,Total,1.2352942E7,20.84214189623816,2.5746177E8,,,2026-09-01 03:49:28
-Ashutosh Fibre Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,ASHUTOSH,,4381200,1.36,5952000,,1,2026-09-01 03:49:28
-Shanti Inorganics Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,SHANTIINOR,,4072000,1.06,4334400,,1,2026-09-01 03:49:28
+Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,Total,1.8520085E7,0.5045011402485464,9343404.0,,,2026-09-02 03:09:03
+Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,Total,3137810.0,0.774513434529178,2430276.0,,,2026-09-02 03:09:03
+Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Active,PERNIASPOP,Total,6849816.0,0.17453870293742196,1195558.0,,,2026-09-02 03:09:03
+Ashutosh Fibre Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,ASHUTOSH,,4381200,4.79,21000000,,1,2026-09-02 03:09:03
+Shanti Inorganics Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,SHANTIINOR,,4072000,3.39,13806400,,1,2026-09-02 03:09:03
