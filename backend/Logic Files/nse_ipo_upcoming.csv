@@ -1,6 +1,5 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,2026-09-02 03:09:03
-Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,2026-09-02 03:09:03
-Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Active,PERNIASPOP,2026-09-02 03:09:03
-Priority Jewels Limited,01-Sep-2026,Rs.190 to Rs.200,3202500,28-Aug-2026,EQ,Closed,PRIORITY,2026-09-02 03:09:03
-ESDS Software Solution Limited,01-Sep-2026,Rs.408 to Rs.429,12352942,28-Aug-2026,EQ,Closed,ESDS,2026-09-02 03:09:03
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,,,2026-09-03 03:11:29
+Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,,,2026-09-03 03:11:29
+Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Closed,PERNIASPOP,,,2026-09-03 03:11:29
+Qualiance International Limited,08-Sep-2026,Rs.120 to Rs.127,3552000,04-Sep-2026,SME,Forthcoming,QUALIANCE,1000,Rs.120 to Rs.127,2026-09-03 03:11:29

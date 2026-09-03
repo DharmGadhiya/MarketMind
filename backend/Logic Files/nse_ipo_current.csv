@@ -1,6 +1,3 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,Total,1.8520085E7,0.5045011402485464,9343404.0,,,2026-09-02 03:09:03
-Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,Total,3137810.0,0.774513434529178,2430276.0,,,2026-09-02 03:09:03
-Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Active,PERNIASPOP,Total,6849816.0,0.17453870293742196,1195558.0,,,2026-09-02 03:09:03
-Ashutosh Fibre Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,ASHUTOSH,,4381200,4.79,21000000,,1,2026-09-02 03:09:03
-Shanti Inorganics Limited,02-Sep-2026,,,31-Aug-2026,SME,Active,SHANTIINOR,,4072000,3.39,13806400,,1,2026-09-02 03:09:03
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
+Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,Total,1.8520085E7,2.3868091318155398,4.4203908E7,,2026-09-03 03:11:29
+Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,Total,3137810.0,2.3170791093150958,7270554.0,,2026-09-03 03:11:29
