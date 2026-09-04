@@ -1,3 +1,2 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
-Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,Total,1.8520085E7,2.3868091318155398,4.4203908E7,,2026-09-03 03:11:29
-Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,Total,3137810.0,2.3170791093150958,7270554.0,,2026-09-03 03:11:29
+companyName,isBse,issueEndDate,issueStartDate,series,status,symbol,noOfsharesBid,noOfSharesOffered,noOfTime,fetch_timestamp
+Qualiance International Limited,1,08-Sep-2026,04-Sep-2026,SME,Active,QUALIANCE,,2543000,,2026-09-04 03:09:57

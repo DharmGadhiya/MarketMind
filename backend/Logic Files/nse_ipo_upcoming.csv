@@ -1,5 +1,6 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Active,DEEPA,,,2026-09-03 03:11:29
-Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Active,MOMSBELIEF,,,2026-09-03 03:11:29
-Purple Style Labs Limited,02-Sep-2026,Rs.546 to Rs.575,6849816,31-Aug-2026,EQ,Closed,PERNIASPOP,,,2026-09-03 03:11:29
-Qualiance International Limited,08-Sep-2026,Rs.120 to Rs.127,3552000,04-Sep-2026,SME,Forthcoming,QUALIANCE,1000,Rs.120 to Rs.127,2026-09-03 03:11:29
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+Deepa Jewellers Limited,03-Sep-2026,Rs.168 to Rs.177,18520085,01-Sep-2026,EQ,Closed,DEEPA,2026-09-04 03:09:57
+Rays of Belief Limited- For Profit Social Enterprise (FPSE),03-Sep-2026,Rs.227 to Rs.239,3137810,01-Sep-2026,EQ,Closed,MOMSBELIEF,2026-09-04 03:09:57
+Glass Wall Systems (India) Limited,10-Sep-2026,Rs.172 to Rs.182,23702094,08-Sep-2026,EQ,Forthcoming,GLASSWALL,2026-09-04 03:09:57
+Kanohar Electricals Limited,10-Sep-2026,Rs.601 to Rs.632,16949595,08-Sep-2026,EQ,Forthcoming,KANOHAR,2026-09-04 03:09:57
+Pranav Constructions Limited,09-Sep-2026,Rs.118 to Rs.124,29602631,07-Sep-2026,EQ,Forthcoming,PRANAV,2026-09-04 03:09:57
