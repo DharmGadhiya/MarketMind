@@ -1,12 +1,12 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-Prasol Chemicals Limited,10-Sep-2026,Rs.643 to Rs.676,5443229,08-Sep-2026,EQ,Active,PRASOLCHEM,,,2026-09-08 03:18:34
-Glass Wall Systems (India) Limited,10-Sep-2026,Rs.172 to Rs.182,16457298,08-Sep-2026,EQ,Active,GLASSWALL,,,2026-09-08 03:18:34
-Kanohar Electricals Limited,10-Sep-2026,Rs.601 to Rs.632,11693326,08-Sep-2026,EQ,Active,KANOHAR,,,2026-09-08 03:18:34
-Pranav Constructions Limited,09-Sep-2026,Rs.118 to Rs.124,22463137,07-Sep-2026,EQ,Active,PRANAV,,,2026-09-08 03:18:34
-Asset Reconstruction Company (India) Limited,11-Sep-2026,Rs.132 to Rs.139,52731946,09-Sep-2026,EQ,Forthcoming,ARCIL,,,2026-09-08 03:18:34
-Steamhouse India Limited,11-Sep-2026,Rs.77 to Rs.81,53766232,09-Sep-2026,EQ,Forthcoming,STEAMHOUSE,,,2026-09-08 03:18:34
-Manipal Payment and Identity Solutions Limited,11-Sep-2026,Rs.322 to Rs.339,24244673,09-Sep-2026,EQ,Forthcoming,MPIMANIPAL,,,2026-09-08 03:18:34
-LCC Projects Limited,11-Sep-2026,Rs.139 to Rs.146,30146151,09-Sep-2026,EQ,Forthcoming,LCCPROJECT,,,2026-09-08 03:18:34
-Karamtara Engineering Limited,11-Sep-2026,Rs.241 to Rs.254,36307052,09-Sep-2026,EQ,Forthcoming,KARAMTARA,,,2026-09-08 03:18:34
-Rentomojo Limited,11-Sep-2026,Rs.384 to Rs.404,31274640,09-Sep-2026,EQ,Forthcoming,RENTOMOJO,,,2026-09-08 03:18:34
-Vinod Texworld Limited,11-Sep-2026,Rs.94,4556400,09-Sep-2026,SME,Forthcoming,VINOD,1200,Rs.94,2026-09-08 03:18:34
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+LCC Projects Limited,11-Sep-2026,Rs.139 to Rs.146,20927281,09-Sep-2026,EQ,Active,LCCPROJECT,2026-09-09 03:21:38
+Karamtara Engineering Limited,11-Sep-2026,Rs.241 to Rs.254,25414937,09-Sep-2026,EQ,Active,KARAMTARA,2026-09-09 03:21:38
+Asset Reconstruction Company (India) Limited,11-Sep-2026,Rs.132 to Rs.139,36912363,09-Sep-2026,EQ,Active,ARCIL,2026-09-09 03:21:38
+Steamhouse India Limited,11-Sep-2026,Rs.77 to Rs.81,37636363,09-Sep-2026,EQ,Active,STEAMHOUSE,2026-09-09 03:21:38
+Manipal Payment and Identity Solutions Limited,11-Sep-2026,Rs.322 to Rs.339,13060472,09-Sep-2026,EQ,Active,MPIMANIPAL,2026-09-09 03:21:38
+Rentomojo Limited,11-Sep-2026,Rs.384 to Rs.404,21772311,09-Sep-2026,EQ,Active,RENTOMOJO,2026-09-09 03:21:38
+Prasol Chemicals Limited,10-Sep-2026,Rs.643 to Rs.676,5443229,08-Sep-2026,EQ,Active,PRASOLCHEM,2026-09-09 03:21:38
+Glass Wall Systems (India) Limited,10-Sep-2026,Rs.172 to Rs.182,16457298,08-Sep-2026,EQ,Active,GLASSWALL,2026-09-09 03:21:38
+Kanohar Electricals Limited,10-Sep-2026,Rs.601 to Rs.632,11693326,08-Sep-2026,EQ,Active,KANOHAR,2026-09-09 03:21:38
+Pranav Constructions Limited,09-Sep-2026,Rs.118 to Rs.124,22463137,07-Sep-2026,EQ,Active,PRANAV,2026-09-09 03:21:38
+Veegaland Developers Limited,15-Sep-2026,Rs.130 to Rs.140,16153846,10-Sep-2026,EQ,Forthcoming,VEEGALAND,2026-09-09 03:21:38
