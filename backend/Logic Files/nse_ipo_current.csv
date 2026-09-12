@@ -1,10 +1,3 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Manika Plastech Limited,16-Sep-2026,Rs.40 to Rs.43,21386919,11-Sep-2026,EQ,Active,MANIKA,Total,0.0,0.00,0.0,,,2026-09-11 03:16:59
-Veegaland Developers Limited,15-Sep-2026,Rs.130 to Rs.140,11307692,10-Sep-2026,EQ,Active,VEEGALAND,Total,1.1307692E7,0.50269984361088,5684375.0,,,2026-09-11 03:16:59
-Manipal Payment and Identity Solutions Limited,11-Sep-2026,Rs.322 to Rs.339,13060472,09-Sep-2026,EQ,Active,MPIMANIPAL,Total,1.3060472E7,0.20091708783572293,2624072.0,,,2026-09-11 03:16:59
-Karamtara Engineering Limited,11-Sep-2026,Rs.241 to Rs.254,25414937,09-Sep-2026,EQ,Active,KARAMTARA,Total,2.5414937E7,2.426116657302751,6.1659602E7,,,2026-09-11 03:16:59
-Asset Reconstruction Company (India) Limited,11-Sep-2026,Rs.132 to Rs.139,36912363,09-Sep-2026,EQ,Active,ARCIL,Total,3.6912363E7,0.5997211015723919,2.2137123E7,,,2026-09-11 03:16:59
-Steamhouse India Limited,11-Sep-2026,Rs.77 to Rs.81,37636363,09-Sep-2026,EQ,Active,STEAMHOUSE,Total,3.7636363E7,1.2811947318076404,4.821951E7,,,2026-09-11 03:16:59
-Rentomojo Limited,11-Sep-2026,Rs.384 to Rs.404,21772311,09-Sep-2026,EQ,Active,RENTOMOJO,Total,2.1772311E7,3.3707126909954575,7.3388205E7,,,2026-09-11 03:16:59
-LCC Projects Limited,11-Sep-2026,Rs.139 to Rs.146,20927281,09-Sep-2026,EQ,Active,LCCPROJECT,Total,2.0927281E7,3.0067492284353614,6.2923086E7,,,2026-09-11 03:16:59
-Vinod Texworld Limited,11-Sep-2026,,,09-Sep-2026,SME,Active,VINOD,,4556400,0.60,2725200,,1,2026-09-11 03:16:59
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
+Manika Plastech Limited,16-Sep-2026,Rs.40 to Rs.43,21386919,11-Sep-2026,EQ,Active,MANIKA,Total,2.1386919E7,0.9358464395923508,2.0014872E7,,2026-09-12 03:22:03
+Veegaland Developers Limited,15-Sep-2026,Rs.130 to Rs.140,11307692,10-Sep-2026,EQ,Active,VEEGALAND,Total,1.1307692E7,0.905597800152321,1.0240221E7,,2026-09-12 03:22:03
