@@ -1,10 +1,7 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-Jindal Supreme (India) Limited,18-Sep-2026,Rs.88 to Rs.93,9399600,16-Sep-2026,EQ,Active,JSIPL,,,2026-09-16 03:35:55
-Hero Motors Limited,18-Sep-2026,Rs.79 to Rs.84,88607596,16-Sep-2026,EQ,Active,HEROMOTORS,,,2026-09-16 03:35:55
-SS Retail Limited,18-Sep-2026,Rs.403 to Rs.424,8793884,16-Sep-2026,EQ,Active,SSRETAIL,,,2026-09-16 03:35:55
-Manika Plastech Limited,16-Sep-2026,Rs.40 to Rs.43,21386919,11-Sep-2026,EQ,Active,MANIKA,,,2026-09-16 03:35:55
-Veegaland Developers Limited,15-Sep-2026,Rs.130 to Rs.140,11307692,10-Sep-2026,EQ,Closed,VEEGALAND,,,2026-09-16 03:35:55
-Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,14300000,17-Sep-2026,EQ,Forthcoming,SONA,,,2026-09-16 03:35:55
-National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,126436650,17-Sep-2026,EQ,Forthcoming,NSE,,,2026-09-16 03:35:55
-SpectraA Technology Solutions Limited,21-Sep-2026,Rs.112 to Rs.118,3603600,17-Sep-2026,SME,Forthcoming,SPECTRAA,1200,Rs.112 to Rs.118,2026-09-16 03:35:55
-Kheria Autocomp Limited,21-Sep-2026,Rs.96 to Rs.101,4598400,17-Sep-2026,SME,Forthcoming,KHERIAAUTO,1200,Rs.96 to Rs.101,2026-09-16 03:35:55
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,88642911,17-Sep-2026,EQ,Active,NSE,2026-09-17 03:40:53
+Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,10010000,17-Sep-2026,EQ,Active,SONA,2026-09-17 03:40:53
+SS Retail Limited,18-Sep-2026,Rs.403 to Rs.424,8793884,16-Sep-2026,EQ,Active,SSRETAIL,2026-09-17 03:40:53
+Hero Motors Limited,18-Sep-2026,Rs.79 to Rs.84,88607596,16-Sep-2026,EQ,Active,HEROMOTORS,2026-09-17 03:40:53
+Jindal Supreme (India) Limited,18-Sep-2026,Rs.88 to Rs.93,9399600,16-Sep-2026,EQ,Active,JSIPL,2026-09-17 03:40:53
+Manika Plastech Limited,16-Sep-2026,Rs.40 to Rs.43,21386919,11-Sep-2026,EQ,Closed,MANIKA,2026-09-17 03:40:53
