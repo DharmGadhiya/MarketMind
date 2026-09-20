@@ -1,6 +1,5 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,10010000,17-Sep-2026,EQ,Active,SONA,2026-09-18 03:27:10
-National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,88642911,17-Sep-2026,EQ,Active,NSE,2026-09-18 03:27:10
-Jindal Supreme (India) Limited,18-Sep-2026,Rs.88 to Rs.93,9399600,16-Sep-2026,EQ,Active,JSIPL,2026-09-18 03:27:10
-SS Retail Limited,18-Sep-2026,Rs.403 to Rs.424,8793884,16-Sep-2026,EQ,Active,SSRETAIL,2026-09-18 03:27:10
-Hero Motors Limited,18-Sep-2026,Rs.79 to Rs.84,88607596,16-Sep-2026,EQ,Active,HEROMOTORS,2026-09-18 03:27:10
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,88642911,17-Sep-2026,EQ,Active,NSE,,,2026-09-20 03:40:31
+Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,10010000,17-Sep-2026,EQ,Active,SONA,,,2026-09-20 03:40:31
+Varmora Granito Limited,24-Sep-2026,Rs.140 to Rs.148,49074776,22-Sep-2026,EQ,Forthcoming,VARMORA,,,2026-09-20 03:40:31
+Pooja Logistics Limited,25-Sep-2026,Rs.109 to Rs.115,3846000,23-Sep-2026,SME,Forthcoming,POOJALOGIS,1200,Rs.109 to Rs.115,2026-09-20 03:40:31
