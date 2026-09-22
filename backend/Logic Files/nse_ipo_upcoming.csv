@@ -1,5 +1,10 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,88642911,17-Sep-2026,EQ,Active,NSE,,,2026-09-21 03:35:34
-Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,10010000,17-Sep-2026,EQ,Active,SONA,,,2026-09-21 03:35:34
-Varmora Granito Limited,24-Sep-2026,Rs.140 to Rs.148,49074776,22-Sep-2026,EQ,Forthcoming,VARMORA,,,2026-09-21 03:35:34
-Pooja Logistics Limited,25-Sep-2026,Rs.109 to Rs.115,3846000,23-Sep-2026,SME,Forthcoming,POOJALOGIS,1200,Rs.109 to Rs.115,2026-09-21 03:35:34
+Varmora Granito Limited,24-Sep-2026,Rs.140 to Rs.148,33902899,22-Sep-2026,EQ,Active,VARMORA,,,2026-09-22 03:34:24
+Sonaselection India Limited,21-Sep-2026,Rs.94 to Rs.99,10010000,17-Sep-2026,EQ,Closed,SONA,,,2026-09-22 03:34:24
+National Stock Exchange of India Limited,21-Sep-2026,Rs.1700 to Rs.1785,88642911,17-Sep-2026,EQ,Closed,NSE,,,2026-09-22 03:34:24
+ArMee Infotech Limited,25-Sep-2026,Rs.350 to Rs.375,8571428,23-Sep-2026,EQ,Forthcoming,ARMEE,,,2026-09-22 03:34:24
+Elevate Campuses Limited,25-Sep-2026,Rs.343 to Rs.362,61224489,23-Sep-2026,EQ,Forthcoming,ELEVATE,,,2026-09-22 03:34:24
+Adroit Industries (India) Limited,25-Sep-2026,Rs.126 to Rs.134,11247000,23-Sep-2026,EQ,Forthcoming,ADROITIND,,,2026-09-22 03:34:24
+Swastika Infra Limited,25-Sep-2026,Rs.175 to Rs.185,9092857,23-Sep-2026,EQ,Forthcoming,SWASTIKAIN,,,2026-09-22 03:34:24
+Coreintegra Consulting Services Limited,25-Sep-2026,Rs.74 to Rs.78,2819200,23-Sep-2026,SME,Forthcoming,COREIN,1600,Rs.74 to Rs.78,2026-09-22 03:34:24
+Pooja Logistics Limited,25-Sep-2026,Rs.109 to Rs.115,3846000,23-Sep-2026,SME,Forthcoming,POOJALOGIS,1200,Rs.109 to Rs.115,2026-09-22 03:34:24
