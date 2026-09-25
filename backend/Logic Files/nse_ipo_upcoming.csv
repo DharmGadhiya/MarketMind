@@ -1,14 +1,14 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-Moneyview Limited,28-Sep-2026,Rs.32 to Rs.34,232524175,24-Sep-2026,EQ,Active,MONEYVIEW,,,2026-09-24 03:24:40
-A-One Steels India Limited,28-Sep-2026,Rs.385 to Rs.405,7384934,24-Sep-2026,EQ,Active,AONESTEELS,,,2026-09-24 03:24:40
-Swastika Infra Limited,25-Sep-2026,Rs.175 to Rs.185,6335001,23-Sep-2026,EQ,Active,SWASTIKAIN,,,2026-09-24 03:24:40
-Adroit Industries (India) Limited,25-Sep-2026,Rs.126 to Rs.134,7872900,23-Sep-2026,EQ,Active,ADROITIND,,,2026-09-24 03:24:40
-ArMee Infotech Limited,25-Sep-2026,Rs.350 to Rs.375,7430356,23-Sep-2026,EQ,Active,ARMEE,,,2026-09-24 03:24:40
-Elevate Campuses Limited,25-Sep-2026,Rs.343 to Rs.362,33673468,23-Sep-2026,EQ,Active,ELEVATE,,,2026-09-24 03:24:40
-Varmora Granito Limited,24-Sep-2026,Rs.140 to Rs.148,33902899,22-Sep-2026,EQ,Active,VARMORA,,,2026-09-24 03:24:40
-Runwal Enterprises Limited,29-Sep-2026,Rs.290 to Rs.302,17247500,25-Sep-2026,EQ,Forthcoming,RUNWALENTR,,,2026-09-24 03:24:40
-AceVector Limited,29-Sep-2026,Rs.30 to Rs.32,137229166,25-Sep-2026,EQ,Forthcoming,ACEVECTOR,,,2026-09-24 03:24:40
-Orient Cables (India) Limited,29-Sep-2026,Rs.258 to Rs.272,21395346,25-Sep-2026,EQ,Forthcoming,ORIENTCABL,,,2026-09-24 03:24:40
-German Green Steel and Power Limited,29-Sep-2026,Rs.132 to Rs.139,22969696,25-Sep-2026,EQ,Forthcoming,GERMAN,,,2026-09-24 03:24:40
-Himalayan Solar Limited,29-Sep-2026,Rs.98 to Rs.103,6604800,25-Sep-2026,SME,Forthcoming,HIMALAYAN,1200,Rs.98 to Rs.103,2026-09-24 03:24:40
-Bench Mark Infotech Services Limited,29-Sep-2026,Rs.104 to Rs.110,3858000,25-Sep-2026,SME,Forthcoming,BMISL,1200,Rs.104 to Rs.110,2026-09-24 03:24:40
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+Orient Cables (India) Limited,29-Sep-2026,Rs.258 to Rs.272,14976743,25-Sep-2026,EQ,Active,ORIENTCABL,2026-09-25 03:42:15
+German Green Steel and Power Limited,29-Sep-2026,Rs.132 to Rs.139,16062879,25-Sep-2026,EQ,Active,GERMAN,2026-09-25 03:42:15
+Runwal Enterprises Limited,29-Sep-2026,Rs.290 to Rs.302,12111294,25-Sep-2026,EQ,Active,RUNWALENTR,2026-09-25 03:42:15
+AceVector Limited,29-Sep-2026,Rs.30 to Rs.32,74229166,25-Sep-2026,EQ,Active,ACEVECTOR,2026-09-25 03:42:15
+A-One Steels India Limited,28-Sep-2026,Rs.385 to Rs.405,7384934,24-Sep-2026,EQ,Active,AONESTEELS,2026-09-25 03:42:15
+Moneyview Limited,28-Sep-2026,Rs.32 to Rs.34,232524175,24-Sep-2026,EQ,Active,MONEYVIEW,2026-09-25 03:42:15
+ArMee Infotech Limited,25-Sep-2026,Rs.350 to Rs.375,7430356,23-Sep-2026,EQ,Active,ARMEE,2026-09-25 03:42:15
+Elevate Campuses Limited,25-Sep-2026,Rs.343 to Rs.362,33673468,23-Sep-2026,EQ,Active,ELEVATE,2026-09-25 03:42:15
+Swastika Infra Limited,25-Sep-2026,Rs.175 to Rs.185,6335001,23-Sep-2026,EQ,Active,SWASTIKAIN,2026-09-25 03:42:15
+Adroit Industries (India) Limited,25-Sep-2026,Rs.126 to Rs.134,7872900,23-Sep-2026,EQ,Active,ADROITIND,2026-09-25 03:42:15
+Varmora Granito Limited,24-Sep-2026,Rs.140 to Rs.148,33902899,22-Sep-2026,EQ,Closed,VARMORA,2026-09-25 03:42:15
+Srit India Limited,30-Sep-2026,Rs.123 to Rs.130,16800000,28-Sep-2026,EQ,Forthcoming,SRIT,2026-09-25 03:42:15
+Shah Investor's Home Limited,30-Sep-2026,Rs.159 to Rs.167,5399200,28-Sep-2026,EQ,Forthcoming,SHAHINVEST,2026-09-25 03:42:15
