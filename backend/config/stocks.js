@@ -56,6 +56,10 @@ export const STOCKS = [
   "IRFC.NS",
   "MOTHERSON.NS",
   "BAJAJHFL.NS",
+  "ADVANCE.NS",
+  "BANKBARODA.NS",
+  "JIOFIN.NS",
+  "TRIDENT.NS",
 ];
 
 import fs from "fs";

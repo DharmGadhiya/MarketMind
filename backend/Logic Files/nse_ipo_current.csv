@@ -1,4 +1,11 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
-Xtranet Technologies Limited,27-Jul-2026,Rs.120 to Rs.127,9193800,23-Jul-2026,EQ,Active,XTRANET,Total,9193800.0,1.3055754965302704,1.20032E7,,2026-07-26 02:39:47
-Lohia Corp Limited,27-Jul-2026,Rs.404 to Rs.425,14352274,23-Jul-2026,EQ,Active,LCL,Total,1.4352274E7,0.2320144529013312,3329935.0,,2026-07-26 02:39:47
-INDO-MIM Limited,27-Jul-2026,Rs.461 to Rs.485,55093201,23-Jul-2026,EQ,Active,INDOMIM,Total,5.5093201E7,2.2449782868851638,1.2368304E8,,2026-07-26 02:39:47
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
+Shah Investor's Home Limited,30-Sep-2026,Rs.159 to Rs.167,3779440,28-Sep-2026,EQ,Active,SHAHINVEST,Total,3779440.0,0.8627653832313782,3260770.0,,,2026-09-29 22:56:45
+Srit India Limited,30-Sep-2026,Rs.123 to Rs.130,11760000,28-Sep-2026,EQ,Active,SRIT,Total,1.176E7,2.893628826530612,3.4029075E7,,,2026-09-29 22:56:45
+German Green Steel and Power Limited,29-Sep-2026,Rs.132 to Rs.139,16062879,25-Sep-2026,EQ,Active,GERMAN,Total,1.6062879E7,23.205479229470633,3.72746805E8,,,2026-09-29 22:56:45
+Runwal Enterprises Limited,29-Sep-2026,Rs.290 to Rs.302,12111294,25-Sep-2026,EQ,Active,RUNWALENTR,Total,1.2111294E7,1.2773432797519406,1.547028E7,,,2026-09-29 22:56:45
+AceVector Limited,29-Sep-2026,Rs.30 to Rs.32,74229166,25-Sep-2026,EQ,Active,ACEVECTOR,Total,7.4229166E7,3.3951344677643287,2.52018E8,,,2026-09-29 22:56:45
+Orient Cables (India) Limited,29-Sep-2026,Rs.258 to Rs.272,14976743,25-Sep-2026,EQ,Active,ORIENTCABL,Total,1.4976743E7,61.86422575322285,9.2652461E8,,,2026-09-29 22:56:45
+Papadmalji Agro Foods Limited,01-Oct-2026,,,29-Sep-2026,SME,Active,PAPADMALJI,,2803200,1.33,3721600,,1,2026-09-29 22:56:45
+Bench Mark Infotech Services Limited,29-Sep-2026,,,25-Sep-2026,SME,Active,BMISL,,2761200,95.97,265002000,,1,2026-09-29 22:56:45
+Himalayan Solar Limited,29-Sep-2026,,,25-Sep-2026,SME,Active,HIMALAYAN,,5852400,1.18,6904800,,1,2026-09-29 22:56:45
+Green Asia Impex Limited,01-Oct-2026,,,24-Sep-2026,SME,Active,GREENASIA,,7057600,0.52,3654400,,1,2026-09-29 22:56:45
