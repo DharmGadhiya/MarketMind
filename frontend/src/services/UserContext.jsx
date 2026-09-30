@@ -5,11 +5,15 @@ const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-
-    return storedUser
-      ? JSON.parse(storedUser)
-      : null;
+    try {
+      const storedUser = localStorage.getItem("user");
+      return storedUser && storedUser !== "undefined"
+        ? JSON.parse(storedUser)
+        : null;
+    } catch (e) {
+      console.error("Failed to parse user from localStorage:", e);
+      return null;
+    }
   });
 
   // Verify session on mount to prevent localStorage spoofing
