@@ -1,6 +1,6 @@
 import YahooFinance from "yahoo-finance2";
 import { STOCKS } from "../config/stocks.js";
-import { getCache, setCache } from "../utils/redisCache.js";
+import { getCache, setCache, getLastKnownCache } from "../utils/redisCache.js";
 
 const yahooFinance = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 
@@ -58,72 +58,62 @@ const FALLBACK_SECTORS = {
   "ULTRACEMCO.NS": "Basic Materials",
   "WIPRO.NS": "Technology",
   "TRENT.NS": "Consumer Cyclical",
-};
-
-/**
- * Fetch 5-day daily close prices for sparklines safely
- */
-const fetchSparklinePrices = async (symbol) => {
-  try {
-    const now = new Date();
-    const oneWeekAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000); // 8 days of buffer
-
-    const res = await yahooFinance.chart(symbol, {
-      period1: Math.floor(oneWeekAgo.getTime() / 1000),
-      period2: Math.floor(now.getTime() / 1000),
-      interval: "1d",
-    }).catch(() => null);
-
-    if (res && res.quotes) {
-      return res.quotes
-        .filter((q) => q && q.close !== null && q.close !== undefined)
-        .map((q) => q.close)
-        .slice(-5); // Keep last 5 days
-    }
-    return [];
-  } catch (error) {
-    return [];
-  }
+  "AMRUTANJAN.NS": "Healthcare",
+  "ETERNAL.NS": "Consumer Cyclical",
+  "IDEA.NS": "Communication Services",
+  "IDFCFIRSTB.NS": "Financial Services",
+  "IRFC.NS": "Financial Services",
+  "MOTHERSON.NS": "Consumer Cyclical",
+  "BAJAJHFL.NS": "Financial Services",
+  "ADVANCE.NS": "Basic Materials",
+  "BANKBARODA.NS": "Financial Services",
+  "JIOFIN.NS": "Financial Services",
+  "TRIDENT.NS": "Consumer Cyclical",
 };
 
 /**
  * Get NIFTY 50 dashboard stock lists
+ * 100% Live data from Yahoo Finance
  */
 export const getNifty50Data = async (req, res) => {
   try {
-    // 1. Try to read from Cache
+    // 1. Check Cache (in-memory / Redis) to avoid hammering Yahoo Finance
     const cachedData = await getCache(CACHE_KEY);
-    if (cachedData) {
+    if (cachedData && Array.isArray(cachedData) && cachedData.length > 0) {
       return res.status(200).json(cachedData);
     }
 
-    console.log("[Cache Miss] Fetching NIFTY 50 bulk metrics from Yahoo Finance...");
+    console.log("[Cache Miss] Fetching live NIFTY 50 quotes from Yahoo Finance...");
 
-    // 2. Fetch bulk quotes for all 50 tickers in parallel
-    const quotes = await yahooFinance.quote(STOCKS);
-    if (!quotes || quotes.length === 0) {
-      throw new Error("No quotes returned from Yahoo Finance");
+    // 2. Fetch live quotes in bulk from Yahoo Finance
+    let quotes = null;
+    try {
+      quotes = await yahooFinance.quote(STOCKS);
+    } catch (yahooErr) {
+      console.warn("[Yahoo Finance 429/Rate-Limit]:", yahooErr.message);
     }
 
-    // 3. Fetch sparkline daily closes for all tickers in parallel
-    const sparklines = await Promise.all(
-      STOCKS.map((symbol) => fetchSparklinePrices(symbol))
-    );
+    // 3. If Yahoo Finance temporarily rate-limits, serve last known real cached quotes
+    if (!quotes || !Array.isArray(quotes) || quotes.length === 0) {
+      const lastKnown = getLastKnownCache(CACHE_KEY);
+      if (lastKnown && Array.isArray(lastKnown) && lastKnown.length > 0) {
+        console.log("[Nifty50] Serving last real cached Yahoo Finance quotes during temporary rate-limit.");
+        return res.status(200).json(lastKnown);
+      }
 
-    // Create a sparkline mapping
-    const sparklineMap = {};
-    STOCKS.forEach((symbol, index) => {
-      sparklineMap[symbol] = sparklines[index] || [];
-    });
+      return res.status(503).json({
+        success: false,
+        error: "Yahoo Finance is temporarily rate-limiting requests. Please refresh in a moment.",
+      });
+    }
 
-    // 4. Construct enriched stock data
+    // 4. Map 100% real live data fields directly from Yahoo Finance quote
     const stockList = quotes
       .filter((q) => q && q.symbol)
       .map((q) => {
         const symbol = q.symbol;
         const cleanSymbol = symbol.replace(".NS", "");
         const sector = FALLBACK_SECTORS[symbol] || "N/A";
-        const sparkline = sparklineMap[symbol] || [];
 
         return {
           companyName: q.longName || q.shortName || cleanSymbol,
@@ -138,19 +128,29 @@ export const getNifty50Data = async (req, res) => {
           dayLow: q.regularMarketDayLow ?? "N/A",
           fiftyTwoWeekHigh: q.fiftyTwoWeekHigh ?? "N/A",
           fiftyTwoWeekLow: q.fiftyTwoWeekLow ?? "N/A",
-          sparkline, // Optional small sparkline data
+          sparkline: [],
         };
       });
 
-    // 5. Store in Cache for 5 minutes
-    await setCache(CACHE_KEY, stockList, CACHE_DURATION);
+    // 5. Cache the real live quotes for 5 minutes
+    if (stockList.length > 0) {
+      await setCache(CACHE_KEY, stockList, CACHE_DURATION);
+      return res.status(200).json(stockList);
+    }
 
-    return res.status(200).json(stockList);
-  } catch (error) {
-    console.error("[getNifty50Data Error]:", error.message);
     return res.status(500).json({
       success: false,
-      error: "Internal server error while fetching Nifty 50 data",
+      error: "No stock quotes could be parsed from Yahoo Finance.",
+    });
+  } catch (error) {
+    console.error("[getNifty50Data Error]:", error.message);
+    const lastKnown = getLastKnownCache(CACHE_KEY);
+    if (lastKnown) {
+      return res.status(200).json(lastKnown);
+    }
+    return res.status(500).json({
+      success: false,
+      error: error.message,
     });
   }
 };

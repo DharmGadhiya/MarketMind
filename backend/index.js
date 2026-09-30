@@ -9,7 +9,19 @@ import { spawn } from "child_process";
 import path from "path";
 
 dns.setDefaultResultOrder("ipv4first");
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
+} catch (e) {
+  // Cloud containers may restrict custom DNS
+}
+
+process.on("unhandledRejection", (reason) => {
+  console.warn("[Process] Unhandled Rejection:", reason?.message || reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("[Process] Uncaught Exception:", error?.message || error);
+});
 
 import checkForAuthenticationCookie from "./middlewares/auth.js";
 import newsRouter from "./routes/news.js";
