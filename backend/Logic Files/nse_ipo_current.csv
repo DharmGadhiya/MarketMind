@@ -1,8 +1,6 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,Total,0.0,0.00,0.0,,,2026-09-30 04:15:03
-Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,Total,0.0,0.00,0.0,,,2026-09-30 04:15:03
-Srit India Limited,30-Sep-2026,Rs.123 to Rs.130,11760000,28-Sep-2026,EQ,Active,SRIT,Total,1.176E7,2.893628826530612,3.4029075E7,,,2026-09-30 04:15:03
-Shah Investor's Home Limited,30-Sep-2026,Rs.159 to Rs.167,3779440,28-Sep-2026,EQ,Active,SHAHINVEST,Total,3779440.0,0.8627653832313782,3260770.0,,,2026-09-30 04:15:03
-Eventions Limited,05-Oct-2026,,,30-Sep-2026,SME,Active,EVENTIONS,,3230400,,,,1,2026-09-30 04:15:03
-Papadmalji Agro Foods Limited,01-Oct-2026,,,29-Sep-2026,SME,Active,PAPADMALJI,,2803200,1.33,3721600,,1,2026-09-30 04:15:03
-Green Asia Impex Limited,01-Oct-2026,,,24-Sep-2026,SME,Active,GREENASIA,,7057600,0.52,3654400,,1,2026-09-30 04:15:03
+Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,Total,8471153.0,0.03920505272422774,332112.0,,,2026-10-01 04:26:56
+Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,Total,1.4456E7,0.1093940232429441,1581400.0,,,2026-10-01 04:26:56
+Eventions Limited,05-Oct-2026,,,30-Sep-2026,SME,Active,EVENTIONS,,3230400,1.06,3423600,,1,2026-10-01 04:26:56
+Papadmalji Agro Foods Limited,01-Oct-2026,,,29-Sep-2026,SME,Active,PAPADMALJI,,2803200,1.66,4640000,,1,2026-10-01 04:26:56
+Green Asia Impex Limited,01-Oct-2026,,,24-Sep-2026,SME,Active,GREENASIA,,7057600,0.64,4499200,,1,2026-10-01 04:26:56
