@@ -1,5 +1,5 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,2026-10-01 04:26:56
-Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,2026-10-01 04:26:56
-Shah Investor's Home Limited,30-Sep-2026,Rs.159 to Rs.167,3779440,28-Sep-2026,EQ,Closed,SHAHINVEST,2026-10-01 04:26:56
-Srit India Limited,30-Sep-2026,Rs.123 to Rs.130,11760000,28-Sep-2026,EQ,Closed,SRIT,2026-10-01 04:26:56
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,,,2026-10-02 04:19:34
+Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,,,2026-10-02 04:19:34
+SMC Global Securities Limited,16-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Forthcoming,SMCG04,,,2026-10-02 04:19:34
+R.K. Fashion Accessories Limited,07-Oct-2026,Rs.77 to Rs.82,4267200,05-Oct-2026,SME,Forthcoming,RKFAL,1600,Rs.77 to Rs.82,2026-10-02 04:19:34
