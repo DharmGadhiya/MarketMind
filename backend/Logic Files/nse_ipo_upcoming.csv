@@ -1,5 +1,4 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,,,2026-10-04 04:35:13
-Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,,,2026-10-04 04:35:13
-SMC Global Securities Limited,16-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Forthcoming,SMCG04,,,2026-10-04 04:35:13
-R.K. Fashion Accessories Limited,07-Oct-2026,Rs.77 to Rs.82,4267200,05-Oct-2026,SME,Forthcoming,RKFAL,1600,Rs.77 to Rs.82,2026-10-04 04:35:13
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+SMC Global Securities Limited,16-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Active,SMCG04,2026-10-05 04:20:43
+Vishal Nirmiti Limited,05-Oct-2026,Rs.208 to Rs.220,8471153,30-Sep-2026,EQ,Active,VNL,2026-10-05 04:20:43
+Nityas Gems and Jewellery Limited,05-Oct-2026,Rs.70 to Rs.75,14456000,30-Sep-2026,EQ,Active,NITYAS,2026-10-05 04:20:43
