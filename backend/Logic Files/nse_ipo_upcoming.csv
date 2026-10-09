@@ -1,3 +1,4 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-Grace Cancer Foundation - ZCZP,09-Oct-2026,Rs.10,1000000,07-Oct-2026,DEBT,Active,GCFZCZP,2026-10-08 04:46:07
-SMC Global Securities Limited,16-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Active,SMCG04,2026-10-08 04:46:07
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+SMC Global Securities Limited,09-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Active,SMCG04,,,2026-10-09 04:49:15
+HD Fire Protect Limited,15-Oct-2026,Rs.258 to Rs.271,26284500,13-Oct-2026,EQ,Forthcoming,HDFIRE,,,2026-10-09 04:49:15
+Ravita Engineering Services Limited,15-Oct-2026,Rs.105 to Rs.112,10362000,13-Oct-2026,SME,Forthcoming,RAVITA,1200,Rs.105 to Rs.112,2026-10-09 04:49:15
