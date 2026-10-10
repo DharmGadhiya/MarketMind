@@ -1,4 +1,5 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-SMC Global Securities Limited,09-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Active,SMCG04,,,2026-10-09 04:49:15
-HD Fire Protect Limited,15-Oct-2026,Rs.258 to Rs.271,26284500,13-Oct-2026,EQ,Forthcoming,HDFIRE,,,2026-10-09 04:49:15
-Ravita Engineering Services Limited,15-Oct-2026,Rs.105 to Rs.112,10362000,13-Oct-2026,SME,Forthcoming,RAVITA,1200,Rs.105 to Rs.112,2026-10-09 04:49:15
+SMC Global Securities Limited,09-Oct-2026,Rs.1000,750000,05-Oct-2026,DEBT,Closed,SMCG04,,,2026-10-10 04:34:46
+HD Fire Protect Limited,15-Oct-2026,Rs.258 to Rs.271,26284500,13-Oct-2026,EQ,Forthcoming,HDFIRE,,,2026-10-10 04:34:46
+Vaibhav Vyapaar Limited,15-Oct-2026,Rs.51 to Rs.54,7796000,13-Oct-2026,SME,Forthcoming,LOANFRONT,2000,Rs.51 to Rs.54,2026-10-10 04:34:46
+Ravita Engineering Services Limited,15-Oct-2026,Rs.105 to Rs.112,10362000,13-Oct-2026,SME,Forthcoming,RAVITA,1200,Rs.105 to Rs.112,2026-10-10 04:34:46
