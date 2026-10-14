@@ -1,4 +1,7 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
-HD Fire Protect Limited,15-Oct-2026,Rs.258 to Rs.271,18420492,13-Oct-2026,EQ,Active,HDFIRE,,,2026-10-13 05:41:50
-Fusion CX Limited,16-Oct-2026,Rs.275 to Rs.289,25527272,14-Oct-2026,EQ,Forthcoming,FUSIONCX,,,2026-10-13 05:41:50
-Ravita Engineering Services Limited,16-Oct-2026,Rs.105 to Rs.112,10362000,14-Oct-2026,SME,Forthcoming,RAVITA,1200,Rs.105 to Rs.112,2026-10-13 05:41:50
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
+Fusion CX Limited,16-Oct-2026,Rs.275 to Rs.289,14040000,14-Oct-2026,EQ,Active,FUSIONCX,2026-10-14 03:45:16
+HD Fire Protect Limited,15-Oct-2026,Rs.258 to Rs.271,18420492,13-Oct-2026,EQ,Active,HDFIRE,2026-10-14 03:45:16
+Sahajanand Medical Technologies Limited,19-Oct-2026,Rs.327 to Rs.344,13822116,15-Oct-2026,EQ,Forthcoming,SMT,2026-10-14 03:45:16
+Bonfiglioli Transmissions Limited,19-Oct-2026,Rs.558 to Rs.586,43239042,15-Oct-2026,EQ,Forthcoming,BONFIG,2026-10-14 03:45:16
+Zetwerk Manufacturing Businesses Limited,19-Oct-2026,Rs.143 to Rs.151,342495665,15-Oct-2026,EQ,Forthcoming,ZETWERK,2026-10-14 03:45:16
+Tonbo Imaging India Limited,19-Oct-2026,Rs.665 to Rs.700,12174046,15-Oct-2026,EQ,Forthcoming,TONBO,2026-10-14 03:45:16
