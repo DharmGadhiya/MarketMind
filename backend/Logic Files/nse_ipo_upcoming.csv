@@ -1,6 +1,8 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,fetch_timestamp
-M. K. Sons Fine Jewels Limited,30-Oct-2026,Rs.153 to Rs.162,11900000,28-Oct-2026,EQ,Active,MKSONS,2026-10-28 04:16:40
-SFC Environmental Technologies Limited,29-Oct-2026,Rs.313 to Rs.330,14159744,27-Oct-2026,EQ,Active,SFCTECH,2026-10-28 04:16:40
-BLS Polymers Limited,29-Oct-2026,Rs.142 to Rs.150,11900000,27-Oct-2026,EQ,Active,BLSPOLY,2026-10-28 04:16:40
-EAAA India Alternatives Limited,28-Oct-2026,Rs.1585 to Rs.1665,5299684,26-Oct-2026,EQ,Active,EDELALTS,2026-10-28 04:16:40
-Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,23468846,29-Oct-2026,EQ,Forthcoming,BCSSL,2026-10-28 04:16:40
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,lotSize,priceBand,fetch_timestamp
+Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,16533012,29-Oct-2026,EQ,Active,BCSSL,,,2026-10-29 04:37:48
+M. K. Sons Fine Jewels Limited,30-Oct-2026,Rs.153 to Rs.162,11900000,28-Oct-2026,EQ,Active,MKSONS,,,2026-10-29 04:37:48
+SFC Environmental Technologies Limited,29-Oct-2026,Rs.313 to Rs.330,14159744,27-Oct-2026,EQ,Active,SFCTECH,,,2026-10-29 04:37:48
+BLS Polymers Limited,29-Oct-2026,Rs.142 to Rs.150,11900000,27-Oct-2026,EQ,Active,BLSPOLY,,,2026-10-29 04:37:48
+EAAA India Alternatives Limited,28-Oct-2026,Rs.1585 to Rs.1665,5299684,26-Oct-2026,EQ,Closed,EDELALTS,,,2026-10-29 04:37:48
+HGS (India) Limited,03-Nov-2026,Rs.114 to Rs.120,2880000,30-Oct-2026,SME,Forthcoming,HGSINDIALT,1200,Rs.114 to Rs.120,2026-10-29 04:37:48
+Maxwell Engineering Solutions Limited,03-Nov-2026,Rs.150 to Rs.158,3648000,30-Oct-2026,SME,Forthcoming,MAXENGS,800,Rs.150 to Rs.158,2026-10-29 04:37:48
