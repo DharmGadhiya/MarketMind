@@ -1,7 +1,5 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,16533012,29-Oct-2026,EQ,Active,BCSSL,Total,1.6533012E7,0.5240160716026819,8663564.0,,,2026-10-30 04:37:29
-M. K. Sons Fine Jewels Limited,30-Oct-2026,Rs.153 to Rs.162,11900000,28-Oct-2026,EQ,Active,MKSONS,Total,1.19E7,0.8071776470588236,9605414.0,,,2026-10-30 04:37:29
-SFC Environmental Technologies Limited,29-Oct-2026,Rs.313 to Rs.330,14159744,27-Oct-2026,EQ,Closed,SFCTECH,Total,1.4159744E7,4.2572136191162775,6.0281055E7,,,2026-10-30 04:37:29
-BLS Polymers Limited,29-Oct-2026,Rs.142 to Rs.150,11900000,27-Oct-2026,EQ,Closed,BLSPOLY,Total,1.19E7,155.4782268907563,1.8501909E9,,,2026-10-30 04:37:29
-Maxwell Engineering Solutions Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,MAXENGS,,2624000,0.05,122400,,1,2026-10-30 04:37:29
-HGS (India) Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,HGSINDIALT,,2066400,0.00,9600,,1,2026-10-30 04:37:29
+Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,16533012,29-Oct-2026,EQ,Active,BCSSL,Total,1.6533012E7,1.122227940075287,1.8553808E7,,,2026-10-31 04:20:49
+M. K. Sons Fine Jewels Limited,30-Oct-2026,Rs.153 to Rs.162,11900000,28-Oct-2026,EQ,Closed,MKSONS,Total,1.19E7,2.9038329411764705,3.4555612E7,,,2026-10-31 04:20:49
+HGS (India) Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,HGSINDIALT,,2066400,1.53,3168000,,1,2026-10-31 04:20:49
+Maxwell Engineering Solutions Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,MAXENGS,,2624000,4.17,10950400,,1,2026-10-31 04:20:49
