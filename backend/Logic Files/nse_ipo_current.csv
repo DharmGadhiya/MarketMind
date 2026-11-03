@@ -1,5 +1,5 @@
 companyName,issueEndDate,issuePrice,issueSize,issueStartDate,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,isBse,fetch_timestamp
-Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,16533012,29-Oct-2026,EQ,Active,BCSSL,Total,1.6533012E7,1.843622444597512,3.0480632E7,,,2026-11-02 04:42:17
-Vedant Poly Fabs Limited,04-Nov-2026,,,02-Nov-2026,SME,Active,VPFL,,6030000,0.00,12000,,1,2026-11-02 04:42:17
-Maxwell Engineering Solutions Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,MAXENGS,,2624000,11.17,29318400,,1,2026-11-02 04:42:17
-HGS (India) Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,HGSINDIALT,,2066400,3.29,6793200,,1,2026-11-02 04:42:17
+Bombay Coated and Special Steels Limited,02-Nov-2026,Rs.78 to Rs.82,16533012,29-Oct-2026,EQ,Closed,BCSSL,Total,1.6533012E7,32.733611395189214,5.4118519E8,,,2026-11-03 05:33:10
+Vedant Poly Fabs Limited,04-Nov-2026,,,02-Nov-2026,SME,Active,VPFL,,6030000,0.50,3028800,,1,2026-11-03 05:33:10
+HGS (India) Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,HGSINDIALT,,2066400,45.64,94320000,,1,2026-11-03 05:33:10
+Maxwell Engineering Solutions Limited,03-Nov-2026,,,30-Oct-2026,SME,Active,MAXENGS,,2624000,133.64,350660800,,1,2026-11-03 05:33:10
