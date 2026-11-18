@@ -1,2 +1,2 @@
-companyName,isBse,issueEndDate,issueStartDate,series,status,symbol,noOfsharesBid,noOfSharesOffered,noOfTime,fetch_timestamp
-Vedant Poly Fabs Limited,1,04-Nov-2026,02-Nov-2026,SME,Closed,VPFL,11168400,6030000,1.85,2026-11-05 05:24:18
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,fetch_timestamp
+Crystal Crop Protection Limited,20-Nov-2026,Rs.259 to Rs.272,12170076,18-Nov-2026,2026-11-20 00:00:00,2026-11-18 00:00:00,,Equity,Active,CRYSTALCP,2026-11-18 06:07:36
