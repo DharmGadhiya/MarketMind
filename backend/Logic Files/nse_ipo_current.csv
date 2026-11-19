@@ -1,2 +1,4 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,fetch_timestamp
-Crystal Crop Protection Limited,20-Nov-2026,Rs.259 to Rs.272,12170076,18-Nov-2026,2026-11-20 00:00:00,2026-11-18 00:00:00,,Equity,Active,CRYSTALCP,2026-11-18 06:07:36
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
+Crystal Crop Protection Limited,20-Nov-2026,Rs.259 to Rs.272,12170076,18-Nov-2026,2026-11-20 00:00:00,2026-11-18 00:00:00,,Equity,Active,CRYSTALCP,Total,1.2170076E7,1.0681593114126815,1.299958E7,,2026-11-19 06:08:43
+Mahanadi Coalfields Limited,23-Nov-2026,Rs.129 to Rs.136,493068045,19-Nov-2026,2026-11-23 00:00:00,2026-11-19 00:00:00,,Equity,Active,MAHACOAL,Total,4.93068045E8,0.02795220688049253,1.378234E7,,2026-11-19 06:08:43
+Watrana Rentals Limited,23-Nov-2026,Rs.232 to Rs.245,3516000,19-Nov-2026,2026-11-23 00:00:00,2026-11-19 00:00:00,,SME,Active,WATRANA,,3516000,0.94,3309000,,2026-11-19 06:08:43
