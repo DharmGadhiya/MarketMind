@@ -1,3 +1,2 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
-Mahanadi Coalfields Limited,23-Nov-2026,Rs.129 to Rs.136,493068045,19-Nov-2026,2026-11-23 00:00:00,2026-11-19 00:00:00,Equity,EQ,Active,MAHACOAL,Total,4.93068045E8,0.17823430435448318,8.788164E7,,2026-11-23 05:59:14
-Watrana Rentals Limited,23-Nov-2026,Rs.232 to Rs.245,3516000,19-Nov-2026,2026-11-23 00:00:00,2026-11-19 00:00:00,SME,SME,Active,WATRANA,,3516000,33.63,118254600,,2026-11-23 05:59:14
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,noOfsharesBid,noOfSharesOffered,noOfTime,fetch_timestamp
+Shree Siddhivinayak Greentech Industries Limited,27-Nov-2026,Rs.130 to Rs.142,6596000,25-Nov-2026,2026-11-27 00:00:00,2026-11-25 00:00:00,SME,SME,Active,SHREESIDHI,2075000,6596000,0.31,2026-11-25 07:14:07
