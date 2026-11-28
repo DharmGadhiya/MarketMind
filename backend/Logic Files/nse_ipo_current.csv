@@ -1,4 +1,3 @@
-companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,noOfsharesBid,noOfSharesOffered,noOfTime,category,srNo,fetch_timestamp
-Shree Siddhivinayak Greentech Industries Limited,27-Nov-2026,Rs.130 to Rs.142,6596000,25-Nov-2026,2026-11-27 00:00:00,2026-11-25 00:00:00,SME,SME,Active,SHREESIDHI,9816000,6596000,1.49,,,2026-11-27 06:57:40
-Foodlink F&B Holdings (India) Limited,30-Nov-2026,Rs.181 to Rs.191,10474048,26-Nov-2026,2026-11-30 00:00:00,2026-11-26 00:00:00,Equity,EQ,Active,FOODLINK,1.0630776E7,1.0474048E7,1.0149634601636348,Total,,2026-11-27 06:57:40
-Airpro Technology India Limited,01-Dec-2026,Rs.99,3600000,27-Nov-2026,2026-12-01 00:00:00,2026-11-27 00:00:00,SME,SME,Active,AIRPRO,1231200,3600000,0.34,,,2026-11-27 06:57:40
+companyName,issueEndDate,issuePrice,issueSize,issueStartDate,orderEndDate,orderStartDate,segment,series,status,symbol,category,noOfSharesOffered,noOfTime,noOfsharesBid,srNo,fetch_timestamp
+Foodlink F&B Holdings (India) Limited,30-Nov-2026,Rs.181 to Rs.191,10474048,26-Nov-2026,2026-11-30 00:00:00,2026-11-26 00:00:00,Equity,EQ,Active,FOODLINK,Total,1.0474048E7,1.1099868933195647,1.1626056E7,,2026-11-28 06:31:47
+Airpro Technology India Limited,01-Dec-2026,Rs.99,3600000,27-Nov-2026,2026-12-01 00:00:00,2026-11-27 00:00:00,SME,SME,Active,AIRPRO,,3600000,0.75,2709600,,2026-11-28 06:31:47
